@@ -1,3 +1,7 @@
+@import './design/icons/tokens.css';
+@import './design/tokens/base.css';
+@import './design/tokens/themes.generated.css';
+@import './design/tokens/tiers.generated.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

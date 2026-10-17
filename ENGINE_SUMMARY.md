@@ -1,4 +1,4 @@
-# Agape Party — Bible Game Engine & Launch Games
+# Faith Tribe — Bible Game Platform & Engine
 
 > [!NOTE]
 > The mobile-first Bible party games platform and extensible engine is initialized and running in [bible-party-engine](file:///C:/Users/Owner/.gemini/antigravity-ide/scratch/bible-party-engine). We recommend setting `C:\Users\Owner\.gemini\antigravity-ide\scratch\bible-party-engine` as your active workspace.

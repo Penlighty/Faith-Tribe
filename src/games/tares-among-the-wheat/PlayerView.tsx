@@ -5,7 +5,8 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { WavyTimer } from '../../components/ui/WavyTimer';
 import { Avatar } from '../../components/ui/Avatar';
-import { Wheat, UserX, Check, AlertCircle, Sparkles } from 'lucide-react';
+import { UserX, AlertCircle, Sparkles } from 'lucide-react';
+import { Icon } from '@design/icons';
 import { useTheme } from '../../theme/ThemeContext';
 
 export const TaresPlayerView: React.FC<GameViewProps<TaresState>> = ({
@@ -76,7 +77,7 @@ export const TaresPlayerView: React.FC<GameViewProps<TaresState>> = ({
               : 'bg-emerald-200 text-emerald-950 dark:bg-emerald-900 dark:text-emerald-100'
           }`}
         >
-          {isTare ? <UserX size={14} /> : <Wheat size={14} />}
+          {isTare ? <UserX size={14} /> : <Icon name="wheat" size={14} />}
           {isTare ? 'Secret Role: Tare' : 'Secret Role: Wheat'}
         </span>
 
@@ -150,7 +151,7 @@ export const TaresPlayerView: React.FC<GameViewProps<TaresState>> = ({
                 variant="primary"
                 size="lg"
                 className="w-full mt-2"
-                rightIcon={<Check size={18} />}
+                rightIcon={<Icon name="check" size={18} />}
                 onClick={handleClueDone}
               >
                 I Spoke My Clue
@@ -192,7 +193,7 @@ export const TaresPlayerView: React.FC<GameViewProps<TaresState>> = ({
             </span>
             {myVote && (
               <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                <Check size={14} /> Accusation Cast
+                <Icon name="check" size={14} /> Accusation Cast
               </span>
             )}
           </div>

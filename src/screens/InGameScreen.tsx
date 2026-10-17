@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, BookOpen, Trophy, Volume2, VolumeX, SkipForward, HelpCircle } from 'lucide-react';
 import { BottomSheet } from '../components/ui/BottomSheet';
 import { Avatar } from '../components/ui/Avatar';
 import { Button } from '../components/ui/Button';
@@ -8,6 +7,7 @@ import { useSession } from '../engine/session/SessionContext';
 import { gameRegistry } from '../engine/registry';
 import { useTheme } from '../theme/ThemeContext';
 import { LeaderboardEntry } from '../engine/types';
+import { Icon, GameBadge } from '../design/icons';
 
 export interface InGameScreenProps {
   onExitGame: () => void;
@@ -77,6 +77,13 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
       title: `Rules: ${game.meta.name}`,
       content: (
         <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-3 p-3 bg-[var(--surface-container)] rounded-2xl">
+            <GameBadge game={snapshot.gameId} size={48} variant="tonal" />
+            <div>
+              <h3 className="font-bold text-sm text-[var(--on-container)]">{game.meta.name}</h3>
+              <p className="text-xs text-[var(--on-container-variant)]">{game.meta.tagline}</p>
+            </div>
+          </div>
           <p className="text-sm font-semibold opacity-85">{game.meta.description}</p>
           <div className="flex flex-col gap-2.5">
             {game.meta.rulesSteps.map((step, idx) => (
@@ -138,8 +145,7 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
 
   return (
     <div className="w-full min-h-screen flex flex-col justify-between select-none">
-      {/* 9. Top bar mirroring Now Playing layout:
-          Round chevron/back button, centered phase title, round tonal action buttons (Rules, Scoreboard) */}
+      {/* Top bar with round back button, game badge, centered phase title, tonal action buttons */}
       <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-2 flex items-center justify-between border-b border-[var(--border-tint)]/40 bg-[var(--bg-tint)]/80 backdrop-blur-md sticky top-0 z-20">
         <button
           onClick={() => {
@@ -149,17 +155,20 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
           className="w-10 h-10 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[var(--on-container)] flex items-center justify-center transition-colors cursor-pointer border border-[var(--border-tint)]/60"
           aria-label="Exit Game"
         >
-          <ArrowLeft size={18} />
+          <Icon name="arrow-left" size={18} />
         </button>
 
-        {/* Centered Phase Title & Round Badge */}
-        <div className="flex flex-col items-center">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
-            Round {snapshot.gameState.roundNumber} of {snapshot.gameState.totalRounds}
-          </span>
-          <h2 className="text-base sm:text-lg font-extrabold tracking-tight text-[var(--on-container)]">
-            {currentPhase.name}
-          </h2>
+        {/* Centered Phase Title & Round Badge with GameBadge */}
+        <div className="flex items-center gap-2.5">
+          <GameBadge game={snapshot.gameId} size={36} variant="tonal" />
+          <div className="flex flex-col items-center">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
+              Round {snapshot.gameState.roundNumber} of {snapshot.gameState.totalRounds}
+            </span>
+            <h2 className="text-base sm:text-lg font-extrabold tracking-tight text-[var(--on-container)]">
+              {currentPhase.name}
+            </h2>
+          </div>
         </div>
 
         {/* Round tonal action buttons (Rules, Scoreboard) */}
@@ -170,7 +179,7 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
             aria-label="Rules"
             title="Game Rules"
           >
-            <BookOpen size={18} />
+            <Icon name="book-open" size={18} />
           </button>
 
           <button
@@ -179,7 +188,7 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
             aria-label="Scoreboard"
             title="Live Scoreboard"
           >
-            <Trophy size={18} />
+            <Icon name="scoreboard" size={18} />
           </button>
         </div>
       </div>
@@ -198,13 +207,13 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
         />
       </main>
 
-      {/* 9. A row of pill secondary actions beneath (Hint, Skip, Mute) */}
+      {/* Secondary Actions Row (Hint, Skip, Mute) */}
       <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 pt-2 flex items-center justify-center gap-2.5">
         <button
           onClick={openRulesSheet}
           className="h-9 px-4 rounded-full bg-[var(--surface-container)] text-xs font-semibold text-[var(--on-container-variant)] hover:bg-[var(--surface-container-high)] flex items-center gap-1.5 transition-colors cursor-pointer border border-[var(--border-tint)]/60"
         >
-          <HelpCircle size={14} />
+          <Icon name="help" size={14} />
           <span>Rules</span>
         </button>
 
@@ -213,7 +222,7 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
             onClick={hostNextPhase}
             className="h-9 px-4 rounded-full bg-[var(--surface-container)] text-xs font-semibold text-[var(--on-container-variant)] hover:bg-[var(--surface-container-high)] flex items-center gap-1.5 transition-colors cursor-pointer border border-[var(--border-tint)]/60"
           >
-            <SkipForward size={14} />
+            <Icon name="skip" size={14} />
             <span>Skip Phase</span>
           </button>
         )}
@@ -223,7 +232,7 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
           className="h-9 px-4 rounded-full bg-[var(--surface-container)] text-xs font-semibold text-[var(--on-container-variant)] hover:bg-[var(--surface-container-high)] flex items-center gap-1.5 transition-colors cursor-pointer border border-[var(--border-tint)]/60"
           aria-label={soundEnabled ? 'Mute Sound' : 'Enable Sound'}
         >
-          {soundEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
+          <Icon name={soundEnabled ? 'sound-on' : 'sound-off'} variant={soundEnabled ? 'tonal' : 'line'} size={14} />
           <span>{soundEnabled ? 'Sound' : 'Muted'}</span>
         </button>
       </div>

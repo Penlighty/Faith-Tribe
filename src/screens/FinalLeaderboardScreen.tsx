@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { Trophy, RotateCcw, Home, Sparkles, Award } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Avatar } from '../components/ui/Avatar';
 import { useSession } from '../engine/session/SessionContext';
 import { gameRegistry } from '../engine/registry';
 import { LeaderboardEntry } from '../engine/types';
+import { Icon, GameBadge } from '../design/icons';
 
 export interface FinalLeaderboardScreenProps {
   onPickAnotherGame: () => void;
@@ -41,10 +41,13 @@ export const FinalLeaderboardScreen: React.FC<FinalLeaderboardScreenProps> = ({
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-28 pt-4 sm:pt-8 flex flex-col gap-6 sm:gap-8 select-none">
-      {/* Title */}
-      <div className="text-center flex flex-col items-center gap-1.5">
+      {/* Title & Game Badge */}
+      <div className="text-center flex flex-col items-center gap-2">
+        {snapshot?.gameId && (
+          <GameBadge game={snapshot.gameId} size={56} variant="tonal" />
+        )}
         <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[var(--surface-container-high)] text-[var(--on-container-variant)] flex items-center gap-1.5 shadow-sm border border-[var(--border-tint)]/60">
-          <Sparkles size={14} className="text-amber-500" /> Crown of Victory
+          <Icon name="crown" variant="tonal" size={14} className="text-amber-500" /> Crown of Victory
         </span>
         <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-[var(--on-container)]">
           Final Leaderboard
@@ -72,7 +75,9 @@ export const FinalLeaderboardScreen: React.FC<FinalLeaderboardScreenProps> = ({
           {/* 1st Place */}
           <div className="flex-[1.2] flex flex-col items-center gap-2 -mt-4">
             <div className="relative">
-              <span className="absolute -top-5 -right-1 text-3xl animate-bounce">👑</span>
+              <span className="absolute -top-6 -right-1">
+                <Icon name="crown" variant="tonal" size={28} className="text-amber-500" />
+              </span>
               <Avatar name={firstPlace.name} size="lg" />
             </div>
             <span className="text-sm sm:text-base font-extrabold truncate max-w-[130px] text-[var(--primary-action)] text-center">
@@ -134,9 +139,9 @@ export const FinalLeaderboardScreen: React.FC<FinalLeaderboardScreenProps> = ({
             variant="primary"
             size="hero"
             pill
-            leftIcon={<RotateCcw size={20} />}
+            leftIcon={<Icon name="refresh" size={18} />}
             onClick={rematch}
-            className="flex-1 shadow-md"
+            className="flex-1 shadow-md flex items-center justify-center gap-2"
           >
             Play Rematch
           </Button>
@@ -150,9 +155,9 @@ export const FinalLeaderboardScreen: React.FC<FinalLeaderboardScreenProps> = ({
           variant="tonal"
           size="hero"
           pill
-          leftIcon={<Home size={18} />}
+          leftIcon={<Icon name="home" size={18} />}
           onClick={onPickAnotherGame}
-          className="flex-1"
+          className="flex-1 flex items-center justify-center gap-2"
         >
           Pick Another Game
         </Button>

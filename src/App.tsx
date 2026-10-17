@@ -12,6 +12,7 @@ import { FinalLeaderboardScreen } from './screens/FinalLeaderboardScreen';
 import { JoinScreen } from './screens/JoinScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { SoloPracticeScreen } from './screens/SoloPracticeScreen';
+import { DevIconGalleryScreen } from './screens/DevIconGalleryScreen';
 import { PlayMode } from './engine/types';
 
 // Initialize launch games once
@@ -26,7 +27,8 @@ type AppView =
   | 'in_game'
   | 'final_leaderboard'
   | 'solo_practice'
-  | 'settings';
+  | 'settings'
+  | 'dev_icons';
 
 const AppContent: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>('home');
@@ -49,11 +51,17 @@ const AppContent: React.FC = () => {
     }
   }, [snapshot]);
 
-  // Handle URL join link on mount
+  // Handle URL join link or /dev/icons on mount
   useEffect(() => {
+    if (window.location.pathname === '/dev/icons' || window.location.pathname === '/dev/icons/') {
+      setCurrentView('dev_icons');
+      return;
+    }
     const params = new URLSearchParams(window.location.search);
     if (params.get('join')) {
       setCurrentView('join');
+    } else if (params.get('view') === 'icons') {
+      setCurrentView('dev_icons');
     }
   }, []);
 
@@ -89,6 +97,10 @@ const AppContent: React.FC = () => {
 
   const isInActiveGame = currentView === 'in_game';
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [currentView]);
+
   return (
     <div className="min-h-screen bg-[var(--bg-tint)] text-[var(--on-container)] tint-transition flex flex-col items-center">
       {/* Responsive Shell: compact mobile view on mobile, generous max-w-6xl on desktop */}
@@ -98,12 +110,12 @@ const AppContent: React.FC = () => {
           <TopBar
             title={
               currentView === 'home'
-                ? 'Agape Party'
+                ? 'Faith Tribe'
                 : currentView === 'settings'
                 ? 'Settings'
                 : currentView === 'join'
                 ? 'Join Session'
-                : 'Agape'
+                : 'Faith Tribe'
             }
             badge="Beta"
             activeTab={activeNavTab}
@@ -178,13 +190,23 @@ const AppContent: React.FC = () => {
           )}
 
           {currentView === 'settings' && <SettingsScreen />}
+
+          {currentView === 'dev_icons' && (
+            <DevIconGalleryScreen
+              onBack={() => {
+                window.history.pushState({}, '', '/');
+                setCurrentView('home');
+                setPaletteKey('lavender');
+              }}
+            />
+          )}
         </main>
 
-        {/* Floating pill bottom nav (hidden during active in-game phase) */}
+        {/* Floating pill bottom nav (hidden during active in-game phase or dev gallery) */}
         <BottomNav
           activeTab={activeNavTab}
           onTabChange={handleNavTabChange}
-          visible={!isInActiveGame && currentView !== 'lobby' && currentView !== 'solo_practice'}
+          visible={!isInActiveGame && currentView !== 'lobby' && currentView !== 'solo_practice' && currentView !== 'dev_icons'}
         />
       </div>
     </div>

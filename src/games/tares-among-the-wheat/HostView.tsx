@@ -5,7 +5,8 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { WavyTimer } from '../../components/ui/WavyTimer';
 import { Avatar } from '../../components/ui/Avatar';
-import { Wheat, UserX, MessageSquare, Award, ArrowRight, Check } from 'lucide-react';
+import { UserX, MessageSquare } from 'lucide-react';
+import { Icon } from '@design/icons';
 
 export const TaresHostView: React.FC<GameViewProps<TaresState>> = ({
   state,
@@ -40,7 +41,7 @@ export const TaresHostView: React.FC<GameViewProps<TaresState>> = ({
       {/* Hero Card: Passage Title for Host Monitor */}
       <Card variant="hero" padding="lg" className="text-center flex flex-col items-center gap-3">
         <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-black/10 dark:bg-white/10 flex items-center gap-1.5">
-          <Wheat size={14} /> Passage (Host Monitor)
+          <Icon name="wheat" size={14} /> Passage (Host Monitor)
         </span>
         <h2 className="text-2xl sm:text-3xl font-extrabold leading-snug tracking-tight">
           {currentPassage.title}
@@ -67,7 +68,7 @@ export const TaresHostView: React.FC<GameViewProps<TaresState>> = ({
           <Button
             variant="primary"
             size="lg"
-            rightIcon={<ArrowRight size={18} />}
+            rightIcon={<Icon name="arrow-right" size={18} />}
             onClick={() => dispatchIntent('ADVANCE_PHASE')}
           >
             Start Spoken Clues
@@ -101,7 +102,7 @@ export const TaresHostView: React.FC<GameViewProps<TaresState>> = ({
               variant="primary"
               size="lg"
               className="w-full"
-              rightIcon={<ArrowRight size={18} />}
+              rightIcon={<Icon name="arrow-right" size={18} />}
               onClick={() => {
                 if (activeCluePlayerIndex + 1 < cluePlayerOrder.length) {
                   dispatchIntent('CLUE_DONE');

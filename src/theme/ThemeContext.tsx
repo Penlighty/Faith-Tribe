@@ -3,7 +3,7 @@ import { PALETTE_PRESETS, TonalPalette } from './tokens';
 
 import { soundManager } from '../engine/services/audio';
 
-export type PaletteKey = 'lavender' | 'butter' | 'mint' | 'peach' | 'blush';
+export type PaletteKey = 'lavender' | 'butter' | 'mint' | 'peach' | 'blush' | string;
 export type ThemeMode = 'light' | 'dark' | 'system';
 
 interface ThemeContextType {
@@ -33,18 +33,19 @@ const ThemeContext = createContext<ThemeContextType | null>(null);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [paletteKey, setPaletteKey] = useState<PaletteKey>('lavender');
   const [mode, setMode] = useState<ThemeMode>(() => {
-    return (localStorage.getItem('agape_theme_mode') as ThemeMode) || 'system';
+    const saved = localStorage.getItem('faith_tribe_theme_mode') || localStorage.getItem('agape_theme_mode');
+    return (saved as ThemeMode) || 'system';
   });
   const [reducedMotion, setReducedMotion] = useState<boolean>(() => {
-    const saved = localStorage.getItem('agape_reduced_motion');
+    const saved = localStorage.getItem('faith_tribe_reduced_motion') || localStorage.getItem('agape_reduced_motion');
     if (saved !== null) return saved === 'true';
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   });
   const [hapticsEnabled, setHapticsEnabled] = useState<boolean>(() => {
-    return localStorage.getItem('agape_haptics') !== 'false';
+    return (localStorage.getItem('faith_tribe_haptics') ?? localStorage.getItem('agape_haptics')) !== 'false';
   });
   const [soundEnabled, setSoundEnabled] = useState<boolean>(() => {
-    return localStorage.getItem('agape_sound') !== 'false';
+    return (localStorage.getItem('faith_tribe_sound') ?? localStorage.getItem('agape_sound')) !== 'false';
   });
   const [masterVolume, setMasterVolumeState] = useState<number>(() => {
     return soundManager.getMasterVolume();
@@ -86,7 +87,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Apply dark class to documentElement
   useEffect(() => {
-    localStorage.setItem('agape_theme_mode', mode);
+    localStorage.setItem('faith_tribe_theme_mode', mode);
     if (isDark) {
       document.documentElement.classList.add('dark');
     } else {
@@ -95,15 +96,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [isDark, mode]);
 
   useEffect(() => {
-    localStorage.setItem('agape_reduced_motion', String(reducedMotion));
+    localStorage.setItem('faith_tribe_reduced_motion', String(reducedMotion));
   }, [reducedMotion]);
 
   useEffect(() => {
-    localStorage.setItem('agape_haptics', String(hapticsEnabled));
+    localStorage.setItem('faith_tribe_haptics', String(hapticsEnabled));
   }, [hapticsEnabled]);
 
   useEffect(() => {
-    localStorage.setItem('agape_sound', String(soundEnabled));
+    localStorage.setItem('faith_tribe_sound', String(soundEnabled));
   }, [soundEnabled]);
 
   const activePreset = PALETTE_PRESETS[paletteKey] || PALETTE_PRESETS.lavender;

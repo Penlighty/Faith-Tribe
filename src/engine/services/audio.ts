@@ -6,13 +6,13 @@ class SoundManager {
 
   constructor() {
     if (typeof window !== 'undefined') {
-      const savedMaster = localStorage.getItem('agape_master_volume');
+      const savedMaster = localStorage.getItem('faith_tribe_master_volume') ?? localStorage.getItem('agape_master_volume');
       if (savedMaster !== null) this.masterVolume = parseFloat(savedMaster);
 
-      const savedSfx = localStorage.getItem('agape_sfx_volume');
+      const savedSfx = localStorage.getItem('faith_tribe_sfx_volume') ?? localStorage.getItem('agape_sfx_volume');
       if (savedSfx !== null) this.sfxVolume = parseFloat(savedSfx);
 
-      const savedAmbient = localStorage.getItem('agape_ambient_volume');
+      const savedAmbient = localStorage.getItem('faith_tribe_ambient_volume') ?? localStorage.getItem('agape_ambient_volume');
       if (savedAmbient !== null) this.ambientVolume = parseFloat(savedAmbient);
     }
   }
@@ -20,7 +20,7 @@ class SoundManager {
   setMasterVolume(val: number) {
     this.masterVolume = Math.max(0, Math.min(1, val));
     if (typeof window !== 'undefined') {
-      localStorage.setItem('agape_master_volume', String(this.masterVolume));
+      localStorage.setItem('faith_tribe_master_volume', String(this.masterVolume));
     }
   }
 
@@ -31,7 +31,7 @@ class SoundManager {
   setSfxVolume(val: number) {
     this.sfxVolume = Math.max(0, Math.min(1, val));
     if (typeof window !== 'undefined') {
-      localStorage.setItem('agape_sfx_volume', String(this.sfxVolume));
+      localStorage.setItem('faith_tribe_sfx_volume', String(this.sfxVolume));
     }
   }
 
@@ -42,7 +42,7 @@ class SoundManager {
   setAmbientVolume(val: number) {
     this.ambientVolume = Math.max(0, Math.min(1, val));
     if (typeof window !== 'undefined') {
-      localStorage.setItem('agape_ambient_volume', String(this.ambientVolume));
+      localStorage.setItem('faith_tribe_ambient_volume', String(this.ambientVolume));
     }
   }
 

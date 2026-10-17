@@ -45,7 +45,7 @@ export class SupabaseRealtimeTransport implements Transport {
         },
       });
 
-      const channelName = `agape_room_${this.roomCode}`;
+      const channelName = `faith_tribe_room_${this.roomCode}`;
       this.channel = this.client.channel(channelName, {
         config: {
           broadcast: { ack: false, self: true },

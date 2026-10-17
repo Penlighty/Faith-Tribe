@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogIn, ArrowLeft } from 'lucide-react';
+import { Icon } from '@design/icons';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Avatar } from '../components/ui/Avatar';
@@ -65,7 +65,7 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({
           className="w-10 h-10 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] flex items-center justify-center text-[var(--on-container)] transition-colors cursor-pointer"
           aria-label="Back"
         >
-          <ArrowLeft size={20} />
+          <Icon name="arrow-left" size={20} />
         </button>
         <h2 className="text-xl font-bold">Join Session</h2>
       </div>
@@ -125,7 +125,7 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({
           size="hero"
           pill
           disabled={code.length < 4 || !name.trim() || loading}
-          leftIcon={<LogIn size={20} />}
+          leftIcon={<Icon name="join" size={20} />}
           className="w-full mt-2"
         >
           {loading ? 'Entering Room...' : 'Join Game Night'}

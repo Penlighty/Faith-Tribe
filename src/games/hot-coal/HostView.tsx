@@ -5,7 +5,8 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { WavyTimer } from '../../components/ui/WavyTimer';
 import { Avatar } from '../../components/ui/Avatar';
-import { Flame, ShieldAlert, BookOpen, ArrowRight, UserCheck } from 'lucide-react';
+import { UserCheck } from 'lucide-react';
+import { Icon } from '@design/icons';
 import { motion } from 'framer-motion';
 
 export const HotCoalHostView: React.FC<GameViewProps<HotCoalState>> = ({
@@ -70,7 +71,7 @@ export const HotCoalHostView: React.FC<GameViewProps<HotCoalState>> = ({
 
         <div className="flex items-center gap-2">
           <span className="p-2 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300">
-            <Flame size={20} className="fill-amber-500" />
+            <Icon name="flame" size={20} className="text-amber-500" />
           </span>
           <span className="text-xs font-bold uppercase tracking-wider opacity-80">
             Hot Coal Category
@@ -84,7 +85,7 @@ export const HotCoalHostView: React.FC<GameViewProps<HotCoalState>> = ({
         {/* Current Coal Holder Highlight */}
         {currentPhaseId === 'play' && currentHolder && (
           <div className="mt-2 flex items-center gap-2 px-4 py-2 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-800 dark:text-rose-200 text-sm font-bold animate-pulse">
-            <Flame size={16} />
+            <Icon name="flame" size={16} />
             <span>Holds the Coal: {currentHolder.name}</span>
           </div>
         )}
@@ -114,7 +115,7 @@ export const HotCoalHostView: React.FC<GameViewProps<HotCoalState>> = ({
             <Button
               variant="tonal"
               size="md"
-              leftIcon={<BookOpen size={16} />}
+              leftIcon={<Icon name="book-open" size={16} />}
               onClick={openVerifiedSheet}
               className="flex-1"
             >
@@ -123,7 +124,7 @@ export const HotCoalHostView: React.FC<GameViewProps<HotCoalState>> = ({
             <Button
               variant="primary"
               size="lg"
-              rightIcon={<ArrowRight size={18} />}
+              rightIcon={<Icon name="arrow-right" size={18} />}
               onClick={() => dispatchIntent('ADVANCE_PHASE')}
               className="flex-[2]"
             >
@@ -165,7 +166,7 @@ export const HotCoalHostView: React.FC<GameViewProps<HotCoalState>> = ({
                       <span className="text-xs font-bold truncate">{p.name}</span>
                     </div>
                     {isHolding ? (
-                      <Flame size={16} className="text-rose-600 animate-bounce" />
+                      <Icon name="flame" size={16} className="text-rose-600 animate-bounce" />
                     ) : (
                       <span className="text-[10px] font-mono text-[var(--on-container-variant)]">
                         {burns} 🔥
@@ -180,7 +181,7 @@ export const HotCoalHostView: React.FC<GameViewProps<HotCoalState>> = ({
           <Button
             variant="danger"
             size="lg"
-            leftIcon={<ShieldAlert size={18} />}
+            leftIcon={<Icon name="shield" size={18} />}
             onClick={() => dispatchIntent('INITIATE_CHALLENGE')}
           >
             Host Call Challenge
@@ -191,7 +192,7 @@ export const HotCoalHostView: React.FC<GameViewProps<HotCoalState>> = ({
       {currentPhaseId === 'challenge' && activeChallenge && (
         <Card variant="tonal" padding="md" className="flex flex-col gap-4 text-center">
           <h3 className="text-lg font-black text-amber-700 dark:text-amber-300 flex items-center justify-center gap-2">
-            <ShieldAlert size={22} />
+            <Icon name="shield" size={22} />
             Challenge in Progress!
           </h3>
           <p className="text-xs font-medium opacity-85">

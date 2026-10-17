@@ -40,7 +40,7 @@ export class MockTransport implements Transport {
     // Also connect to BroadcastChannel for cross-tab local testing if available
     if (this.options.useBroadcastChannel !== false && typeof window !== 'undefined' && 'BroadcastChannel' in window) {
       try {
-        this.broadcastChannel = new BroadcastChannel(`agape_room_${this.roomCode}`);
+        this.broadcastChannel = new BroadcastChannel(`faith_tribe_room_${this.roomCode}`);
         this.broadcastChannel.onmessage = (event) => {
           const { kind, data } = event.data || {};
           if (kind === 'MESSAGE') {

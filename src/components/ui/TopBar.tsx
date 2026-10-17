@@ -1,5 +1,8 @@
 import React from 'react';
-import { Home, Play, Gamepad2, Settings, Sun, Moon, Volume2, VolumeX } from 'lucide-react';
+import { Sun, Moon } from 'lucide-react';
+import { Icon, type IconName } from '../../design/icons';
+import markOnDark from '../../assets/brand/mark-on-dark.svg';
+import markOnLight from '../../assets/brand/mark-on-light.svg';
 import { TYPOGRAPHY } from '../../theme/tokens';
 import { NavTabId } from './BottomNav';
 import { useTheme } from '../../theme/ThemeContext';
@@ -17,11 +20,11 @@ export interface TopBarProps {
   className?: string;
 }
 
-const NAV_ITEMS: { id: NavTabId; label: string; icon: React.FC<{ size?: number; className?: string }> }[] = [
-  { id: 'home', label: 'Home', icon: Home },
-  { id: 'play', label: 'Join Room', icon: Play },
-  { id: 'games', label: 'Game Library', icon: Gamepad2 },
-  { id: 'settings', label: 'Settings', icon: Settings },
+const NAV_ITEMS: { id: NavTabId; label: string; icon: IconName }[] = [
+  { id: 'home', label: 'Home', icon: 'home' },
+  { id: 'play', label: 'Join Room', icon: 'play' },
+  { id: 'games', label: 'Game Library', icon: 'games' },
+  { id: 'settings', label: 'Settings', icon: 'settings' },
 ];
 
 export const TopBar: React.FC<TopBarProps> = ({
@@ -53,9 +56,11 @@ export const TopBar: React.FC<TopBarProps> = ({
       <div className="flex items-center gap-3 min-w-0">
         {leftAction && <div className="shrink-0">{leftAction}</div>}
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-8 h-8 rounded-xl bg-[var(--primary-action)] text-[var(--primary-action-text)] flex items-center justify-center text-base shadow-sm shrink-0">
-            🕊️
-          </div>
+          <img
+            src={isDark ? markOnDark : markOnLight}
+            alt="Faith Tribe Logo"
+            className="w-8 h-8 rounded-xl object-contain shadow-sm shrink-0"
+          />
           <div className="flex flex-col min-w-0">
             <div className="flex items-center gap-2">
               <h1 className={`${TYPOGRAPHY.screenTitle} text-[var(--on-container)] truncate leading-tight`}>
@@ -81,7 +86,6 @@ export const TopBar: React.FC<TopBarProps> = ({
         <nav className="hidden md:flex items-center gap-1 bg-[var(--surface-container)] p-1 rounded-full border border-[var(--border-tint)] shadow-sm">
           {NAV_ITEMS.map((item) => {
             const isActive = activeTab === item.id;
-            const Icon = item.icon;
             return (
               <button
                 key={item.id}
@@ -95,7 +99,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                     : 'text-[var(--on-container-variant)] hover:text-[var(--on-container)] hover:bg-[var(--surface-container-high)]/60'
                 }`}
               >
-                <Icon size={15} />
+                <Icon name={item.icon} variant={isActive ? 'tonal' : 'line'} size={16} />
                 <span>{item.label}</span>
               </button>
             );
@@ -115,7 +119,11 @@ export const TopBar: React.FC<TopBarProps> = ({
             title={soundEnabled ? 'Mute Sound' : 'Enable Sound'}
             aria-label={soundEnabled ? 'Mute Sound' : 'Enable Sound'}
           >
-            {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} className="opacity-60" />}
+            <Icon
+              name={soundEnabled ? 'sound-on' : 'sound-off'}
+              variant={soundEnabled ? 'tonal' : 'line'}
+              size={18}
+            />
           </button>
 
           <button

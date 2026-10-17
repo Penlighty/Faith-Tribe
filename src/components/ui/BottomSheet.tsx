@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
-import { X } from 'lucide-react';
+import { Icon } from '../../design/icons';
 import { useTheme } from '../../theme/ThemeContext';
 
 export interface BottomSheetProps {
@@ -84,7 +84,7 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
                   className="w-9 h-9 rounded-full bg-[var(--surface-container)] flex items-center justify-center hover:bg-[var(--surface-container-high)] text-[var(--on-container)] transition-colors"
                   aria-label="Close sheet"
                 >
-                  <X size={18} />
+                  <Icon name="close" size={18} />
                 </button>
               </div>
             )}

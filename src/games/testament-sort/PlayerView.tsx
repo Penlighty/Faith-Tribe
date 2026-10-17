@@ -4,7 +4,7 @@ import { TestamentSortState, TestamentChoice } from './types';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { useTheme } from '../../theme/ThemeContext';
-import { CheckCircle2, XCircle, Lightbulb, Lock, BookOpen, Flame, HeartHandshake } from 'lucide-react';
+import { Icon } from '@design/icons';
 
 const TIER_THEMES: Record<1 | 2 | 3 | 4, { label: string; badgeClass: string; bgClass: string }> = {
   1: { label: 'Tier 1: Famous Names', badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300', bgClass: 'border-emerald-300/40' },
@@ -78,7 +78,7 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
 
         {pState.streakCount > 1 && (
           <div className="flex items-center gap-1 text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-1 rounded-full border border-amber-300/30">
-            <Flame size={14} />
+            <Icon name="flame" size={14} />
             <span>{pState.streakCount} Streak!</span>
           </div>
         )}
@@ -102,7 +102,8 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
         <div className="flex flex-col gap-4">
           <Card variant="hero" className={`text-center py-6 px-4 flex flex-col items-center gap-3 ${tierInfo.bgClass}`}>
             <div className="flex items-center gap-2">
-              <span className="px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-[var(--primary-action)]/15 text-[var(--primary-action)]">
+              <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[var(--primary-action)]/15 text-[var(--primary-action)] flex items-center gap-1.5">
+                <Icon name={currentCard.type === 'person' ? 'person' : currentCard.type === 'place' ? 'place' : 'thing'} size={14} />
                 {currentCard.type}
               </span>
             </div>
@@ -133,7 +134,7 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
             {pState.hintUsed ? (
               <div className="w-full p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300/40 text-amber-900 dark:text-amber-200 text-xs text-left animate-fadeIn">
                 <div className="flex items-center gap-1 font-bold mb-1">
-                  <Lightbulb size={14} /> Clue
+                  <Icon name="hint" size={14} /> Clue
                 </div>
                 <p>{currentCard.hint}</p>
               </div>
@@ -144,7 +145,7 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
                   onClick={handleUseHint}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-[var(--surface-container)] text-[var(--on-container-variant)] hover:bg-[var(--surface-container-high)] border border-[var(--border-tint)] transition-all"
                 >
-                  <Lightbulb size={14} className="text-amber-500" />
+                  <Icon name="hint" size={14} className="text-amber-500" />
                   <span>Reveal Hint (-40% pts)</span>
                 </button>
               )
@@ -157,15 +158,15 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
               const isSelected = pState.selectedChoice === choice;
               let label = 'Old';
               let sub = 'Testament';
-              let badge = '📜 OT';
+              let iconName: 'ot' | 'both' | 'nt' = 'ot';
               if (choice === 'NT') {
                 label = 'New';
                 sub = 'Testament';
-                badge = '🕊️ NT';
+                iconName = 'nt';
               } else if (choice === 'BOTH') {
                 label = 'Both';
                 sub = 'Testaments';
-                badge = '⚖️ Both';
+                iconName = 'both';
               }
 
               return (
@@ -180,12 +181,12 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
                       : 'border-[var(--border-tint)] bg-[var(--surface-card)] hover:bg-[var(--surface-container)]'
                   } ${pState.locked ? 'opacity-80 cursor-not-allowed' : 'active:scale-95 cursor-pointer'}`}
                 >
-                  <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider opacity-75">{badge}</span>
+                  <Icon name={iconName} size={28} className="mb-1" />
                   <span className="text-base sm:text-xl font-black text-[var(--on-container)]">{label}</span>
                   <span className="text-[11px] sm:text-xs text-[var(--on-container-variant)]">{sub}</span>
                   {isSelected && (
                     <div className="w-6 h-6 rounded-full bg-[var(--primary-action)] text-[var(--primary-action-text)] flex items-center justify-center font-bold text-xs mt-1 shadow-sm">
-                      ✓
+                      <Icon name="check" size={14} />
                     </div>
                   )}
                 </button>
@@ -196,7 +197,7 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
           {/* Lock Button or Locked Confirmation */}
           {pState.locked ? (
             <div className="p-4 rounded-3xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 text-center flex items-center justify-center gap-2 text-emerald-800 dark:text-emerald-200 font-bold">
-              <Lock size={18} />
+              <Icon name="lock" size={18} />
               <span>Locked in! Waiting for round reveal...</span>
             </div>
           ) : (
@@ -207,7 +208,7 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
               onClick={handleLockChoice}
               className="w-full gap-2 text-base font-bold"
             >
-              <Lock size={18} />
+              <Icon name="lock" size={18} />
               <span>Lock In Answer</span>
             </Button>
           )}
@@ -220,11 +221,11 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
           <div className="flex flex-col items-center gap-2">
             {pState.isCorrect ? (
               <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-300 flex items-center justify-center">
-                <CheckCircle2 size={36} />
+                <Icon name="check" size={36} />
               </div>
             ) : (
               <div className="w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-900/60 text-rose-600 dark:text-rose-300 flex items-center justify-center">
-                <XCircle size={36} />
+                <Icon name="close" size={36} />
               </div>
             )}
 
@@ -254,7 +255,7 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
               {currentCard.answer === 'BOTH' && 'Both Testaments'}
             </span>
             <div className="text-xs font-semibold text-[var(--on-container)] mt-1 flex items-center gap-1">
-              <BookOpen size={14} />
+              <Icon name="book-open" size={14} />
               <span>{currentCard.refs}</span>
             </div>
             {currentCard.note && (

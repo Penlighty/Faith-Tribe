@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { LogOut, AlertTriangle, ArrowLeft, X } from 'lucide-react';
+import { Icon } from '../../design/icons';
 import { Button } from './Button';
 import { Card } from './Card';
 import { useTheme } from '../../theme/ThemeContext';
@@ -48,7 +48,7 @@ export const LeaveConfirmationModal: React.FC<LeaveConfirmationModalProps> = ({
           className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[var(--on-container-variant)] flex items-center justify-center transition-colors cursor-pointer"
           aria-label="Close"
         >
-          <X size={16} />
+          <Icon name="close" size={16} />
         </button>
 
         {/* Warning Icon Badge */}
@@ -57,7 +57,7 @@ export const LeaveConfirmationModal: React.FC<LeaveConfirmationModalProps> = ({
             ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300'
             : 'bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300'
         }`}>
-          {isMultiplayer ? <LogOut size={32} /> : <AlertTriangle size={32} />}
+          <Icon name={isMultiplayer ? 'flag' : 'info'} size={32} />
         </div>
 
         {/* Heading */}

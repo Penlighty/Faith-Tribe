@@ -13,13 +13,13 @@ export interface PlayerSeenData {
 // Local storage ledger persistence (compatible with all browser environments & Node/Vitest)
 class LocalDeviceLedger {
   private getStorageKey(gameId: string): string {
-    return `agape_seen_ledger_${gameId}`;
+    return `faith_tribe_seen_ledger_${gameId}`;
   }
 
   getSeenRecords(gameId: string): Record<string, number> {
     try {
       if (typeof window === 'undefined' || !window.localStorage) return {};
-      const raw = localStorage.getItem(this.getStorageKey(gameId));
+      const raw = localStorage.getItem(this.getStorageKey(gameId)) || localStorage.getItem(`agape_seen_ledger_${gameId}`);
       if (!raw) return {};
       return JSON.parse(raw);
     } catch {

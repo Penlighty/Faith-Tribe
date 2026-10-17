@@ -5,7 +5,8 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { WavyTimer } from '../../components/ui/WavyTimer';
 import { Avatar } from '../../components/ui/Avatar';
-import { Flame, ShieldAlert, BookOpen, AlertTriangle } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
+import { Icon } from '@design/icons';
 import { useTheme } from '../../theme/ThemeContext';
 import { motion } from 'framer-motion';
 
@@ -124,7 +125,7 @@ export const HotCoalPlayerView: React.FC<GameViewProps<HotCoalState>> = ({
               className="bg-gradient-to-br from-rose-500 to-amber-600 text-white flex flex-col items-center gap-4 text-center shadow-expressive-lg border-none animate-pulse"
             >
               <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
-                <Flame size={36} className="text-amber-200 fill-amber-200" />
+                <Icon name="flame" size={36} className="text-amber-200" />
               </div>
               <div>
                 <h3 className="text-2xl font-black uppercase tracking-wide">
@@ -174,7 +175,7 @@ export const HotCoalPlayerView: React.FC<GameViewProps<HotCoalState>> = ({
                   variant="tonal"
                   size="md"
                   pill
-                  leftIcon={<BookOpen size={16} />}
+                  leftIcon={<Icon name="book-open" size={16} />}
                   onClick={openVerifiedSheet}
                   className="flex-1"
                 >
@@ -183,7 +184,7 @@ export const HotCoalPlayerView: React.FC<GameViewProps<HotCoalState>> = ({
                 <Button
                   variant="danger"
                   size="hero"
-                  leftIcon={<ShieldAlert size={20} />}
+                  leftIcon={<Icon name="shield" size={20} />}
                   onClick={handleChallenge}
                   className="flex-[2] rounded-[22px]"
                 >

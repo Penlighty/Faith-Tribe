@@ -4,7 +4,7 @@ import { WhoSaidState, WhoSaidPowerUp } from './types';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { useTheme } from '../../theme/ThemeContext';
-import { CheckCircle2, XCircle, Lock, BookOpen, Flame, Zap, Shield, Sparkles } from 'lucide-react';
+import { Icon } from '@design/icons';
 
 const TIER_THEMES: Record<1 | 2 | 3 | 4, { label: string; badgeClass: string; borderClass: string }> = {
   1: { label: 'Tier 1: Iconic Scripture', badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300', borderClass: 'border-emerald-300/40' },
@@ -78,7 +78,7 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
 
         {pState.streakCount > 1 && (
           <div className="flex items-center gap-1 text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-1 rounded-full border border-amber-300/30">
-            <Flame size={14} />
+            <Icon name="flame" size={14} />
             <span>{pState.streakCount} Streak!</span>
           </div>
         )}
@@ -147,7 +147,7 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
                       : 'bg-[var(--surface-card)] border-[var(--border-tint)] hover:bg-[var(--surface-container)]'
                   }`}
                 >
-                  <Sparkles size={12} />
+                  <Icon name="fifty" size={14} />
                   <span>50:50</span>
                 </button>
 
@@ -164,7 +164,7 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
                       : 'bg-[var(--surface-card)] border-[var(--border-tint)] hover:bg-[var(--surface-container)]'
                   }`}
                 >
-                  <Zap size={12} />
+                  <Icon name="double" size={14} />
                   <span>Double (x2)</span>
                 </button>
 
@@ -181,7 +181,7 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
                       : 'bg-[var(--surface-card)] border-[var(--border-tint)] hover:bg-[var(--surface-container)]'
                   }`}
                 >
-                  <Shield size={12} />
+                  <Icon name="shield" size={14} />
                   <span>Shield</span>
                 </button>
               </div>
@@ -220,7 +220,7 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
                   <span className="text-base sm:text-lg text-[var(--on-container)] text-left">{speaker}</span>
                   {isSelected && (
                     <div className="w-6 h-6 rounded-full bg-[var(--primary-action)] text-[var(--primary-action-text)] flex items-center justify-center text-xs font-bold">
-                      ✓
+                      <Icon name="check" size={12} />
                     </div>
                   )}
                 </button>
@@ -230,7 +230,7 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
 
           {pState.locked && (
             <div className="p-4 rounded-3xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 text-center flex items-center justify-center gap-2 text-emerald-800 dark:text-emerald-200 font-bold">
-              <Lock size={18} />
+              <Icon name="lock" size={18} />
               <span>Locked in! Waiting for time up...</span>
             </div>
           )}
@@ -243,11 +243,11 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
           <div className="flex flex-col items-center gap-2">
             {pState.isCorrect ? (
               <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-300 flex items-center justify-center">
-                <CheckCircle2 size={36} />
+                <Icon name="check" size={36} />
               </div>
             ) : (
               <div className="w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-900/60 text-rose-600 dark:text-rose-300 flex items-center justify-center">
-                <XCircle size={36} />
+                <Icon name="close" size={36} />
               </div>
             )}
 
@@ -286,7 +286,7 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
               {currentQuestion.answer}
             </span>
             <div className="text-xs font-semibold text-[var(--on-container)] mt-1 flex items-center gap-1">
-              <BookOpen size={14} />
+              <Icon name="book-open" size={14} />
               <span>{currentQuestion.ref}</span>
             </div>
             <p className="text-xs text-[var(--on-container-variant)] mt-1 italic">

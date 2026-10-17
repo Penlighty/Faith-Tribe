@@ -5,7 +5,7 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { WavyTimer } from '../../components/ui/WavyTimer';
 import { Avatar } from '../../components/ui/Avatar';
-import { Check, HelpCircle, ArrowRight, Award } from 'lucide-react';
+import { Icon } from '@design/icons';
 
 export const FakeAProverbHostView: React.FC<GameViewProps<FakeAProverbState>> = ({
   state,
@@ -63,7 +63,7 @@ export const FakeAProverbHostView: React.FC<GameViewProps<FakeAProverbState>> = 
             variant="primary"
             size="lg"
             onClick={() => dispatchIntent('ADVANCE_PHASE')}
-            rightIcon={<ArrowRight size={18} />}
+            rightIcon={<Icon name="arrow-right" size={18} />}
           >
             Start Writing (45s)
           </Button>
@@ -93,7 +93,7 @@ export const FakeAProverbHostView: React.FC<GameViewProps<FakeAProverbState>> = 
                 >
                   <Avatar name={p.name} size="sm" />
                   <span>{p.name}</span>
-                  {hasSubmitted && <Check size={14} className="stroke-[3]" />}
+                  {hasSubmitted && <Icon name="check" size={14} />}
                 </div>
               );
             })}
@@ -150,7 +150,7 @@ export const FakeAProverbHostView: React.FC<GameViewProps<FakeAProverbState>> = 
         <div className="flex flex-col gap-4">
           <Card variant="tonal" padding="md" className="flex flex-col gap-3">
             <h3 className="font-bold text-base flex items-center gap-2">
-              <Award size={18} className="text-amber-500" />
+              <Icon name="medal" size={18} className="text-amber-500" />
               Round Breakdown
             </h3>
 

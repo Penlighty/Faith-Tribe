@@ -4,7 +4,8 @@ import { FakeAProverbState } from './types';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { WavyTimer } from '../../components/ui/WavyTimer';
-import { Check, Send, Award, ThumbsUp } from 'lucide-react';
+import { Send } from 'lucide-react';
+import { Icon } from '@design/icons';
 import { useTheme } from '../../theme/ThemeContext';
 
 export const FakeAProverbPlayerView: React.FC<GameViewProps<FakeAProverbState>> = ({
@@ -74,7 +75,7 @@ export const FakeAProverbPlayerView: React.FC<GameViewProps<FakeAProverbState>> 
           {mySubmission ? (
             <Card variant="tonal" padding="md" className="text-center flex flex-col items-center gap-2">
               <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 flex items-center justify-center">
-                <Check size={24} />
+                <Icon name="check" size={24} />
               </div>
               <h3 className="font-bold text-base">Ending Submitted!</h3>
               <p className="text-sm italic opacity-85">&ldquo;&hellip;{mySubmission}&rdquo;</p>
@@ -139,7 +140,7 @@ export const FakeAProverbPlayerView: React.FC<GameViewProps<FakeAProverbState>> 
             </span>
             {myVote && (
               <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                <Check size={14} /> Vote Cast
+                <Icon name="check" size={14} /> Vote Cast
               </span>
             )}
           </div>
@@ -174,7 +175,7 @@ export const FakeAProverbPlayerView: React.FC<GameViewProps<FakeAProverbState>> 
                   }`}
                 >
                   <span>&ldquo;&hellip;{entry.ending}&rdquo;</span>
-                  {isSelected && <Check size={18} className="stroke-[3] shrink-0" />}
+                  {isSelected && <Icon name="check" size={18} className="shrink-0" />}
                 </button>
               );
             })}
@@ -186,7 +187,7 @@ export const FakeAProverbPlayerView: React.FC<GameViewProps<FakeAProverbState>> 
       {currentPhaseId === 'reveal' && (
         <Card variant="tonal" padding="md" className="flex flex-col items-center gap-3 text-center">
           <div className="w-14 h-14 rounded-full bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200 flex items-center justify-center">
-            <Award size={28} />
+            <Icon name="medal" size={28} />
           </div>
           <div>
             <h3 className="text-xl font-black">

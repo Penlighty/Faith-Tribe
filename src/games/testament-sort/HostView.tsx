@@ -3,7 +3,8 @@ import { GameViewProps } from '../../engine/types';
 import { TestamentSortState } from './types';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { BookOpen, HelpCircle, CheckCircle2, XCircle, ArrowRight, Sparkles, Users } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
+import { Icon } from '@design/icons';
 
 const TIER_THEMES: Record<1 | 2 | 3 | 4, { label: string; badgeClass: string; bgClass: string }> = {
   1: { label: 'Tier 1: Famous Names', badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300', bgClass: 'border-emerald-300/40' },
@@ -44,7 +45,7 @@ export const TestamentSortHostView: React.FC<GameViewProps<TestamentSortState>> 
 
         {isCard && (
           <div className="flex items-center gap-2 text-sm font-medium text-[var(--on-container-variant)]">
-            <Users size={16} />
+            <Icon name="team" size={16} />
             <span>{lockedCount} / {totalPlayers} Locked In</span>
           </div>
         )}
@@ -75,7 +76,8 @@ export const TestamentSortHostView: React.FC<GameViewProps<TestamentSortState>> 
       {(isCard || isHuddle) && (
         <div className="flex flex-col gap-6">
           <Card variant="hero" className={`text-center py-10 flex flex-col items-center gap-4 ${tierInfo.bgClass}`}>
-            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[var(--primary-action)]/15 text-[var(--primary-action)]">
+            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[var(--primary-action)]/15 text-[var(--primary-action)] flex items-center gap-1.5">
+              <Icon name={currentCard.type === 'person' ? 'person' : currentCard.type === 'place' ? 'place' : 'thing'} size={14} />
               {currentCard.type}
             </span>
 
@@ -150,7 +152,8 @@ export const TestamentSortHostView: React.FC<GameViewProps<TestamentSortState>> 
       {isReveal && (
         <div className="flex flex-col gap-6">
           <Card variant="hero" className="text-center py-8 flex flex-col items-center gap-4">
-            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[var(--primary-action)]/15 text-[var(--primary-action)]">
+            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[var(--primary-action)]/15 text-[var(--primary-action)] flex items-center gap-1.5">
+              <Icon name={currentCard.type === 'person' ? 'person' : currentCard.type === 'place' ? 'place' : 'thing'} size={14} />
               {currentCard.type}
             </span>
 
@@ -161,7 +164,7 @@ export const TestamentSortHostView: React.FC<GameViewProps<TestamentSortState>> 
             {/* Big Answer Pill */}
             <div className="my-2">
               <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-2xl font-black bg-[var(--primary-action)] text-[var(--primary-action-text)] shadow-lg shadow-[var(--primary-action)]/20">
-                <CheckCircle2 size={28} />
+                <Icon name="check" size={28} />
                 {currentCard.answer === 'OT' && 'Old Testament'}
                 {currentCard.answer === 'NT' && 'New Testament'}
                 {currentCard.answer === 'BOTH' && 'Both Testaments!'}
@@ -171,7 +174,7 @@ export const TestamentSortHostView: React.FC<GameViewProps<TestamentSortState>> 
             {/* Scripture Proof Reference */}
             <div className="p-4 rounded-2xl bg-[var(--surface-container)] max-w-lg w-full text-center">
               <div className="text-xs font-semibold uppercase tracking-wider text-[var(--primary-action)] mb-1 flex items-center justify-center gap-1">
-                <BookOpen size={14} /> Scripture Verification
+                <Icon name="book-open" size={14} /> Scripture Verification
               </div>
               <p className="text-base font-bold text-[var(--on-container)]">
                 {currentCard.refs}
@@ -229,7 +232,7 @@ export const TestamentSortHostView: React.FC<GameViewProps<TestamentSortState>> 
               onClick={() => dispatchIntent('NEXT_CARD')}
             >
               <span>Next Card</span>
-              <ArrowRight size={20} />
+              <Icon name="arrow-right" size={20} />
             </Button>
           </div>
         </div>

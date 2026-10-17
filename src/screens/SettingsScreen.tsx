@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Volume2, Volume1, VolumeX, Vibrate, Sparkles, Moon, Sun, Monitor, Download, RefreshCw, Radio, Sliders } from 'lucide-react';
+import { Sparkles, Moon, Sun, Monitor, Download, Radio } from 'lucide-react';
+import { Icon } from '@design/icons';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Chip } from '../components/ui/Chip';
@@ -132,7 +133,7 @@ export const SettingsScreen: React.FC = () => {
           <Card variant="tonal" padding="md" className="flex flex-col gap-4 shadow-sm">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)] flex items-center gap-1.5">
-                <Sliders size={14} className="text-[var(--primary-action)]" /> Audio Levels &amp; Sliders
+                <Icon name="settings" size={14} className="text-[var(--primary-action)]" /> Audio Levels &amp; Sliders
               </span>
               <button
                 type="button"
@@ -150,7 +151,7 @@ export const SettingsScreen: React.FC = () => {
             <div className="flex flex-col gap-1.5">
               <div className="flex items-center justify-between text-xs font-bold">
                 <span className="flex items-center gap-1.5">
-                  {masterVolume === 0 ? <VolumeX size={15} className="text-rose-500" /> : <Volume2 size={15} className="text-[var(--primary-action)]" />}
+                  {masterVolume === 0 ? <Icon name="sound-off" size={16} className="text-rose-500" /> : <Icon name="sound-on" size={16} className="text-[var(--primary-action)]" />}
                   Master Volume
                 </span>
                 <span className="font-mono text-[var(--primary-action)]">{Math.round(masterVolume * 100)}%</span>
@@ -170,7 +171,7 @@ export const SettingsScreen: React.FC = () => {
             <div className="flex flex-col gap-1.5 pt-2 border-t border-[var(--border-tint)]">
               <div className="flex items-center justify-between text-xs font-bold">
                 <span className="flex items-center gap-1.5">
-                  {sfxVolume === 0 ? <VolumeX size={15} className="text-rose-500" /> : <Volume1 size={15} className="text-[var(--primary-action)]" />}
+                  {sfxVolume === 0 ? <Icon name="sound-off" size={16} className="text-rose-500" /> : <Icon name="sound-on" size={16} className="text-[var(--primary-action)]" />}
                   Sound Effects (SFX)
                 </span>
                 <span className="font-mono text-[var(--primary-action)]">{Math.round(sfxVolume * 100)}%</span>
@@ -216,7 +217,7 @@ export const SettingsScreen: React.FC = () => {
             {/* Sound Toggle */}
             <div className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-2.5">
-                <Volume2 size={18} className="text-[var(--primary-action)]" />
+                <Icon name="sound-on" size={18} className="text-[var(--primary-action)]" />
                 <div>
                   <div className="text-sm font-bold">Sound Effects</div>
                   <div className="text-[11px] text-[var(--on-container-variant)]">
@@ -242,7 +243,7 @@ export const SettingsScreen: React.FC = () => {
             {/* Haptics */}
             <div className="flex items-center justify-between py-1.5 border-t border-[var(--border-tint)]">
               <div className="flex items-center gap-2.5">
-                <Vibrate size={18} className="text-[var(--primary-action)]" />
+                <Icon name="vibrate" size={18} className="text-[var(--primary-action)]" />
                 <div>
                   <div className="text-sm font-bold">Haptic Vibrations</div>
                   <div className="text-[11px] text-[var(--on-container-variant)]">
@@ -310,7 +311,7 @@ export const SettingsScreen: React.FC = () => {
               </span>
             </div>
 
-            <div className="pt-2 border-t border-[var(--border-tint)]">
+            <div className="pt-2 border-t border-[var(--border-tint)] flex flex-col gap-2">
               <Button
                 variant="tonal"
                 size="md"
@@ -320,6 +321,18 @@ export const SettingsScreen: React.FC = () => {
                 className="w-full font-bold"
               >
                 {isInstalled ? 'Installed as Web App' : 'Install App to Home Screen'}
+              </Button>
+              <Button
+                variant="tonal"
+                size="sm"
+                pill
+                leftIcon={<Icon name="games" size={16} />}
+                onClick={() => {
+                  window.location.href = '/?view=icons';
+                }}
+                className="w-full font-semibold opacity-80"
+              >
+                View Icon Kit Gallery (/dev/icons)
               </Button>
             </div>
           </Card>

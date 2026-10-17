@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { Users, Copy, Check, Play, RefreshCw, LogOut, Shield } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Avatar } from '../components/ui/Avatar';
@@ -8,6 +7,7 @@ import { Chip } from '../components/ui/Chip';
 import { useSession } from '../engine/session/SessionContext';
 import { gameRegistry } from '../engine/registry';
 import { useTheme } from '../theme/ThemeContext';
+import { Icon, GameBadge } from '../design/icons';
 
 export interface LobbyScreenProps {
   onLeave: () => void;
@@ -37,7 +37,7 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
 
   const joinUrl = typeof window !== 'undefined'
     ? `${window.location.origin}?join=${roomCode}`
-    : `https://agape.party?join=${roomCode}`;
+    : `https://faithtribe.app?join=${roomCode}`;
 
   const handleCopyLink = () => {
     triggerHaptic('light');
@@ -55,20 +55,26 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-28 pt-2 sm:pt-6 flex flex-col gap-6">
-      {/* Top Bar with room code and leave */}
+      {/* Top Bar with room code, game badge, and leave */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-emerald-500 animate-ping" />
-          <span className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
-            Lobby Active • {game?.meta?.name || 'Party Game'}
-          </span>
+        <div className="flex items-center gap-2.5">
+          <GameBadge game={config.selectedGameId} size={36} variant="tonal" />
+          <div className="flex flex-col">
+            <span className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
+              Lobby Active
+            </span>
+            <span className="text-sm font-extrabold text-[var(--on-container)]">
+              {game?.meta?.name || 'Fellowship Game'}
+            </span>
+          </div>
         </div>
 
         <button
           onClick={handleLeave}
           className="px-4 py-2 rounded-full bg-[var(--surface-container)] text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-1.5 transition-colors cursor-pointer border border-[var(--border-tint)]/60"
         >
-          <LogOut size={14} /> Leave Session
+          <Icon name="close" size={14} />
+          <span>Leave Session</span>
         </button>
       </div>
 
@@ -78,8 +84,8 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
         <div className="md:col-span-5 flex flex-col gap-5">
           {/* Room Code & QR Hero Card */}
           <Card variant="hero" padding="lg" className="flex flex-col items-center gap-4 text-center shadow-md">
-            <span className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
-              Join with Room Code
+            <span className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)] flex items-center gap-1.5">
+              <Icon name="code" size={14} /> Join with Room Code
             </span>
 
             {/* Room Code in huge bold tabular style */}
@@ -90,7 +96,9 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
             {/* QR Code: Always visible on desktop (md:flex), toggleable on mobile */}
             <div className={`p-4 bg-white rounded-2xl shadow-sm flex-col items-center gap-2 border border-black/5 ${showQR ? 'flex' : 'hidden md:flex'}`}>
               <QRCodeSVG value={joinUrl} size={150} level="M" />
-              <span className="text-[11px] text-gray-700 font-bold">Scan with phone camera to join</span>
+              <span className="text-[11px] text-gray-700 font-bold flex items-center gap-1">
+                <Icon name="qr" size={14} /> Scan with phone camera to join
+              </span>
             </div>
 
             <div className="flex gap-2 w-full">
@@ -98,19 +106,20 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
                 variant="tonal"
                 size="md"
                 pill
-                className="flex-1 md:hidden"
+                className="flex-1 md:hidden flex items-center justify-center gap-1.5"
                 onClick={() => setShowQR(!showQR)}
               >
-                {showQR ? 'Hide QR' : 'Show QR Code'}
+                <Icon name="qr" size={16} />
+                <span>{showQR ? 'Hide QR' : 'Show QR'}</span>
               </Button>
 
               <Button
                 variant="tonal"
                 size="md"
                 pill
-                leftIcon={copied ? <Check size={16} /> : <Copy size={16} />}
+                leftIcon={<Icon name={copied ? 'check' : 'copy'} size={16} />}
                 onClick={handleCopyLink}
-                className="flex-1 font-bold"
+                className="flex-1 font-bold flex items-center justify-center gap-1.5"
               >
                 {copied ? 'Link Copied!' : 'Copy Join Link'}
               </Button>
@@ -129,7 +138,7 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
                     onClick={autoBalanceTeams}
                     className="text-xs font-bold text-[var(--primary-action)] flex items-center gap-1 hover:underline cursor-pointer"
                   >
-                    <RefreshCw size={12} /> Auto-Balance
+                    <Icon name="refresh" size={14} /> Auto-Balance
                   </button>
                 )}
               </div>
@@ -157,9 +166,9 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
                 size="hero"
                 pill
                 disabled={!canStart}
-                leftIcon={<Play size={20} className="fill-current" />}
+                leftIcon={<Icon name="play" variant="tonal" size={20} />}
                 onClick={startGame}
-                className="w-full shadow-expressive text-base font-bold py-3.5"
+                className="w-full shadow-expressive text-base font-bold py-3.5 flex items-center justify-center gap-2"
               >
                 Start {game?.meta?.name || 'Game'}
               </Button>
@@ -177,7 +186,7 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
           <Card variant="tonal" padding="lg" className="flex flex-col gap-4">
             <div className="flex items-center justify-between border-b border-[var(--border-tint)]/60 pb-3">
               <span className="text-sm font-bold uppercase tracking-wider text-[var(--on-container)] flex items-center gap-2">
-                <Users size={16} className="text-[var(--primary-action)]" /> Disciples Gathered ({players.length})
+                <Icon name="team" size={16} className="text-[var(--primary-action)]" /> Disciples Gathered ({players.length})
               </span>
               <span className="text-xs font-mono font-bold text-[var(--on-container-variant)] px-2.5 py-1 rounded-full bg-[var(--surface-card)]">
                 Min {minPlayers} Players

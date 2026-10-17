@@ -3,7 +3,7 @@ import { GameViewProps } from '../../engine/types';
 import { WhoSaidState } from './types';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { BookOpen, CheckCircle2, XCircle, ArrowRight, Zap, Users, Shield, Award } from 'lucide-react';
+import { Icon } from '@design/icons';
 
 const TIER_THEMES: Record<1 | 2 | 3 | 4, { label: string; badgeClass: string; borderClass: string }> = {
   1: { label: 'Tier 1: Iconic Scripture', badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300', borderClass: 'border-emerald-300/40' },
@@ -44,7 +44,7 @@ export const WhoSaidHostView: React.FC<GameViewProps<WhoSaidState>> = ({
 
         {isQuestion && (
           <div className="flex items-center gap-2 text-sm font-medium text-[var(--on-container-variant)]">
-            <Users size={16} />
+            <Icon name="team" size={16} />
             <span>{lockedCount} / {totalPlayers} Answered</span>
           </div>
         )}
@@ -105,7 +105,7 @@ export const WhoSaidHostView: React.FC<GameViewProps<WhoSaidState>> = ({
             {/* Close Call Banner */}
             {isCloseCall && firstCorrectPlayer && (
               <div className="p-3 bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-200 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 animate-bounce">
-                <Zap size={18} className="text-amber-600 fill-amber-600" />
+                <Icon name="bolt" size={18} className="text-amber-600" />
                 <span>
                   {firstCorrectPlayer.name} locked the first correct answer! 5-second scramble!
                 </span>
@@ -162,7 +162,7 @@ export const WhoSaidHostView: React.FC<GameViewProps<WhoSaidState>> = ({
             {/* Answer Speaker */}
             <div className="my-2">
               <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-2xl font-black bg-[var(--primary-action)] text-[var(--primary-action-text)] shadow-lg shadow-[var(--primary-action)]/20">
-                <CheckCircle2 size={28} />
+                <Icon name="check" size={28} />
                 Spoken by: {currentQuestion.answer}
               </span>
             </div>
@@ -170,7 +170,7 @@ export const WhoSaidHostView: React.FC<GameViewProps<WhoSaidState>> = ({
             {/* Scripture Reference and Context Note */}
             <div className="p-4 rounded-2xl bg-[var(--surface-container)] max-w-lg w-full text-center">
               <div className="text-xs font-semibold uppercase tracking-wider text-[var(--primary-action)] mb-1 flex items-center justify-center gap-1">
-                <BookOpen size={14} /> {currentQuestion.ref}
+                <Icon name="book-open" size={14} /> {currentQuestion.ref}
               </div>
               <p className="text-sm text-[var(--on-container)] font-medium">
                 {currentQuestion.note}
@@ -194,9 +194,9 @@ export const WhoSaidHostView: React.FC<GameViewProps<WhoSaidState>> = ({
                   >
                     <div className="flex items-center gap-2">
                       {pState?.isCorrect ? (
-                        <CheckCircle2 size={18} className="text-emerald-500" />
+                        <Icon name="check" size={18} className="text-emerald-500" />
                       ) : (
-                        <XCircle size={18} className="text-rose-500" />
+                        <Icon name="close" size={18} className="text-rose-500" />
                       )}
                       <div>
                         <div className="text-sm font-bold text-[var(--on-container)] flex items-center gap-1">
@@ -237,7 +237,7 @@ export const WhoSaidHostView: React.FC<GameViewProps<WhoSaidState>> = ({
               onClick={() => dispatchIntent('NEXT_QUESTION')}
             >
               <span>Next Question</span>
-              <ArrowRight size={20} />
+              <Icon name="arrow-right" size={20} />
             </Button>
           </div>
         </div>

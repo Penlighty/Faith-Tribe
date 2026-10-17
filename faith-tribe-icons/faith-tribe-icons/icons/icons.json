@@ -1,0 +1,659 @@
+[
+ {
+  "name": "home",
+  "category": "navigation",
+  "tags": [
+   "house",
+   "start"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "play",
+  "category": "navigation",
+  "tags": [
+   "start",
+   "host",
+   "join"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "games",
+  "category": "navigation",
+  "tags": [
+   "library",
+   "catalogue"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "profile",
+  "category": "navigation",
+  "tags": [
+   "user",
+   "person",
+   "account"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "settings",
+  "category": "navigation",
+  "tags": [
+   "preferences",
+   "sliders"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "back",
+  "category": "navigation",
+  "tags": [
+   "chevron",
+   "left",
+   "previous"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "forward",
+  "category": "navigation",
+  "tags": [
+   "chevron",
+   "right",
+   "next"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "up",
+  "category": "navigation",
+  "tags": [
+   "chevron",
+   "up"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "down",
+  "category": "navigation",
+  "tags": [
+   "chevron",
+   "down"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "arrow-right",
+  "category": "navigation",
+  "tags": [
+   "go",
+   "open"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "arrow-left",
+  "category": "navigation",
+  "tags": [
+   "back"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "close",
+  "category": "navigation",
+  "tags": [
+   "x",
+   "dismiss"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "menu",
+  "category": "navigation",
+  "tags": [
+   "hamburger"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "more",
+  "category": "navigation",
+  "tags": [
+   "dots",
+   "overflow"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "check",
+  "category": "action",
+  "tags": [
+   "done",
+   "correct"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "plus",
+  "category": "action",
+  "tags": [
+   "add"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "minus",
+  "category": "action",
+  "tags": [
+   "remove"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "search",
+  "category": "action",
+  "tags": [
+   "find"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "filter",
+  "category": "action",
+  "tags": [
+   "sort"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "share",
+  "category": "action",
+  "tags": [
+   "send",
+   "invite"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "copy",
+  "category": "action",
+  "tags": [
+   "duplicate"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "link",
+  "category": "action",
+  "tags": [
+   "url",
+   "chain"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "qr",
+  "category": "action",
+  "tags": [
+   "scan",
+   "join",
+   "code"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "edit",
+  "category": "action",
+  "tags": [
+   "pencil"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "trash",
+  "category": "action",
+  "tags": [
+   "delete"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "refresh",
+  "category": "action",
+  "tags": [
+   "retry",
+   "rematch"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "info",
+  "category": "action",
+  "tags": [
+   "about"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "help",
+  "category": "action",
+  "tags": [
+   "question"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "bell",
+  "category": "action",
+  "tags": [
+   "notification"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "sound-on",
+  "category": "action",
+  "tags": [
+   "volume"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "sound-off",
+  "category": "action",
+  "tags": [
+   "mute"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "vibrate",
+  "category": "action",
+  "tags": [
+   "haptics"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "eye",
+  "category": "action",
+  "tags": [
+   "show",
+   "view"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "lock",
+  "category": "action",
+  "tags": [
+   "locked",
+   "answer"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "unlock",
+  "category": "action",
+  "tags": [
+   "unlocked"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "flag",
+  "category": "action",
+  "tags": [
+   "report"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "timer",
+  "category": "game",
+  "tags": [
+   "clock",
+   "countdown"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "hint",
+  "category": "game",
+  "tags": [
+   "lightbulb",
+   "clue"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "book-open",
+  "category": "game",
+  "tags": [
+   "rules",
+   "read"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "scoreboard",
+  "category": "game",
+  "tags": [
+   "podium",
+   "leaderboard"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "trophy",
+  "category": "game",
+  "tags": [
+   "winner"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "crown",
+  "category": "game",
+  "tags": [
+   "host",
+   "champion"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "medal",
+  "category": "game",
+  "tags": [
+   "award",
+   "rank"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "star",
+  "category": "game",
+  "tags": [
+   "favorite"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "flame",
+  "category": "game",
+  "tags": [
+   "streak",
+   "fire"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "heart",
+  "category": "game",
+  "tags": [
+   "like",
+   "favorite"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "bolt",
+  "category": "game",
+  "tags": [
+   "power-up",
+   "fast"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "shield",
+  "category": "game",
+  "tags": [
+   "protect",
+   "power-up"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "fifty",
+  "category": "game",
+  "tags": [
+   "fifty-fifty",
+   "power-up",
+   "half"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "double",
+  "category": "game",
+  "tags": [
+   "double",
+   "down",
+   "x2",
+   "wager"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "skip",
+  "category": "game",
+  "tags": [
+   "next",
+   "pass"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "pause",
+  "category": "game",
+  "tags": [
+   "hold"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "shuffle",
+  "category": "game",
+  "tags": [
+   "random",
+   "surprise"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "target",
+  "category": "game",
+  "tags": [
+   "aim",
+   "goal"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "host",
+  "category": "session",
+  "tags": [
+   "megaphone",
+   "create",
+   "room"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "join",
+  "category": "session",
+  "tags": [
+   "enter",
+   "room"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "team",
+  "category": "session",
+  "tags": [
+   "players",
+   "group"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "person-add",
+  "category": "session",
+  "tags": [
+   "invite",
+   "player"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "tribe",
+  "category": "session",
+  "tags": [
+   "community",
+   "gather",
+   "brand"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "code",
+  "category": "session",
+  "tags": [
+   "room",
+   "code",
+   "hash"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "bible",
+  "category": "bible",
+  "tags": [
+   "book",
+   "new",
+   "testament"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "scroll",
+  "category": "bible",
+  "tags": [
+   "old",
+   "testament",
+   "torah"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "tablets",
+  "category": "bible",
+  "tags": [
+   "law",
+   "commandments"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "shofar",
+  "category": "bible",
+  "tags": [
+   "horn",
+   "trumpet",
+   "gather"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "wheat",
+  "category": "bible",
+  "tags": [
+   "harvest",
+   "grain"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "mountain",
+  "category": "bible",
+  "tags": [
+   "sinai",
+   "carmel"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "cross",
+  "category": "bible",
+  "tags": [
+   "christ",
+   "faith"
+  ],
+  "hasTonal": false
+ },
+ {
+  "name": "ot",
+  "category": "types",
+  "tags": [
+   "old",
+   "testament"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "nt",
+  "category": "types",
+  "tags": [
+   "new",
+   "testament"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "both",
+  "category": "types",
+  "tags": [
+   "overlap",
+   "both",
+   "testaments"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "person",
+  "category": "types",
+  "tags": [
+   "name",
+   "type",
+   "person"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "place",
+  "category": "types",
+  "tags": [
+   "name",
+   "type",
+   "place",
+   "pin"
+  ],
+  "hasTonal": true
+ },
+ {
+  "name": "thing",
+  "category": "types",
+  "tags": [
+   "name",
+   "type",
+   "object",
+   "cube"
+  ],
+  "hasTonal": true
+ }
+]

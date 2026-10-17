@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Users, Clock, Play, BookOpen, UserCheck, Sparkles } from 'lucide-react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Chip } from '../components/ui/Chip';
 import { gameRegistry } from '../engine/registry';
 import { PlayMode } from '../engine/types';
 import { useSession } from '../engine/session/SessionContext';
+import { Icon, GameBadge } from '../design/icons';
 
 export interface GameDetailScreenProps {
   gameId: string;
@@ -23,6 +23,10 @@ export const GameDetailScreen: React.FC<GameDetailScreenProps> = ({
   const game = gameRegistry.get(gameId);
   const [selectedMode, setSelectedMode] = useState<PlayMode>('individuals');
   const { currentUser } = useSession();
+
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [gameId]);
 
   if (!game) {
     return (
@@ -44,7 +48,7 @@ export const GameDetailScreen: React.FC<GameDetailScreenProps> = ({
           className="w-10 h-10 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] flex items-center justify-center text-[var(--on-container)] transition-colors cursor-pointer border border-[var(--border-tint)]/60"
           aria-label="Back to Games"
         >
-          <ArrowLeft size={20} />
+          <Icon name="arrow-left" size={20} />
         </button>
         <div>
           <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
@@ -59,12 +63,8 @@ export const GameDetailScreen: React.FC<GameDetailScreenProps> = ({
         {/* Left Column: Hero Card & Primary Actions */}
         <div className="md:col-span-5 flex flex-col gap-4 md:sticky md:top-20">
           <Card variant="hero" padding="lg" className="flex flex-col items-center gap-3.5 text-center shadow-md">
-            <div className="text-6xl sm:text-7xl my-2 animate-bounce-subtle">
-              {meta.iconName === 'Scroll' && '📜'}
-              {meta.iconName === 'Flame' && '🔥'}
-              {meta.iconName === 'Wheat' && '🌾'}
-              {meta.iconName === 'MessageSquare' && '💬'}
-              {meta.iconName === 'BookOpen' && '📖'}
+            <div className="my-2 animate-bounce-subtle">
+              <GameBadge game={meta.id} size={84} variant="tonal" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">{meta.name}</h1>
             <p className="text-xs sm:text-sm font-semibold opacity-85 leading-relaxed max-w-sm">
@@ -74,10 +74,10 @@ export const GameDetailScreen: React.FC<GameDetailScreenProps> = ({
             {/* Badges */}
             <div className="flex items-center gap-2 mt-1">
               <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[var(--surface-card)] text-[var(--on-container)] flex items-center gap-1.5 shadow-sm border border-[var(--border-tint)]">
-                <Users size={14} /> {meta.minPlayers}-{meta.maxPlayers} Players
+                <Icon name="team" size={14} /> {meta.minPlayers}-{meta.maxPlayers} Players
               </span>
               <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[var(--surface-card)] text-[var(--on-container)] flex items-center gap-1.5 shadow-sm border border-[var(--border-tint)]">
-                <Clock size={14} /> ~{meta.estimatedMinutes} Mins
+                <Icon name="timer" size={14} /> ~{meta.estimatedMinutes} Mins
               </span>
             </div>
           </Card>
@@ -88,8 +88,8 @@ export const GameDetailScreen: React.FC<GameDetailScreenProps> = ({
               variant="primary"
               size="hero"
               pill
+              leftIcon={<Icon name="play" variant="tonal" size={20} />}
               className="w-full shadow-lg"
-              leftIcon={<Play size={20} className="fill-current" />}
               onClick={() => onHostSession(meta.id, selectedMode)}
             >
               Host Game Session
@@ -100,8 +100,8 @@ export const GameDetailScreen: React.FC<GameDetailScreenProps> = ({
                 variant="tonal"
                 size="lg"
                 pill
+                leftIcon={<Icon name="star" variant="tonal" size={18} />}
                 className="w-full"
-                leftIcon={<Sparkles size={18} />}
                 onClick={() => onSoloPractice(meta.id)}
               >
                 Solo Practice Mode
@@ -115,7 +115,7 @@ export const GameDetailScreen: React.FC<GameDetailScreenProps> = ({
           {/* Rules in 3 Steps */}
           <Card variant="tonal" padding="lg" className="flex flex-col gap-4">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
-              <BookOpen size={16} />
+              <Icon name="book-open" size={16} />
               <span>How to Play (3 Simple Steps)</span>
             </div>
 

@@ -1,4 +1,4 @@
-# Agape Party — Bible Game Engine & Launch Games
+# Faith Tribe — Bible Game Platform & Engine
 
 A mobile-first Bible party games platform and extensible game engine built with React, TypeScript, Vite, Tailwind CSS, and Framer Motion following the Material 3 Expressive design language.
 

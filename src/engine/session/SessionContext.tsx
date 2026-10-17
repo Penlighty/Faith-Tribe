@@ -33,16 +33,16 @@ interface SessionContextType {
 
 const SessionContext = createContext<SessionContextType | null>(null);
 
-const STORAGE_KEY_USER_ID = 'agape_player_id';
-const STORAGE_KEY_USER_NAME = 'agape_player_name';
+const STORAGE_KEY_USER_ID = 'faith_tribe_player_id';
+const STORAGE_KEY_USER_NAME = 'faith_tribe_player_name';
 
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { setPaletteKey, soundEnabled } = useTheme();
 
   // Persistent user identity
   const [currentUser, setCurrentUser] = useState<Player | null>(() => {
-    const savedId = localStorage.getItem(STORAGE_KEY_USER_ID);
-    const savedName = localStorage.getItem(STORAGE_KEY_USER_NAME) || 'Player';
+    const savedId = localStorage.getItem(STORAGE_KEY_USER_ID) || localStorage.getItem('agape_player_id');
+    const savedName = localStorage.getItem(STORAGE_KEY_USER_NAME) || localStorage.getItem('agape_player_name') || 'Player';
     if (savedId) {
       return {
         id: savedId,

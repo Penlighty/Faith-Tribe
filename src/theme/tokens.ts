@@ -162,23 +162,23 @@ export const PALETTE_PRESETS: Record<string, { light: TonalPalette; dark: TonalP
       borderTint: 'rgba(255, 255, 255, 0.1)',
     },
   },
-  // Blush Pink
+  // Blush Pink (Fake-a-Proverb: container #F9D6DB, ink #7A2E3B)
   blush: {
     light: {
       seed: '#F9D6DB',
       bgTint: '#FDF5F6',
-      surfaceContainer: '#F8E1E5',
+      surfaceContainer: '#F9D6DB',
       surfaceContainerHigh: '#F4CFD5',
       surfaceCard: '#FFFFFF',
-      primaryAction: '#2F5D3A',
-      primaryActionHover: '#23472C',
+      primaryAction: '#7A2E3B',
+      primaryActionHover: '#63242F',
       primaryActionText: '#FFFFFF',
-      onContainer: '#331318',
+      onContainer: '#7A2E3B',
       onContainerVariant: '#6B3842',
       chipBg: '#F6DBE0',
-      chipText: '#3A141A',
+      chipText: '#7A2E3B',
       accentSecondary: '#854652',
-      borderTint: 'rgba(84, 25, 36, 0.08)',
+      borderTint: 'rgba(122, 46, 59, 0.12)',
     },
     dark: {
       seed: '#381C22',
@@ -186,9 +186,9 @@ export const PALETTE_PRESETS: Record<string, { light: TonalPalette; dark: TonalP
       surfaceContainer: '#241619',
       surfaceContainerHigh: '#301D22',
       surfaceCard: '#27181C',
-      primaryAction: '#86D696',
-      primaryActionHover: '#98E1A6',
-      primaryActionText: '#043916',
+      primaryAction: '#F9D6DB',
+      primaryActionHover: '#FCE1E6',
+      primaryActionText: '#381119',
       onContainer: '#FCE0E5',
       onContainerVariant: '#E0B5BD',
       chipBg: '#3E2127',
@@ -198,6 +198,17 @@ export const PALETTE_PRESETS: Record<string, { light: TonalPalette; dark: TonalP
     },
   },
 };
+
+// Aliases for game IDs
+PALETTE_PRESETS['fake-a-proverb'] = PALETTE_PRESETS.blush;
+PALETTE_PRESETS['tares-among-the-wheat'] = PALETTE_PRESETS.mint;
+PALETTE_PRESETS['hot-coal'] = PALETTE_PRESETS.peach;
+PALETTE_PRESETS['who-said'] = PALETTE_PRESETS.butter;
+PALETTE_PRESETS['who-said-that'] = PALETTE_PRESETS.butter;
+PALETTE_PRESETS['testament-sort'] = PALETTE_PRESETS.lavender;
+PALETTE_PRESETS['blueprint-from-the-mountain'] = PALETTE_PRESETS.lavender;
+PALETTE_PRESETS['one-accord'] = PALETTE_PRESETS.mint;
+PALETTE_PRESETS['six-degrees-of-abraham'] = PALETTE_PRESETS.butter;
 
 export const SHAPE_TOKENS = {
   cardRadius: '28px',

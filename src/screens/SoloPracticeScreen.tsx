@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, Check, X, RotateCcw, Lightbulb, BookOpen, Flame, Zap, Shield, HelpCircle, AlertCircle, Clock } from 'lucide-react';
+import { Icon } from '@design/icons';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { LeaveConfirmationModal } from '../components/ui/LeaveConfirmationModal';
@@ -227,7 +227,7 @@ const WhoSaidSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
             Tier {currentItem.tier} • Difficulty Escalation
           </span>
           <span className={`font-mono text-xs font-bold flex items-center gap-1 ${timer <= 4 ? 'text-rose-500 animate-pulse' : 'text-[var(--primary-action)]'}`}>
-            <Clock size={13} /> {timer}s
+            <Icon name="timer" size={13} /> {timer}s
           </span>
         </div>
 
@@ -238,7 +238,7 @@ const WhoSaidSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
         {selectedSpeaker && (
           <div className="p-3 bg-[var(--surface-container)] rounded-2xl w-full text-center animate-fadeIn">
             <div className="text-xs font-bold text-[var(--primary-action)] flex items-center justify-center gap-1">
-              <BookOpen size={14} /> {currentItem.ref}
+              <Icon name="book-open" size={14} /> {currentItem.ref}
             </div>
             <p className="text-xs text-[var(--on-container-variant)] mt-1 italic">&ldquo;{currentItem.note}&rdquo;</p>
           </div>
@@ -273,8 +273,8 @@ const WhoSaidSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
                 className={`p-4 rounded-2xl text-left text-base font-semibold border-2 transition-all flex items-center justify-between shadow-sm cursor-pointer ${btnClass}`}
               >
                 <span>{speaker}</span>
-                {selectedSpeaker && isCorrect && <Check size={20} className="stroke-[3] shrink-0 ml-2" />}
-                {selectedSpeaker && isSelected && !isCorrect && <X size={20} className="stroke-[3] shrink-0 ml-2" />}
+                {selectedSpeaker && isCorrect && <Icon name="check" size={20} className="shrink-0 ml-2" />}
+                {selectedSpeaker && isSelected && !isCorrect && <Icon name="close" size={20} className="shrink-0 ml-2" />}
               </button>
             );
           })}
@@ -426,7 +426,8 @@ const TestamentSortSoloPractice: React.FC<{ onBack: () => void; onDirectExit: ()
         <CountdownProgressBar durationSeconds={maxTimer} isStopped={!!selectedChoice} roundKey={currentIndex} />
 
         <div className="flex items-center justify-between w-full">
-          <span className="px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
+          <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+            <Icon name={currentItem.type === 'person' ? 'person' : currentItem.type === 'place' ? 'place' : 'thing'} size={14} />
             {currentItem.type} • Tier {currentItem.tier}
           </span>
           <div className="flex items-center gap-2">
@@ -438,11 +439,11 @@ const TestamentSortSoloPractice: React.FC<{ onBack: () => void; onDirectExit: ()
                 }}
                 className="text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/50 border border-amber-300/40 px-2.5 py-1 rounded-full flex items-center gap-1 hover:bg-amber-100 transition-all cursor-pointer"
               >
-                <Lightbulb size={12} /> Clue (-40% pts)
+                <Icon name="hint" size={12} /> Clue (-40% pts)
               </button>
             )}
             <span className={`font-mono text-xs font-bold flex items-center gap-1 ${timer <= 4 ? 'text-rose-500 animate-pulse' : 'text-[var(--primary-action)]'}`}>
-              <Clock size={13} /> {timer}s
+              <Icon name="timer" size={13} /> {timer}s
             </span>
           </div>
         </div>
@@ -453,7 +454,7 @@ const TestamentSortSoloPractice: React.FC<{ onBack: () => void; onDirectExit: ()
 
         {hintUsed && (
           <div className="p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-300/40 rounded-2xl text-xs text-amber-900 dark:text-amber-200 text-left w-full animate-fadeIn">
-            <span className="font-bold flex items-center gap-1 mb-0.5"><Lightbulb size={12} /> Clue:</span>
+            <span className="font-bold flex items-center gap-1 mb-0.5"><Icon name="hint" size={12} /> Clue:</span>
             {currentItem.hint}
           </div>
         )}
@@ -461,7 +462,7 @@ const TestamentSortSoloPractice: React.FC<{ onBack: () => void; onDirectExit: ()
         {selectedChoice && (
           <div className="p-3 bg-[var(--surface-container)] rounded-2xl w-full text-center animate-fadeIn">
             <div className="text-xs font-bold text-[var(--primary-action)] flex items-center justify-center gap-1">
-              <BookOpen size={14} /> Scripture Proof: {currentItem.refs}
+              <Icon name="book-open" size={14} /> Scripture Proof: {currentItem.refs}
             </div>
             {currentItem.note && (
               <p className="text-xs text-[var(--on-container-variant)] mt-1 italic">&ldquo;{currentItem.note}&rdquo;</p>
@@ -481,15 +482,15 @@ const TestamentSortSoloPractice: React.FC<{ onBack: () => void; onDirectExit: ()
             const isCorrect = choice === currentItem.answer;
             let label = 'Old';
             let sub = 'Testament';
-            let badge = '📜 OT';
+            let iconName: 'ot' | 'both' | 'nt' = 'ot';
             if (choice === 'NT') {
               label = 'New';
               sub = 'Testament';
-              badge = '🕊️ NT';
+              iconName = 'nt';
             } else if (choice === 'BOTH') {
               label = 'Both';
               sub = 'Testaments';
-              badge = '⚖️ Both';
+              iconName = 'both';
             }
 
             let btnClass = 'bg-[var(--surface-card)] text-[var(--on-container)] border-[var(--border-tint)] hover:border-[var(--primary-action)]/50';
@@ -510,11 +511,11 @@ const TestamentSortSoloPractice: React.FC<{ onBack: () => void; onDirectExit: ()
                 onClick={() => handleSelect(choice)}
                 className={`p-3 sm:p-5 rounded-2xl sm:rounded-3xl border-2 transition-all flex flex-col items-center justify-center text-center shadow-sm cursor-pointer select-none ${btnClass}`}
               >
-                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider opacity-75">{badge}</span>
+                <Icon name={iconName} size={28} className="mb-1" />
                 <span className="text-lg sm:text-2xl font-black mt-0.5">{label}</span>
                 <span className="text-[11px] sm:text-xs font-semibold opacity-80">{sub}</span>
-                {selectedChoice && isCorrect && <Check size={22} className="stroke-[3] mt-1 text-white" />}
-                {selectedChoice && isSelected && !isCorrect && <X size={22} className="stroke-[3] mt-1 text-white" />}
+                {selectedChoice && isCorrect && <Icon name="check" size={22} className="mt-1 text-white" />}
+                {selectedChoice && isSelected && !isCorrect && <Icon name="close" size={22} className="mt-1 text-white" />}
               </button>
             );
           })}
@@ -658,7 +659,7 @@ const FakeAProverbSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () 
             {currentItem.difficulty.toUpperCase()} • Round {currentIndex + 1}
           </span>
           <span className={`font-mono text-xs font-bold flex items-center gap-1 ${timer <= 4 ? 'text-rose-500 animate-pulse' : 'text-[var(--primary-action)]'}`}>
-            <Clock size={13} /> {timer}s
+            <Icon name="timer" size={13} /> {timer}s
           </span>
         </div>
 
@@ -700,8 +701,8 @@ const FakeAProverbSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () 
                 className={`p-4 sm:p-5 rounded-2xl text-left text-sm sm:text-base font-semibold border-2 transition-all flex items-center justify-between shadow-sm cursor-pointer ${btnClass}`}
               >
                 <span>&ldquo;&hellip;{ending}&rdquo;</span>
-                {selectedEnding && isReal && <Check size={20} className="stroke-[3] shrink-0 ml-2" />}
-                {selectedEnding && isSelected && !isReal && <X size={20} className="stroke-[3] shrink-0 ml-2" />}
+                {selectedEnding && isReal && <Icon name="check" size={20} className="shrink-0 ml-2" />}
+                {selectedEnding && isSelected && !isReal && <Icon name="close" size={20} className="shrink-0 ml-2" />}
               </button>
             );
           })}
@@ -844,7 +845,7 @@ const TaresSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => void
             {difficulty.toUpperCase()} • Round {currentIndex + 1}
           </span>
           <span className={`font-mono text-xs font-bold flex items-center gap-1 ${timer <= 4 ? 'text-rose-500 animate-pulse' : 'text-[var(--primary-action)]'}`}>
-            <Clock size={13} /> {timer}s
+            <Icon name="timer" size={13} /> {timer}s
           </span>
         </div>
 
@@ -890,8 +891,8 @@ const TaresSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => void
                 className={`p-4 sm:p-5 rounded-2xl text-left text-sm sm:text-base font-semibold border-2 transition-all flex items-center justify-between shadow-sm cursor-pointer ${btnClass}`}
               >
                 <span>{title}</span>
-                {selectedTitle && isReal && <Check size={20} className="stroke-[3] shrink-0 ml-2" />}
-                {selectedTitle && isSelected && !isReal && <X size={20} className="stroke-[3] shrink-0 ml-2" />}
+                {selectedTitle && isReal && <Icon name="check" size={20} className="shrink-0 ml-2" />}
+                {selectedTitle && isSelected && !isReal && <Icon name="close" size={20} className="shrink-0 ml-2" />}
               </button>
             );
           })}
@@ -1038,10 +1039,10 @@ const HotCoalSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
 
         <div className="flex items-center justify-between w-full">
           <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 flex items-center gap-1">
-            <Flame size={12} /> {currentCategory.difficulty.toUpperCase()} • Round {currentIndex + 1}
+            <Icon name="flame" size={12} /> {currentCategory.difficulty.toUpperCase()} • Round {currentIndex + 1}
           </span>
           <span className={`font-mono text-xs font-bold flex items-center gap-1 ${timer <= 4 ? 'text-rose-500 animate-pulse' : 'text-[var(--primary-action)]'}`}>
-            <Clock size={13} /> {timer}s
+            <Icon name="timer" size={13} /> {timer}s
           </span>
         </div>
 
@@ -1083,8 +1084,8 @@ const HotCoalSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
                 className={`p-4 sm:p-5 rounded-2xl text-left text-sm sm:text-base font-semibold border-2 transition-all flex items-center justify-between shadow-sm cursor-pointer ${btnClass}`}
               >
                 <span>{name}</span>
-                {selectedItem && isReal && <Check size={20} className="stroke-[3] shrink-0 ml-2" />}
-                {selectedItem && isSelected && !isReal && <X size={20} className="stroke-[3] shrink-0 ml-2" />}
+                {selectedItem && isReal && <Icon name="check" size={20} className="shrink-0 ml-2" />}
+                {selectedItem && isSelected && !isReal && <Icon name="close" size={20} className="shrink-0 ml-2" />}
               </button>
             );
           })}
@@ -1138,7 +1139,7 @@ const HeaderBar: React.FC<{
       className="w-10 h-10 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[var(--on-container)] flex items-center justify-center transition-colors cursor-pointer border border-[var(--border-tint)]/60 shadow-sm"
       aria-label="Back"
     >
-      <ArrowLeft size={20} />
+      <Icon name="arrow-left" size={20} />
     </button>
 
     <div className="flex items-center gap-2">

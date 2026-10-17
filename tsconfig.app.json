@@ -15,6 +15,11 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    "paths": {
+      "@design/icons": ["./src/design/icons"],
+      "@design/icons/*": ["./src/design/icons/*"],
+      "@/*": ["./src/*"]
+    },
 
     /* Linting */
     "noUnusedLocals": false,

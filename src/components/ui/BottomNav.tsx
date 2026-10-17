@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Home, Play, Gamepad2, Settings } from 'lucide-react';
+import { Icon, type IconName } from '../../design/icons';
 import { useTheme } from '../../theme/ThemeContext';
 
 export type NavTabId = 'home' | 'play' | 'games' | 'settings';
@@ -11,11 +11,11 @@ export interface BottomNavProps {
   visible?: boolean;
 }
 
-const TABS: { id: NavTabId; label: string; icon: React.FC<{ size?: number; className?: string }> }[] = [
-  { id: 'home', label: 'Home', icon: Home },
-  { id: 'play', label: 'Play', icon: Play },
-  { id: 'games', label: 'Games', icon: Gamepad2 },
-  { id: 'settings', label: 'Settings', icon: Settings },
+const TABS: { id: NavTabId; label: string; icon: IconName }[] = [
+  { id: 'home', label: 'Home', icon: 'home' },
+  { id: 'play', label: 'Play', icon: 'play' },
+  { id: 'games', label: 'Games', icon: 'games' },
+  { id: 'settings', label: 'Settings', icon: 'settings' },
 ];
 
 export const BottomNav: React.FC<BottomNavProps> = ({
@@ -38,7 +38,6 @@ export const BottomNav: React.FC<BottomNavProps> = ({
       >
         {TABS.map((tab) => {
           const isActive = activeTab === tab.id;
-          const Icon = tab.icon;
 
           return (
             <button
@@ -60,7 +59,12 @@ export const BottomNav: React.FC<BottomNavProps> = ({
                   transition={{ type: 'spring', damping: 25, stiffness: 350 }}
                 />
               )}
-              <Icon size={20} className={isActive ? 'stroke-[2.5px]' : 'stroke-2'} />
+              <Icon
+                name={tab.icon}
+                variant={isActive ? 'tonal' : 'line'}
+                size={24}
+                className="transition-transform duration-150"
+              />
               <span className="text-[11px] leading-tight tracking-tight">{tab.label}</span>
             </button>
           );

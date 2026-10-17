@@ -1,0 +1,130 @@
+/**
+ * Faith Tribe Design System - Base Design Tokens
+ * Material 3 Expressive-inspired token scales & brand colors
+ */
+
+:root {
+  /* Brand Scope - Light */
+  --ft-primary: #2F5D3A;
+  --ft-on-primary: #FFFFFF;
+  --ft-primary-container: #CFEFD2;
+  --ft-on-primary-container: #0F2C18;
+  --ft-surface: #F4F1E6;
+  --ft-surface-1: #EEEADB;
+  --ft-surface-2: #E7E3D2;
+  --ft-on-surface: #1B2A21;
+  --ft-on-surface-variant: #4A5A4F;
+  --ft-outline: #7A8479;
+  --ft-outline-variant: #C9CDBF;
+  --ft-error: #B3261E;
+  --ft-on-error: #FFFFFF;
+  --ft-success: #1E7B3A;
+
+  /* Radius Scale */
+  --ft-radius-xs: 8px;
+  --ft-radius-sm: 12px;
+  --ft-radius-md: 16px;
+  --ft-radius-lg: 24px;
+  --ft-radius-xl: 32px;
+  --ft-radius-full: 999px;
+
+  /* Space Scale (4px base) */
+  --ft-space-1: 4px;
+  --ft-space-2: 8px;
+  --ft-space-3: 12px;
+  --ft-space-4: 16px;
+  --ft-space-5: 20px;
+  --ft-space-6: 24px;
+  --ft-space-8: 32px;
+  --ft-space-10: 40px;
+  --ft-space-14: 56px;
+
+  /* Elevation */
+  --ft-elevation-e0: none;
+  --ft-elevation-e1: 0 1px 2px rgba(27, 42, 33, 0.12);
+  --ft-elevation-e2: 0 4px 12px rgba(27, 42, 33, 0.14);
+
+  /* Touch Target */
+  --ft-touch-min: 48px;
+
+  /* Motion Durations */
+  --ft-motion-instant: 100ms;
+  --ft-motion-quick: 200ms;
+  --ft-motion-standard: 320ms;
+  --ft-motion-emphasized: 480ms;
+
+  /* Easings */
+  --ft-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ft-easing-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+
+  /* Z-Index */
+  --ft-z-nav: 40;
+  --ft-z-sheet: 50;
+  --ft-z-toast: 60;
+}
+
+/* System Dark Preference when no explicit theme is set */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ft-primary: #9ED4A8;
+    --ft-on-primary: #0F2C18;
+    --ft-primary-container: #2F5D3A;
+    --ft-on-primary-container: #CFEFD2;
+    --ft-surface: #121A15;
+    --ft-surface-1: #19231C;
+    --ft-surface-2: #202B23;
+    --ft-on-surface: #E6EBE3;
+    --ft-on-surface-variant: #B7C2B8;
+    --ft-outline: #8A9488;
+    --ft-outline-variant: #3A463D;
+    --ft-error: #F2B8B5;
+    --ft-on-error: #601410;
+    --ft-success: #7FD39A;
+
+    --ft-elevation-e1: 0 1px 3px rgba(0, 0, 0, 0.35);
+    --ft-elevation-e2: 0 4px 14px rgba(0, 0, 0, 0.45);
+  }
+}
+
+/* Explicit Dark Theme */
+[data-theme="dark"],
+.dark {
+  --ft-primary: #9ED4A8;
+  --ft-on-primary: #0F2C18;
+  --ft-primary-container: #2F5D3A;
+  --ft-on-primary-container: #CFEFD2;
+  --ft-surface: #121A15;
+  --ft-surface-1: #19231C;
+  --ft-surface-2: #202B23;
+  --ft-on-surface: #E6EBE3;
+  --ft-on-surface-variant: #B7C2B8;
+  --ft-outline: #8A9488;
+  --ft-outline-variant: #3A463D;
+  --ft-error: #F2B8B5;
+  --ft-on-error: #601410;
+  --ft-success: #7FD39A;
+
+  --ft-elevation-e1: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --ft-elevation-e2: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+/* Explicit Light Theme override */
+[data-theme="light"] {
+  --ft-primary: #2F5D3A;
+  --ft-on-primary: #FFFFFF;
+  --ft-primary-container: #CFEFD2;
+  --ft-on-primary-container: #0F2C18;
+  --ft-surface: #F4F1E6;
+  --ft-surface-1: #EEEADB;
+  --ft-surface-2: #E7E3D2;
+  --ft-on-surface: #1B2A21;
+  --ft-on-surface-variant: #4A5A4F;
+  --ft-outline: #7A8479;
+  --ft-outline-variant: #C9CDBF;
+  --ft-error: #B3261E;
+  --ft-on-error: #FFFFFF;
+  --ft-success: #1E7B3A;
+
+  --ft-elevation-e1: 0 1px 2px rgba(27, 42, 33, 0.12);
+  --ft-elevation-e2: 0 4px 12px rgba(27, 42, 33, 0.14);
+}

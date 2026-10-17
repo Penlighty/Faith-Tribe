@@ -1,5 +1,5 @@
 import React from 'react';
-import { Crown } from 'lucide-react';
+import { Icon } from '../../design/icons';
 
 export interface AvatarProps {
   name: string;
@@ -58,9 +58,9 @@ export const Avatar: React.FC<AvatarProps> = ({
       {isHost && (
         <span
           title="Session Host"
-          className="absolute -top-1 -right-1 bg-amber-400 text-amber-950 p-1 rounded-full shadow-sm"
+          className="absolute -top-1 -right-1 bg-amber-400 text-amber-950 p-0.5 rounded-full shadow-sm flex items-center justify-center"
         >
-          <Crown size={size === 'sm' ? 8 : 12} className="fill-amber-950" />
+          <Icon name="crown" variant="tonal" size={size === 'sm' ? 10 : 12} />
         </span>
       )}
     </div>
