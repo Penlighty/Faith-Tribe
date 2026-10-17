@@ -1,0 +1,319 @@
+{
+  "passages": [
+    {
+      "id": "pas_1",
+      "title": "David and Goliath in the Valley of Elah",
+      "reference": "1 Samuel 17:1-51",
+      "keywords": ["smooth stones", "sling", "giant", "Philistine", "armor", "shepherd"],
+      "similarPassageId": "pas_2",
+      "wrongGuesses": [
+        "Samson defeating the Philistines with a donkey's jawbone",
+        "Gideon defeating Midian with torches and jars",
+        "Jonathan attacking the Philistine outpost at Michmash",
+        "Elijah defeating the prophets of Baal on Mount Carmel",
+        "Joshua conquering the city of Jericho"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_2",
+      "title": "Samson Defeating Philistines with a Jawbone",
+      "reference": "Judges 15:14-20",
+      "keywords": ["jawbone of an ass", "heaps upon heaps", "Lehi", "thousand men", "bonds melted"],
+      "similarPassageId": "pas_1",
+      "wrongGuesses": [
+        "David and Goliath in the Valley of Elah",
+        "Gideon defeating Midian with torches and jars",
+        "Ehud assassinating Eglon King of Moab",
+        "Jephthah and the Gileadites at the Jordan",
+        "Shamgar striking Philistines with an oxgoad"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_3",
+      "title": "Noah's Ark and the Great Flood",
+      "reference": "Genesis 6:9-9:17",
+      "keywords": ["gopher wood", "pitch", "cubits", "dove", "olive leaf", "rainbow"],
+      "similarPassageId": "pas_4",
+      "wrongGuesses": [
+        "The Crossing of the Red Sea",
+        "Jonah inside the belly of the Great Fish",
+        "Jesus calming the tempest on the Sea of Galilee",
+        "Paul's shipwreck on the island of Malta",
+        "Moses hidden in the papyrus basket on the Nile"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_4",
+      "title": "Jonah Flees to Tarshish and the Great Fish",
+      "reference": "Jonah 1:1-2:10",
+      "keywords": ["Joppa", "lots cast", "three days", "whale", "Nineveh", "prayer from deep"],
+      "similarPassageId": "pas_3",
+      "wrongGuesses": [
+        "Noah's Ark and the Great Flood",
+        "Paul's shipwreck on the island of Malta",
+        "Jesus walking on the water of the Sea of Galilee",
+        "Peter catching the fish with a coin in its mouth",
+        "Elijah fed by ravens at the Brook Cherith"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_5",
+      "title": "The Fall of the Walls of Jericho",
+      "reference": "Joshua 6:1-20",
+      "keywords": ["seven trumpets", "ram's horns", "march seven times", "great shout", "Rahab's scarlet cord"],
+      "similarPassageId": "pas_6",
+      "wrongGuesses": [
+        "Gideon defeating Midian with 300 men",
+        "The Tower of Babel and confusion of tongues",
+        "Nehemiah rebuilding the broken walls of Jerusalem",
+        "Saul's victory over the Ammonites at Jabesh",
+        "The capture of Ai with an ambush"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_6",
+      "title": "Gideon and the 300 Men Against Midian",
+      "reference": "Judges 7:1-25",
+      "keywords": ["lapping water", "clay pitchers", "torches inside", "The sword of the Lord", "fleece of wool"],
+      "similarPassageId": "pas_5",
+      "wrongGuesses": [
+        "The Fall of the Walls of Jericho",
+        "David and his mighty men at the cave of Adullam",
+        "Deborah and Barak routing Sisera",
+        "Jonathan attacking the garrison at Michmash",
+        "King Hezekiah defending against Sennacherib"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_7",
+      "title": "Elijah and the Fire on Mount Carmel",
+      "reference": "1 Kings 18:20-40",
+      "keywords": ["prophets of Baal", "trench of water", "fire from heaven", "cloud like a man's hand", "Ahab's chariot"],
+      "similarPassageId": "pas_8",
+      "wrongGuesses": [
+        "Elisha and the floating iron axe head",
+        "Moses and the burning bush at Mount Horeb",
+        "Daniel and the three friends in the fiery furnace",
+        "The Transfiguration of Jesus on the mountain",
+        "Solomon dedicating the Temple with holy fire"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_8",
+      "title": "Daniel's Friends in the Fiery Furnace",
+      "reference": "Daniel 3:1-30",
+      "keywords": ["Shadrach Meshach Abednego", "golden image", "seven times hotter", "fourth man like Son of God", "not even hair singed"],
+      "similarPassageId": "pas_7",
+      "wrongGuesses": [
+        "Elijah and the Fire on Mount Carmel",
+        "Daniel in the Den of Lions",
+        "Belshazzar's Feast and the handwriting on the wall",
+        "The Burning Bush on Mount Sinai",
+        "The day of Pentecost with tongues of fire"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_9",
+      "title": "Daniel in the Den of Lions",
+      "reference": "Daniel 6:1-28",
+      "keywords": ["King Darius", "decree of 30 days", "praying toward Jerusalem", "angel shut lions' mouths", "stone sealed with signet"],
+      "similarPassageId": "pas_8",
+      "wrongGuesses": [
+        "Daniel's Friends in the Fiery Furnace",
+        "Samson killing the young lion at Timnah",
+        "David protecting his sheep from the lion and bear",
+        "Benaiah killing a lion in a pit on a snowy day",
+        "Joseph thrown into the cistern by his brothers"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_10",
+      "title": "The Parting of the Red Sea",
+      "reference": "Exodus 14:15-31",
+      "keywords": ["pillar of cloud and fire", "stretch forth rod", "east wind", "dry ground", "chariot wheels taken off"],
+      "similarPassageId": "pas_11",
+      "wrongGuesses": [
+        "Joshua leading Israel across the Jordan River",
+        "Moses striking the rock at Meribah for water",
+        "The Great Flood and Noah's Ark",
+        "Elijah parting the Jordan with his mantle",
+        "Jesus calming the tempest on the Sea of Galilee"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_11",
+      "title": "Joshua and the Crossing of the Jordan",
+      "reference": "Joshua 3:1-17",
+      "keywords": ["Ark of the Covenant", "priests' feet in brink", "waters rose up in a heap", "twelve stones from riverbed", "Gilgal camp"],
+      "similarPassageId": "pas_10",
+      "wrongGuesses": [
+        "The Parting of the Red Sea",
+        "Naaman washing seven times in the Jordan",
+        "Elisha making the iron axe head float in the Jordan",
+        "John baptizing Jesus in the Jordan River",
+        "Elijah taken up to heaven in a whirlwind"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_12",
+      "title": "The Good Samaritan on the Jericho Road",
+      "reference": "Luke 10:25-37",
+      "keywords": ["priest and Levite passed by", "oil and wine", "two denarii", "innkeeper", "thieves beat him"],
+      "similarPassageId": "pas_13",
+      "wrongGuesses": [
+        "The Parable of the Prodigal Son",
+        "The Healing of the Ten Lepers",
+        "Zacchaeus climbing the sycamore tree in Jericho",
+        "The Parable of the Pharisee and Tax Collector",
+        "Jesus dining at the house of Simon the leper"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_13",
+      "title": "The Parable of the Prodigal Son",
+      "reference": "Luke 15:11-32",
+      "keywords": ["riotous living", "feeding swine", "fatted calf", "best robe and ring", "elder brother angry"],
+      "similarPassageId": "pas_12",
+      "wrongGuesses": [
+        "The Good Samaritan on the Jericho Road",
+        "The Parable of the Lost Sheep",
+        "The Parable of the Talents and Minas",
+        "The Parable of the Workers in the Vineyard",
+        "The Rich Man and Lazarus"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_14",
+      "title": "Jesus Calming the Storm at Sea",
+      "reference": "Mark 4:35-41",
+      "keywords": ["asleep on a pillow", "Peace be still", "wind ceased", "great calm", "What manner of man is this"],
+      "similarPassageId": "pas_15",
+      "wrongGuesses": [
+        "Jesus walking on the water in the fourth watch",
+        "The miraculous catch of 153 fish",
+        "Paul's shipwreck off Malta",
+        "Jonah thrown overboard into the tempest",
+        "Peter sinking when looking at the waves"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_15",
+      "title": "Jesus Walking on the Water",
+      "reference": "Matthew 14:22-33",
+      "keywords": ["fourth watch of the night", "thought it was a spirit", "Peter walked on water", "boisterous wind", "O thou of little faith"],
+      "similarPassageId": "pas_14",
+      "wrongGuesses": [
+        "Jesus Calming the Storm at Sea",
+        "The miraculous catch of fish after resurrection",
+        "The baptism of Jesus in the Jordan River",
+        "Jesus healing the man at the pool of Bethesda",
+        "Philip and the Ethiopian eunuch"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_16",
+      "title": "The Raising of Lazarus from the Dead",
+      "reference": "John 11:1-44",
+      "keywords": ["Bethany", "four days in tomb", "Jesus wept", "Take away the stone", "Lazarus come forth", "graveclothes"],
+      "similarPassageId": "pas_17",
+      "wrongGuesses": [
+        "The raising of the widow of Nain's son",
+        "Jesus healing Jairus's twelve-year-old daughter",
+        "Elisha raising the Shunammite woman's child",
+        "Peter raising Dorcas (Tabitha) at Joppa",
+        "Paul raising Eutychus who fell from the window"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_17",
+      "title": "Jesus Healing Jairus's Daughter",
+      "reference": "Mark 5:21-43",
+      "keywords": ["ruler of the synagogue", "Talitha cumi", "maid arise", "twelve years old", "woman with issue of blood touching hem"],
+      "similarPassageId": "pas_16",
+      "wrongGuesses": [
+        "The Raising of Lazarus from the Dead",
+        "The raising of the widow's son at Nain",
+        "Jesus healing the Roman centurion's servant",
+        "Jesus healing the nobleman's son at Capernaum",
+        "Jesus healing the Syrophoenician woman's daughter"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_18",
+      "title": "The Conversion of Saul on the Damascus Road",
+      "reference": "Acts 9:1-19",
+      "keywords": ["letters to synagogues", "bright light from heaven", "Saul Saul why persecutest thou me", "blind three days", "Ananias laying hands"],
+      "similarPassageId": "pas_19",
+      "wrongGuesses": [
+        "Paul and Silas singing hymns in the Philippian jail",
+        "Stephen being stoned outside Jerusalem",
+        "Peter's vision of the clean and unclean animals",
+        "Philip preaching to the Ethiopian on the Gaza road",
+        "Paul speaking to philosophers on Mars Hill"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_19",
+      "title": "Paul and Silas in the Philippian Prison",
+      "reference": "Acts 16:16-40",
+      "keywords": ["midnight singing praises", "great earthquake", "stocks in inner prison", "jailer drawing sword", "What must I do to be saved"],
+      "similarPassageId": "pas_18",
+      "wrongGuesses": [
+        "The Conversion of Saul on the Damascus Road",
+        "Peter delivered from prison by an angel",
+        "Stephen martyred by the Sanhedrin",
+        "Paul bitten by a viper on Malta",
+        "The riot of silversmiths at Ephesus"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_20",
+      "title": "The Day of Pentecost and Holy Spirit",
+      "reference": "Acts 2:1-41",
+      "keywords": ["upper room", "rushing mighty wind", "cloven tongues like fire", "speak with other tongues", "Peter's sermon 3000 saved"],
+      "similarPassageId": "pas_21",
+      "wrongGuesses": [
+        "The Ascension of Jesus into heaven",
+        "The preaching of John the Baptist in the wilderness",
+        "The Transfiguration on Mount Hermon",
+        "The dedication of Solomon's Temple",
+        "The burning bush at Mount Sinai"
+      ],
+      "needsReview": true
+    },
+    {
+      "id": "pas_21",
+      "title": "The Transfiguration of Jesus on the Mount",
+      "reference": "Matthew 17:1-9",
+      "keywords": ["Peter James John", "face shone as sun", "raiment white as light", "Moses and Elias appearing", "bright cloud overshadowing"],
+      "similarPassageId": "pas_20",
+      "wrongGuesses": [
+        "The Day of Pentecost and Holy Spirit",
+        "The Agony of Jesus in the Garden of Gethsemane",
+        "The Ascension of Jesus from the Mount of Olives",
+        "Elijah taken to heaven in the fiery chariot",
+        "Moses receiving the Ten Commandments on Mount Sinai"
+      ],
+      "needsReview": true
+    }
+  ]
+}

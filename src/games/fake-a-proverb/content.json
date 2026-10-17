@@ -1,0 +1,202 @@
+{
+  "proverbs": [
+    {
+      "id": "prov_1",
+      "firstHalf": "A soft answer turneth away wrath: but grievous words",
+      "realEnding": "stir up anger.",
+      "reference": "Proverbs 15:1",
+      "translation": "KJV",
+      "difficulty": "easy",
+      "needsReview": true
+    },
+    {
+      "id": "prov_2",
+      "firstHalf": "As a dog returneth to his vomit, so a fool",
+      "realEnding": "returneth to his folly.",
+      "reference": "Proverbs 26:11",
+      "translation": "KJV",
+      "difficulty": "medium",
+      "needsReview": true
+    },
+    {
+      "id": "prov_3",
+      "firstHalf": "Pride goeth before destruction, and an haughty spirit",
+      "realEnding": "before a fall.",
+      "reference": "Proverbs 16:18",
+      "translation": "KJV",
+      "difficulty": "easy",
+      "needsReview": true
+    },
+    {
+      "id": "prov_4",
+      "firstHalf": "Iron sharpeneth iron; so a man sharpeneth",
+      "realEnding": "the countenance of his friend.",
+      "reference": "Proverbs 27:17",
+      "translation": "KJV",
+      "difficulty": "easy",
+      "needsReview": true
+    },
+    {
+      "id": "prov_5",
+      "firstHalf": "As a jewel of gold in a swine's snout, so is a fair woman",
+      "realEnding": "which is without discretion.",
+      "reference": "Proverbs 11:22",
+      "translation": "KJV",
+      "difficulty": "hard",
+      "needsReview": true
+    },
+    {
+      "id": "prov_6",
+      "firstHalf": "The sluggard will not plow by reason of the cold; therefore shall he",
+      "realEnding": "beg in harvest, and have nothing.",
+      "reference": "Proverbs 20:4",
+      "translation": "KJV",
+      "difficulty": "medium",
+      "needsReview": true
+    },
+    {
+      "id": "prov_7",
+      "firstHalf": "A merry heart doeth good like a medicine: but a broken spirit",
+      "realEnding": "drieth the bones.",
+      "reference": "Proverbs 17:22",
+      "translation": "KJV",
+      "difficulty": "easy",
+      "needsReview": true
+    },
+    {
+      "id": "prov_8",
+      "firstHalf": "Better is a dinner of herbs where love is, than",
+      "realEnding": "a stalled ox and hatred therewith.",
+      "reference": "Proverbs 15:17",
+      "translation": "KJV",
+      "difficulty": "medium",
+      "needsReview": true
+    },
+    {
+      "id": "prov_9",
+      "firstHalf": "Confidence in an unfaithful man in time of trouble is like a broken tooth, and",
+      "realEnding": "a foot out of joint.",
+      "reference": "Proverbs 25:19",
+      "translation": "KJV",
+      "difficulty": "hard",
+      "needsReview": true
+    },
+    {
+      "id": "prov_10",
+      "firstHalf": "He that blesseth his friend with a loud voice, rising early in the morning, it shall be",
+      "realEnding": "counted a curse to him.",
+      "reference": "Proverbs 27:14",
+      "translation": "KJV",
+      "difficulty": "hard",
+      "needsReview": true
+    },
+    {
+      "id": "prov_11",
+      "firstHalf": "The wicked flee when no man pursueth: but the righteous are",
+      "realEnding": "bold as a lion.",
+      "reference": "Proverbs 28:1",
+      "translation": "KJV",
+      "difficulty": "easy",
+      "needsReview": true
+    },
+    {
+      "id": "prov_12",
+      "firstHalf": "A continual dropping in a very rainy day and",
+      "realEnding": "a contentious woman are alike.",
+      "reference": "Proverbs 27:15",
+      "translation": "KJV",
+      "difficulty": "medium",
+      "needsReview": true
+    },
+    {
+      "id": "prov_13",
+      "firstHalf": "Even a fool, when he holdeth his peace, is",
+      "realEnding": "counted wise.",
+      "reference": "Proverbs 17:28",
+      "translation": "KJV",
+      "difficulty": "medium",
+      "needsReview": true
+    },
+    {
+      "id": "prov_14",
+      "firstHalf": "Where no oxen are, the crib is clean: but much increase is",
+      "realEnding": "by the strength of the ox.",
+      "reference": "Proverbs 14:4",
+      "translation": "KJV",
+      "difficulty": "hard",
+      "needsReview": true
+    },
+    {
+      "id": "prov_15",
+      "firstHalf": "He that passeth by, and meddleth with strife belonging not to him, is like one that",
+      "realEnding": "taketh a dog by the ears.",
+      "reference": "Proverbs 26:17",
+      "translation": "KJV",
+      "difficulty": "medium",
+      "needsReview": true
+    },
+    {
+      "id": "prov_16",
+      "firstHalf": "The slothful man saith, There is a lion without,",
+      "realEnding": "I shall be slain in the streets.",
+      "reference": "Proverbs 22:13",
+      "translation": "KJV",
+      "difficulty": "medium",
+      "needsReview": true
+    },
+    {
+      "id": "prov_17",
+      "firstHalf": "Hope deferred maketh the heart sick: but when the desire cometh, it is",
+      "realEnding": "a tree of life.",
+      "reference": "Proverbs 13:12",
+      "translation": "KJV",
+      "difficulty": "medium",
+      "needsReview": true
+    },
+    {
+      "id": "prov_18",
+      "firstHalf": "A whip for the horse, a bridle for the ass, and",
+      "realEnding": "a rod for the fool's back.",
+      "reference": "Proverbs 26:3",
+      "translation": "KJV",
+      "difficulty": "hard",
+      "needsReview": true
+    },
+    {
+      "id": "prov_19",
+      "firstHalf": "Boast not thyself of to morrow; for thou knowest not",
+      "realEnding": "what a day may bring forth.",
+      "reference": "Proverbs 27:1",
+      "translation": "KJV",
+      "difficulty": "easy",
+      "needsReview": true
+    },
+    {
+      "id": "prov_20",
+      "firstHalf": "The horse is prepared against the day of battle: but safety is",
+      "realEnding": "of the LORD.",
+      "reference": "Proverbs 21:31",
+      "translation": "KJV",
+      "difficulty": "medium",
+      "needsReview": true
+    },
+    {
+      "id": "prov_21",
+      "firstHalf": "He that diggeth a pit shall fall into it: and he that rolleth a stone,",
+      "realEnding": "it will return upon him.",
+      "reference": "Proverbs 26:27",
+      "translation": "KJV",
+      "difficulty": "easy",
+      "needsReview": true
+    },
+    {
+      "id": "prov_22",
+      "firstHalf": "A man that hath friends must shew himself friendly: and there is a friend that",
+      "realEnding": "sticketh closer than a brother.",
+      "reference": "Proverbs 18:24",
+      "translation": "KJV",
+      "difficulty": "easy",
+      "needsReview": true
+    }
+  ]
+}

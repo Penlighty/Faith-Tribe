@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Dynamic M3 Expressive context tint defaults (Lavender) */
+  --seed-color: #E9E5F4;
+  --bg-tint: #F7F5FA;
+  --surface-container: #ECE8F5;
+  --surface-container-high: #E2DDF0;
+  --surface-card: #FFFFFF;
+  --primary-action: #2F5D3A;
+  --primary-action-text: #FFFFFF;
+  --on-container: #1C1A24;
+  --on-container-variant: #49454F;
+  --accent-secondary: #586B5D;
+}
+
+.dark {
+  --seed-color: #2F2A38;
+  --bg-tint: #131217;
+  --surface-container: #1D1B22;
+  --surface-container-high: #27252E;
+  --surface-card: #201E26;
+  --primary-action: #88D397;
+  --primary-action-text: #053916;
+  --on-container: #E7E2EE;
+  --on-container-variant: #CAC4D0;
+  --accent-secondary: #A0CFA8;
+}
+
+/* Mobile app shell container */
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Smooth transitions for theme and seed color changes */
+.tint-transition {
+  transition: background-color 380ms cubic-bezier(0.2, 0, 0, 1), color 300ms ease;
+}
+
+/* Wavy timer animation */
+@keyframes wave-scroll {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 40;
+  }
+}
+
+.animate-wavy {
+  animation: wave-scroll 2s linear infinite;
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 9999px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Continuous Analog Timer Drain */
+@keyframes analogTimerDrain {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+

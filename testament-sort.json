@@ -1,0 +1,907 @@
+[
+ {
+  "id": "ts-101",
+  "tier": 1,
+  "name": "Goliath",
+  "type": "person",
+  "answer": "OT",
+  "hint": "A giant from Gath who challenged Israel's army for forty days.",
+  "refs": "1 Samuel 17"
+ },
+ {
+  "id": "ts-102",
+  "tier": 1,
+  "name": "Abraham",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "God changed his name to one meaning 'father of many nations.'",
+  "refs": "OT: Genesis 17:5; NT: Matthew 1:1, Hebrews 11:8"
+ },
+ {
+  "id": "ts-103",
+  "tier": 1,
+  "name": "Moses",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "Named because he was 'drawn out' of the water.",
+  "refs": "OT: Exodus 2:10; NT: Matthew 17:3"
+ },
+ {
+  "id": "ts-104",
+  "tier": 1,
+  "name": "David",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A shepherd boy anointed by Samuel before he became king.",
+  "refs": "OT: 1 Samuel 16:13; NT: Matthew 1:1"
+ },
+ {
+  "id": "ts-105",
+  "tier": 1,
+  "name": "Paul",
+  "type": "person",
+  "answer": "NT",
+  "hint": "A tentmaker and missionary who wrote letters to young churches.",
+  "refs": "Acts 13:9; Acts 18:3"
+ },
+ {
+  "id": "ts-106",
+  "tier": 1,
+  "name": "Peter",
+  "type": "person",
+  "answer": "NT",
+  "hint": "A fisherman whose name means 'rock.'",
+  "refs": "Matthew 16:18"
+ },
+ {
+  "id": "ts-107",
+  "tier": 1,
+  "name": "Noah",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "His name sounds like the Hebrew for 'rest' or 'comfort.'",
+  "refs": "OT: Genesis 5:29, 6:9; NT: Matthew 24:37, Hebrews 11:7"
+ },
+ {
+  "id": "ts-108",
+  "tier": 1,
+  "name": "Samson",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A Nazirite whose strength was tied to his uncut hair.",
+  "refs": "OT: Judges 16; NT: Hebrews 11:32"
+ },
+ {
+  "id": "ts-109",
+  "tier": 1,
+  "name": "Delilah",
+  "type": "person",
+  "answer": "OT",
+  "hint": "A woman of the valley of Sorek, paid by Philistine rulers.",
+  "refs": "Judges 16:4-18"
+ },
+ {
+  "id": "ts-110",
+  "tier": 1,
+  "name": "Esther",
+  "type": "person",
+  "answer": "OT",
+  "hint": "Her other name was Hadassah.",
+  "refs": "Esther 2:7"
+ },
+ {
+  "id": "ts-111",
+  "tier": 1,
+  "name": "Judas Iscariot",
+  "type": "person",
+  "answer": "NT",
+  "hint": "One of the Twelve who kept the money bag.",
+  "refs": "Matthew 10:4; John 12:4-6"
+ },
+ {
+  "id": "ts-112",
+  "tier": 1,
+  "name": "Lazarus",
+  "type": "person",
+  "answer": "NT",
+  "hint": "A man of Bethany whose sisters sent word that he was ill.",
+  "refs": "John 11; Luke 16:20"
+ },
+ {
+  "id": "ts-113",
+  "tier": 1,
+  "name": "Zacchaeus",
+  "type": "person",
+  "answer": "NT",
+  "hint": "A short man who climbed a sycamore tree to see someone pass.",
+  "refs": "Luke 19:1-10"
+ },
+ {
+  "id": "ts-114",
+  "tier": 1,
+  "name": "Egypt",
+  "type": "place",
+  "answer": "BOTH",
+  "hint": "A land along the Nile where Joseph rose to power.",
+  "refs": "OT: Genesis 39:1; NT: Matthew 2:14, Acts 7:9"
+ },
+ {
+  "id": "ts-115",
+  "tier": 1,
+  "name": "Jerusalem",
+  "type": "place",
+  "answer": "BOTH",
+  "hint": "A hilltop city David captured and made his capital.",
+  "refs": "OT: 2 Samuel 5:6-7; NT: Luke 2:22"
+ },
+ {
+  "id": "ts-116",
+  "tier": 1,
+  "name": "Bethlehem",
+  "type": "place",
+  "answer": "BOTH",
+  "hint": "Its name is usually understood to mean 'house of bread.'",
+  "refs": "OT: Ruth 1:1, Micah 5:2; NT: Matthew 2:1"
+ },
+ {
+  "id": "ts-117",
+  "tier": 1,
+  "name": "Nazareth",
+  "type": "place",
+  "answer": "NT",
+  "hint": "A small Galilean town where a carpenter's family settled.",
+  "refs": "Matthew 2:23; Luke 4:16"
+ },
+ {
+  "id": "ts-118",
+  "tier": 1,
+  "name": "Jericho",
+  "type": "place",
+  "answer": "BOTH",
+  "hint": "A walled city whose fall followed seven days of marching.",
+  "refs": "OT: Joshua 6; NT: Luke 10:30, Hebrews 11:30"
+ },
+ {
+  "id": "ts-119",
+  "tier": 1,
+  "name": "Eden",
+  "type": "place",
+  "answer": "OT",
+  "hint": "A garden planted 'eastward,' where a river divided into four.",
+  "refs": "Genesis 2:8-14"
+ },
+ {
+  "id": "ts-120",
+  "tier": 1,
+  "name": "Sodom",
+  "type": "place",
+  "answer": "BOTH",
+  "hint": "A city Abraham pleaded for, asking about fifty righteous people.",
+  "refs": "OT: Genesis 18:24, 19:24; NT: Matthew 10:15, 2 Peter 2:6"
+ },
+ {
+  "id": "ts-121",
+  "tier": 1,
+  "name": "Capernaum",
+  "type": "place",
+  "answer": "NT",
+  "hint": "A lakeside town described as 'his own city.'",
+  "refs": "Matthew 9:1; Mark 2:1"
+ },
+ {
+  "id": "ts-122",
+  "tier": 1,
+  "name": "Babylon",
+  "type": "place",
+  "answer": "BOTH",
+  "hint": "A great Mesopotamian city where Israel's exiles were taken.",
+  "refs": "OT: 2 Kings 24:15; NT: Matthew 1:11, Revelation 14:8"
+ },
+ {
+  "id": "ts-123",
+  "tier": 1,
+  "name": "Galilee",
+  "type": "place",
+  "answer": "BOTH",
+  "hint": "A northern region around a lake that Jesus visited often.",
+  "refs": "OT: Joshua 20:7, Isaiah 9:1; NT: Matthew 4:23"
+ },
+ {
+  "id": "ts-124",
+  "tier": 1,
+  "name": "Gethsemane",
+  "type": "place",
+  "answer": "NT",
+  "hint": "A garden at the foot of the Mount of Olives; its name is usually linked to an olive press.",
+  "refs": "Matthew 26:36; Mark 14:32"
+ },
+ {
+  "id": "ts-125",
+  "tier": 1,
+  "name": "Manna",
+  "type": "thing",
+  "answer": "BOTH",
+  "hint": "A bread-like food that appeared with the morning dew.",
+  "refs": "OT: Exodus 16:31; NT: John 6:31, Hebrews 9:4, Revelation 2:17"
+ },
+ {
+  "id": "ts-201",
+  "tier": 2,
+  "name": "Nehemiah",
+  "type": "person",
+  "answer": "OT",
+  "hint": "A royal cupbearer who led the rebuilding of Jerusalem's walls.",
+  "refs": "Nehemiah 1:11; 2:11-18"
+ },
+ {
+  "id": "ts-202",
+  "tier": 2,
+  "name": "Elijah",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A prophet from Tishbe who confronted Baal's prophets on a mountain.",
+  "refs": "OT: 1 Kings 17:1, 18; NT: Luke 4:25, Matthew 17:3",
+  "note": "The KJV New Testament spells it 'Elias.'"
+ },
+ {
+  "id": "ts-203",
+  "tier": 2,
+  "name": "Isaiah",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A prophet whose name is usually understood to mean 'the LORD saves.'",
+  "refs": "OT: Isaiah 1:1; NT: Matthew 3:3"
+ },
+ {
+  "id": "ts-204",
+  "tier": 2,
+  "name": "Ezekiel",
+  "type": "person",
+  "answer": "OT",
+  "hint": "A priest-prophet who saw a valley of dry bones.",
+  "refs": "Ezekiel 1:3; 37:1-14"
+ },
+ {
+  "id": "ts-205",
+  "tier": 2,
+  "name": "Jonah",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A prophet who ran toward Tarshish.",
+  "refs": "OT: Jonah 1:3; NT: Matthew 12:39-41"
+ },
+ {
+  "id": "ts-206",
+  "tier": 2,
+  "name": "Daniel",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "An exile in Babylon who interpreted a king's dreams.",
+  "refs": "OT: Daniel 2; NT: Matthew 24:15"
+ },
+ {
+  "id": "ts-207",
+  "tier": 2,
+  "name": "Haman",
+  "type": "person",
+  "answer": "OT",
+  "hint": "An Agagite promoted by King Ahasuerus.",
+  "refs": "Esther 3:1"
+ },
+ {
+  "id": "ts-208",
+  "tier": 2,
+  "name": "Mordecai",
+  "type": "person",
+  "answer": "OT",
+  "hint": "A Benjamite who sat at the king's gate in Susa.",
+  "refs": "Esther 2:5, 2:19"
+ },
+ {
+  "id": "ts-209",
+  "tier": 2,
+  "name": "Barnabas",
+  "type": "person",
+  "answer": "NT",
+  "hint": "His name means 'son of encouragement.'",
+  "refs": "Acts 4:36"
+ },
+ {
+  "id": "ts-210",
+  "tier": 2,
+  "name": "Timothy",
+  "type": "person",
+  "answer": "NT",
+  "hint": "A young coworker from Lystra.",
+  "refs": "Acts 16:1-2"
+ },
+ {
+  "id": "ts-211",
+  "tier": 2,
+  "name": "Priscilla",
+  "type": "person",
+  "answer": "NT",
+  "hint": "A tentmaker who, with her husband, explained the way of God more accurately to a gifted speaker.",
+  "refs": "Acts 18:2, 18:26"
+ },
+ {
+  "id": "ts-212",
+  "tier": 2,
+  "name": "Nicodemus",
+  "type": "person",
+  "answer": "NT",
+  "hint": "A Pharisee who visited by night.",
+  "refs": "John 3:1-2"
+ },
+ {
+  "id": "ts-213",
+  "tier": 2,
+  "name": "Boaz",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A landowner of Bethlehem who showed kindness to a gleaner.",
+  "refs": "OT: Ruth 2; NT: Matthew 1:5"
+ },
+ {
+  "id": "ts-214",
+  "tier": 2,
+  "name": "Rahab",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A woman of Jericho who hid two spies on her roof.",
+  "refs": "OT: Joshua 2:1-6; NT: Matthew 1:5, Hebrews 11:31, James 2:25"
+ },
+ {
+  "id": "ts-215",
+  "tier": 2,
+  "name": "Naaman",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A commander of Aram's army who was told to wash seven times.",
+  "refs": "OT: 2 Kings 5:14; NT: Luke 4:27"
+ },
+ {
+  "id": "ts-216",
+  "tier": 2,
+  "name": "Melchizedek",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A king of Salem and priest of God Most High.",
+  "refs": "OT: Genesis 14:18; NT: Hebrews 7:1"
+ },
+ {
+  "id": "ts-217",
+  "tier": 2,
+  "name": "Balaam",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A seer from Pethor whose donkey spoke to him.",
+  "refs": "OT: Numbers 22:5, 22:28; NT: 2 Peter 2:15, Jude 1:11, Revelation 2:14"
+ },
+ {
+  "id": "ts-218",
+  "tier": 2,
+  "name": "Gideon",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A judge who tested God with a fleece.",
+  "refs": "OT: Judges 6:37; NT: Hebrews 11:32"
+ },
+ {
+  "id": "ts-219",
+  "tier": 2,
+  "name": "Mount Sinai",
+  "type": "place",
+  "answer": "BOTH",
+  "hint": "Where Moses received the tablets of the Law.",
+  "refs": "OT: Exodus 19:20; NT: Acts 7:30, Galatians 4:24-25"
+ },
+ {
+  "id": "ts-220",
+  "tier": 2,
+  "name": "Mount Carmel",
+  "type": "place",
+  "answer": "OT",
+  "hint": "A mountain where fire fell on a soaked altar.",
+  "refs": "1 Kings 18:19-38"
+ },
+ {
+  "id": "ts-221",
+  "tier": 2,
+  "name": "Damascus",
+  "type": "place",
+  "answer": "BOTH",
+  "hint": "A Syrian city on the road where a persecutor was blinded by light.",
+  "refs": "OT: Genesis 14:15, 2 Kings 5:12; NT: Acts 9:3"
+ },
+ {
+  "id": "ts-222",
+  "tier": 2,
+  "name": "Philippi",
+  "type": "place",
+  "answer": "NT",
+  "hint": "A Macedonian city where a jailer asked what he must do to be saved.",
+  "refs": "Acts 16:12, 16:30"
+ },
+ {
+  "id": "ts-223",
+  "tier": 2,
+  "name": "Patmos",
+  "type": "place",
+  "answer": "NT",
+  "hint": "An island where a vision was received.",
+  "refs": "Revelation 1:9"
+ },
+ {
+  "id": "ts-224",
+  "tier": 2,
+  "name": "Passover",
+  "type": "thing",
+  "answer": "BOTH",
+  "hint": "A feast marking a night when the destroyer passed over.",
+  "refs": "OT: Exodus 12:11; NT: Luke 22:1, John 2:13"
+ },
+ {
+  "id": "ts-225",
+  "tier": 2,
+  "name": "Goshen",
+  "type": "place",
+  "answer": "OT",
+  "hint": "The region of Egypt where Jacob's family settled.",
+  "refs": "Genesis 47:6"
+ },
+ {
+  "id": "ts-301",
+  "tier": 3,
+  "name": "Nineveh",
+  "type": "place",
+  "answer": "BOTH",
+  "hint": "A capital that repented at a prophet's short warning.",
+  "refs": "OT: Jonah 3:3-5; NT: Matthew 12:41, Luke 11:32"
+ },
+ {
+  "id": "ts-302",
+  "tier": 3,
+  "name": "Methuselah",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "Genesis gives his age as 969 years.",
+  "refs": "OT: Genesis 5:27; NT: Luke 3:37"
+ },
+ {
+  "id": "ts-303",
+  "tier": 3,
+  "name": "Enoch",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A man who 'walked with God' and was no more, for God took him.",
+  "refs": "OT: Genesis 5:24; NT: Hebrews 11:5, Jude 1:14"
+ },
+ {
+  "id": "ts-304",
+  "tier": 3,
+  "name": "Joel",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A prophet who wrote about a plague of locusts.",
+  "refs": "OT: Joel 1:1-4; NT: Acts 2:16"
+ },
+ {
+  "id": "ts-305",
+  "tier": 3,
+  "name": "Hezekiah",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A king of Judah who showed Babylonian envoys his treasures.",
+  "refs": "OT: 2 Kings 20:12-13; NT: Matthew 1:9-10"
+ },
+ {
+  "id": "ts-306",
+  "tier": 3,
+  "name": "Josiah",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A king of Judah, crowned as a boy, who found the Book of the Law.",
+  "refs": "OT: 2 Kings 22:1, 22:8; NT: Matthew 1:10-11"
+ },
+ {
+  "id": "ts-307",
+  "tier": 3,
+  "name": "Habakkuk",
+  "type": "person",
+  "answer": "OT",
+  "hint": "A prophet who cried out 'How long, LORD?'",
+  "refs": "Habakkuk 1:1-2"
+ },
+ {
+  "id": "ts-308",
+  "tier": 3,
+  "name": "Obadiah",
+  "type": "person",
+  "answer": "OT",
+  "hint": "A prophet whose book is the shortest in this part of the Bible.",
+  "refs": "Obadiah 1:1"
+ },
+ {
+  "id": "ts-309",
+  "tier": 3,
+  "name": "Ezra",
+  "type": "person",
+  "answer": "OT",
+  "hint": "A priest and scribe skilled in the Law of Moses who returned to Jerusalem.",
+  "refs": "Ezra 7:1-6"
+ },
+ {
+  "id": "ts-310",
+  "tier": 3,
+  "name": "Gehazi",
+  "type": "person",
+  "answer": "OT",
+  "hint": "A prophet's servant who coveted a foreign commander's gifts.",
+  "refs": "2 Kings 5:20-27"
+ },
+ {
+  "id": "ts-311",
+  "tier": 3,
+  "name": "Zerubbabel",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A governor of Judah who led a return from exile and laid the temple foundation.",
+  "refs": "OT: Ezra 3:2, Haggai 1:1; NT: Matthew 1:12, Luke 3:27"
+ },
+ {
+  "id": "ts-312",
+  "tier": 3,
+  "name": "Mount Moriah",
+  "type": "place",
+  "answer": "OT",
+  "hint": "The region where Abraham was told to offer Isaac.",
+  "refs": "Genesis 22:2; 2 Chronicles 3:1"
+ },
+ {
+  "id": "ts-313",
+  "tier": 3,
+  "name": "Mount of Olives",
+  "type": "place",
+  "answer": "BOTH",
+  "hint": "A ridge east of Jerusalem that David climbed weeping.",
+  "refs": "OT: 2 Samuel 15:30, Zechariah 14:4; NT: Matthew 24:3"
+ },
+ {
+  "id": "ts-314",
+  "tier": 3,
+  "name": "Tarshish",
+  "type": "place",
+  "answer": "OT",
+  "hint": "A far-off destination a fleeing prophet tried to reach by ship.",
+  "refs": "Jonah 1:3; 1 Kings 10:22"
+ },
+ {
+  "id": "ts-315",
+  "tier": 3,
+  "name": "Sychar",
+  "type": "place",
+  "answer": "NT",
+  "hint": "A Samaritan town near Jacob's well.",
+  "refs": "John 4:5-6"
+ },
+ {
+  "id": "ts-316",
+  "tier": 3,
+  "name": "Bethany",
+  "type": "place",
+  "answer": "NT",
+  "hint": "The village of Mary and Martha, near Jerusalem.",
+  "refs": "John 11:1, 11:18"
+ },
+ {
+  "id": "ts-317",
+  "tier": 3,
+  "name": "Emmaus",
+  "type": "place",
+  "answer": "NT",
+  "hint": "A village where two travelers recognized a stranger when he broke bread.",
+  "refs": "Luke 24:13-31"
+ },
+ {
+  "id": "ts-318",
+  "tier": 3,
+  "name": "Antioch",
+  "type": "place",
+  "answer": "NT",
+  "hint": "A city where disciples were first called Christians.",
+  "refs": "Acts 11:26"
+ },
+ {
+  "id": "ts-319",
+  "tier": 3,
+  "name": "Mount Zion",
+  "type": "place",
+  "answer": "BOTH",
+  "hint": "A fortress David captured and called the City of David.",
+  "refs": "OT: 2 Samuel 5:7; NT: Hebrews 12:22, Revelation 14:1"
+ },
+ {
+  "id": "ts-320",
+  "tier": 3,
+  "name": "Joppa",
+  "type": "place",
+  "answer": "BOTH",
+  "hint": "A seaport on the Mediterranean coast.",
+  "refs": "OT: Jonah 1:3, 2 Chronicles 2:16; NT: Acts 9:36, Acts 10:5"
+ },
+ {
+  "id": "ts-321",
+  "tier": 3,
+  "name": "Gaza",
+  "type": "place",
+  "answer": "BOTH",
+  "hint": "A Philistine city whose gates were carried off to a hilltop.",
+  "refs": "OT: Judges 16:1-3; NT: Acts 8:26"
+ },
+ {
+  "id": "ts-322",
+  "tier": 3,
+  "name": "Tarsus",
+  "type": "place",
+  "answer": "NT",
+  "hint": "A city in Cilicia, the hometown of a famous apostle.",
+  "refs": "Acts 9:11, 21:39"
+ },
+ {
+  "id": "ts-323",
+  "tier": 3,
+  "name": "Frankincense",
+  "type": "thing",
+  "answer": "BOTH",
+  "hint": "A fragrant resin burned with grain offerings.",
+  "refs": "OT: Exodus 30:34, Leviticus 2:1; NT: Matthew 2:11"
+ },
+ {
+  "id": "ts-324",
+  "tier": 3,
+  "name": "Hyssop",
+  "type": "thing",
+  "answer": "BOTH",
+  "hint": "A plant used to apply blood to doorposts.",
+  "refs": "OT: Exodus 12:22, Psalm 51:7; NT: John 19:29, Hebrews 9:19"
+ },
+ {
+  "id": "ts-325",
+  "tier": 3,
+  "name": "Leviathan",
+  "type": "thing",
+  "answer": "OT",
+  "hint": "A sea creature described in God's speech from the whirlwind.",
+  "refs": "Job 41:1; Psalm 74:14; Isaiah 27:1"
+ },
+ {
+  "id": "ts-401",
+  "tier": 4,
+  "name": "Jesse",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A Bethlehemite with eight sons, the youngest a shepherd.",
+  "refs": "OT: 1 Samuel 16:1, 17:12; NT: Matthew 1:5, Acts 13:22"
+ },
+ {
+  "id": "ts-402",
+  "tier": 4,
+  "name": "Obed",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A son born to a Moabite widow and her second husband.",
+  "refs": "OT: Ruth 4:17; NT: Matthew 1:5"
+ },
+ {
+  "id": "ts-403",
+  "tier": 4,
+  "name": "Salmon",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A name in the family line leading to Boaz.",
+  "refs": "OT: Ruth 4:20-21; NT: Matthew 1:4-5"
+ },
+ {
+  "id": "ts-404",
+  "tier": 4,
+  "name": "Gamaliel",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A respected teacher of the law who advised a council to leave the apostles alone.",
+  "refs": "OT: Numbers 1:10; NT: Acts 5:34, 22:3",
+  "note": "The same name belongs to a leader of Manasseh in the wilderness census (Numbers 1:10)."
+ },
+ {
+  "id": "ts-405",
+  "tier": 4,
+  "name": "Simeon",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A righteous man in the temple who took a baby in his arms.",
+  "refs": "OT: Genesis 29:33; NT: Luke 2:25",
+  "note": "The name is also borne by a son of Jacob and Leah."
+ },
+ {
+  "id": "ts-406",
+  "tier": 4,
+  "name": "Zechariah",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A prophet who saw visions of a lampstand and olive trees.",
+  "refs": "OT: Zechariah 1:1, 4:2-3; NT: Luke 1:5",
+  "note": "The NT priest in Luke 1 shares the name (KJV: Zacharias)."
+ },
+ {
+  "id": "ts-407",
+  "tier": 4,
+  "name": "Eleazar",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A priest, son of Aaron, who succeeded his father.",
+  "refs": "OT: Numbers 20:28; NT: Matthew 1:15"
+ },
+ {
+  "id": "ts-408",
+  "tier": 4,
+  "name": "Rehoboam",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "Solomon's son whose harsh answer split the kingdom.",
+  "refs": "OT: 1 Kings 12:1-17; NT: Matthew 1:7"
+ },
+ {
+  "id": "ts-409",
+  "tier": 4,
+  "name": "Perez",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A twin son of Judah whose birth involved a scarlet thread.",
+  "refs": "OT: Genesis 38:29; NT: Matthew 1:3, Luke 3:33"
+ },
+ {
+  "id": "ts-410",
+  "tier": 4,
+  "name": "Nahshon",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A leader of Judah during the wilderness years.",
+  "refs": "OT: Numbers 1:7, 2:3; NT: Matthew 1:4, Luke 3:32"
+ },
+ {
+  "id": "ts-411",
+  "tier": 4,
+  "name": "Shem",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "One of the three sons who survived the flood with Noah.",
+  "refs": "OT: Genesis 5:32; NT: Luke 3:36"
+ },
+ {
+  "id": "ts-412",
+  "tier": 4,
+  "name": "Terah",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A father who set out from Ur toward Canaan but stopped at Haran.",
+  "refs": "OT: Genesis 11:26, 11:31; NT: Luke 3:34"
+ },
+ {
+  "id": "ts-413",
+  "tier": 4,
+  "name": "Lamech",
+  "type": "person",
+  "answer": "BOTH",
+  "hint": "A man who boasted of avenging himself seventy-sevenfold.",
+  "refs": "OT: Genesis 4:19-24, 5:25; NT: Luke 3:36",
+  "note": "Two different Lamechs: Cain's descendant (Genesis 4) and Noah's father (Genesis 5, Luke 3)."
+ },
+ {
+  "id": "ts-414",
+  "tier": 4,
+  "name": "Theophilus",
+  "type": "person",
+  "answer": "NT",
+  "hint": "A name usually understood to mean 'friend of God,' addressed by a historian.",
+  "refs": "Luke 1:3; Acts 1:1"
+ },
+ {
+  "id": "ts-415",
+  "tier": 4,
+  "name": "Epaphras",
+  "type": "person",
+  "answer": "NT",
+  "hint": "A faithful servant who prayed hard for the Colossians.",
+  "refs": "Colossians 1:7, 4:12"
+ },
+ {
+  "id": "ts-416",
+  "tier": 4,
+  "name": "Onesimus",
+  "type": "person",
+  "answer": "NT",
+  "hint": "A runaway slave sent back with a letter.",
+  "refs": "Philemon 1:10-12; Colossians 4:9"
+ },
+ {
+  "id": "ts-417",
+  "tier": 4,
+  "name": "Eutychus",
+  "type": "person",
+  "answer": "NT",
+  "hint": "A young man who fell from a window during a very long sermon.",
+  "refs": "Acts 20:9-12"
+ },
+ {
+  "id": "ts-418",
+  "tier": 4,
+  "name": "Bartholomew",
+  "type": "person",
+  "answer": "NT",
+  "hint": "Listed among the Twelve, paired with Philip in the lists.",
+  "refs": "Matthew 10:3; Acts 1:13"
+ },
+ {
+  "id": "ts-419",
+  "tier": 4,
+  "name": "Jehoiada",
+  "type": "person",
+  "answer": "OT",
+  "hint": "A priest who protected a hidden boy-king for six years.",
+  "refs": "2 Kings 11:1-4"
+ },
+ {
+  "id": "ts-420",
+  "tier": 4,
+  "name": "Zephaniah",
+  "type": "person",
+  "answer": "OT",
+  "hint": "A prophet active in the days of King Josiah.",
+  "refs": "Zephaniah 1:1"
+ },
+ {
+  "id": "ts-421",
+  "tier": 4,
+  "name": "Mephibosheth",
+  "type": "person",
+  "answer": "OT",
+  "hint": "Jonathan's son, lame in both feet after an accident as a child.",
+  "refs": "2 Samuel 4:4; 9:6-13"
+ },
+ {
+  "id": "ts-422",
+  "tier": 4,
+  "name": "Ichabod",
+  "type": "person",
+  "answer": "OT",
+  "hint": "A baby named 'no glory' after the ark was captured.",
+  "refs": "1 Samuel 4:19-22"
+ },
+ {
+  "id": "ts-423",
+  "tier": 4,
+  "name": "Nabal",
+  "type": "person",
+  "answer": "OT",
+  "hint": "A wealthy sheep-owner of Carmel whose name means 'fool.'",
+  "refs": "1 Samuel 25:3, 25:25"
+ },
+ {
+  "id": "ts-424",
+  "tier": 4,
+  "name": "Shibboleth",
+  "type": "thing",
+  "answer": "OT",
+  "hint": "A word that exposed those who could not pronounce it.",
+  "refs": "Judges 12:5-6"
+ },
+ {
+  "id": "ts-425",
+  "tier": 4,
+  "name": "Peniel",
+  "type": "place",
+  "answer": "OT",
+  "hint": "Jacob named it 'face of God' after wrestling.",
+  "refs": "Genesis 32:30"
+ }
+]

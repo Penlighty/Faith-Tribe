@@ -1,0 +1,1010 @@
+[
+ {
+  "id": "ws-101",
+  "tier": 1,
+  "quote": "Am I my brother's keeper?",
+  "answer": "Cain",
+  "options": [
+   "Cain",
+   "Abel",
+   "Adam",
+   "Noah"
+  ],
+  "ref": "Genesis 4:9",
+  "note": "Cain's reply when God asked where Abel was."
+ },
+ {
+  "id": "ws-102",
+  "tier": 1,
+  "quote": "Ye shall not surely die.",
+  "answer": "The serpent",
+  "options": [
+   "The serpent",
+   "Eve",
+   "Adam",
+   "Cain"
+  ],
+  "ref": "Genesis 3:4",
+  "note": "The serpent's words to the woman about the forbidden fruit."
+ },
+ {
+  "id": "ws-103",
+  "tier": 1,
+  "quote": "The serpent beguiled me, and I did eat.",
+  "answer": "Eve",
+  "options": [
+   "Eve",
+   "Adam",
+   "Sarah",
+   "Rebekah"
+  ],
+  "ref": "Genesis 3:13",
+  "note": "Eve answers God in the garden."
+ },
+ {
+  "id": "ws-104",
+  "tier": 1,
+  "quote": "Who is the LORD, that I should obey his voice to let Israel go?",
+  "answer": "Pharaoh",
+  "options": [
+   "Pharaoh",
+   "Balak",
+   "Nebuchadnezzar",
+   "Haman"
+  ],
+  "ref": "Exodus 5:2",
+  "note": "Pharaoh's answer to Moses and Aaron."
+ },
+ {
+  "id": "ws-105",
+  "tier": 1,
+  "quote": "Choose you this day whom ye will serve; but as for me and my house, we will serve the LORD.",
+  "answer": "Joshua",
+  "options": [
+   "Joshua",
+   "Moses",
+   "Caleb",
+   "Gideon"
+  ],
+  "ref": "Joshua 24:15",
+  "note": "Joshua's challenge to Israel at Shechem."
+ },
+ {
+  "id": "ws-106",
+  "tier": 1,
+  "quote": "Whither thou goest, I will go; and where thou lodgest, I will lodge.",
+  "answer": "Ruth",
+  "options": [
+   "Ruth",
+   "Naomi",
+   "Orpah",
+   "Esther"
+  ],
+  "ref": "Ruth 1:16",
+  "note": "Ruth's vow to stay with Naomi."
+ },
+ {
+  "id": "ws-107",
+  "tier": 1,
+  "quote": "If I perish, I perish.",
+  "answer": "Esther",
+  "options": [
+   "Esther",
+   "Mordecai",
+   "Vashti",
+   "Ruth"
+  ],
+  "ref": "Esther 4:16",
+  "note": "Esther's resolve before approaching the king uninvited."
+ },
+ {
+  "id": "ws-108",
+  "tier": 1,
+  "quote": "The LORD gave, and the LORD hath taken away; blessed be the name of the LORD.",
+  "answer": "Job",
+  "options": [
+   "Job",
+   "Eliphaz",
+   "Elihu",
+   "Noah"
+  ],
+  "ref": "Job 1:21",
+  "note": "Job's response after losing his children and possessions."
+ },
+ {
+  "id": "ws-109",
+  "tier": 1,
+  "quote": "Here am I; send me.",
+  "answer": "Isaiah",
+  "options": [
+   "Isaiah",
+   "Jeremiah",
+   "Ezekiel",
+   "Amos"
+  ],
+  "ref": "Isaiah 6:8",
+  "note": "Isaiah's answer in the temple vision."
+ },
+ {
+  "id": "ws-110",
+  "tier": 1,
+  "quote": "Divide the living child in two, and give half to the one, and half to the other.",
+  "answer": "Solomon",
+  "options": [
+   "Solomon",
+   "David",
+   "Rehoboam",
+   "Nathan"
+  ],
+  "ref": "1 Kings 3:25",
+  "note": "Solomon's test to expose the real mother."
+ },
+ {
+  "id": "ws-111",
+  "tier": 1,
+  "quote": "Behold the handmaid of the Lord; be it unto me according to thy word.",
+  "answer": "Mary",
+  "options": [
+   "Mary",
+   "Elizabeth",
+   "Martha",
+   "Anna"
+  ],
+  "ref": "Luke 1:38",
+  "note": "Mary's response to the angel Gabriel."
+ },
+ {
+  "id": "ws-112",
+  "tier": 1,
+  "quote": "Behold the Lamb of God, which taketh away the sin of the world.",
+  "answer": "John the Baptist",
+  "options": [
+   "John the Baptist",
+   "Peter",
+   "Andrew",
+   "Simeon"
+  ],
+  "ref": "John 1:29",
+  "note": "Said when he saw Jesus coming toward him."
+ },
+ {
+  "id": "ws-113",
+  "tier": 1,
+  "quote": "Thou art the Christ, the Son of the living God.",
+  "answer": "Peter",
+  "options": [
+   "Peter",
+   "John",
+   "Andrew",
+   "Thomas"
+  ],
+  "ref": "Matthew 16:16",
+  "note": "Peter's confession at Caesarea Philippi."
+ },
+ {
+  "id": "ws-114",
+  "tier": 1,
+  "quote": "What is truth?",
+  "answer": "Pilate",
+  "options": [
+   "Pilate",
+   "Herod",
+   "Caiaphas",
+   "Nicodemus"
+  ],
+  "ref": "John 18:38",
+  "note": "Pilate to Jesus during the trial."
+ },
+ {
+  "id": "ws-115",
+  "tier": 1,
+  "quote": "My Lord and my God.",
+  "answer": "Thomas",
+  "options": [
+   "Thomas",
+   "Peter",
+   "Philip",
+   "Nathanael"
+  ],
+  "ref": "John 20:28",
+  "note": "Thomas after seeing the risen Jesus."
+ },
+ {
+  "id": "ws-116",
+  "tier": 1,
+  "quote": "He that is without sin among you, let him first cast a stone at her.",
+  "answer": "Jesus",
+  "options": [
+   "Jesus",
+   "Moses",
+   "Paul",
+   "Nathan"
+  ],
+  "ref": "John 8:7",
+  "note": "Jesus to those who brought a woman accused of adultery."
+ },
+ {
+  "id": "ws-117",
+  "tier": 1,
+  "quote": "Saul, Saul, why persecutest thou me?",
+  "answer": "Jesus",
+  "options": [
+   "Jesus",
+   "Ananias",
+   "Barnabas",
+   "Stephen"
+  ],
+  "ref": "Acts 9:4",
+  "note": "The voice Saul heard on the Damascus road."
+ },
+ {
+  "id": "ws-118",
+  "tier": 1,
+  "quote": "I have fought a good fight, I have finished my course, I have kept the faith.",
+  "answer": "Paul",
+  "options": [
+   "Paul",
+   "Peter",
+   "John",
+   "Barnabas"
+  ],
+  "ref": "2 Timothy 4:7",
+  "note": "Paul in his final letter to Timothy."
+ },
+ {
+  "id": "ws-201",
+  "tier": 2,
+  "quote": "Hear, O Israel: The LORD our God is one LORD.",
+  "answer": "Moses",
+  "options": [
+   "Moses",
+   "Joshua",
+   "Aaron",
+   "Samuel"
+  ],
+  "ref": "Deuteronomy 6:4",
+  "note": "Moses' charge to Israel, known as the Shema."
+ },
+ {
+  "id": "ws-202",
+  "tier": 2,
+  "quote": "I will not let thee go, except thou bless me.",
+  "answer": "Jacob",
+  "options": [
+   "Jacob",
+   "Esau",
+   "Isaac",
+   "Laban"
+  ],
+  "ref": "Genesis 32:26",
+  "note": "Jacob to the man who wrestled with him at the Jabbok."
+ },
+ {
+  "id": "ws-203",
+  "tier": 2,
+  "quote": "But as for you, ye thought evil against me; but God meant it unto good.",
+  "answer": "Joseph",
+  "options": [
+   "Joseph",
+   "Judah",
+   "Reuben",
+   "Benjamin"
+  ],
+  "ref": "Genesis 50:20",
+  "note": "Joseph to his brothers after Jacob's death."
+ },
+ {
+  "id": "ws-204",
+  "tier": 2,
+  "quote": "The voice is Jacob's voice, but the hands are the hands of Esau.",
+  "answer": "Isaac",
+  "options": [
+   "Isaac",
+   "Esau",
+   "Abraham",
+   "Laban"
+  ],
+  "ref": "Genesis 27:22",
+  "note": "Isaac, blind and suspicious, about the son in front of him."
+ },
+ {
+  "id": "ws-205",
+  "tier": 2,
+  "quote": "Thou art the man.",
+  "answer": "Nathan",
+  "options": [
+   "Nathan",
+   "Joab",
+   "Gad",
+   "Samuel"
+  ],
+  "ref": "2 Samuel 12:7",
+  "note": "Nathan confronting David about Bathsheba and Uriah."
+ },
+ {
+  "id": "ws-206",
+  "tier": 2,
+  "quote": "Thou comest to me with a sword, and with a spear, and with a shield: but I come to thee in the name of the LORD of hosts.",
+  "answer": "David",
+  "options": [
+   "David",
+   "Jonathan",
+   "Eliab",
+   "Saul"
+  ],
+  "ref": "1 Samuel 17:45",
+  "note": "David to Goliath."
+ },
+ {
+  "id": "ws-207",
+  "tier": 2,
+  "quote": "Behold, to obey is better than sacrifice, and to hearken than the fat of rams.",
+  "answer": "Samuel",
+  "options": [
+   "Samuel",
+   "Nathan",
+   "Eli",
+   "Elijah"
+  ],
+  "ref": "1 Samuel 15:22",
+  "note": "Samuel rebuking King Saul."
+ },
+ {
+  "id": "ws-208",
+  "tier": 2,
+  "quote": "How long halt ye between two opinions?",
+  "answer": "Elijah",
+  "options": [
+   "Elijah",
+   "Elisha",
+   "Ahab",
+   "Obadiah"
+  ],
+  "ref": "1 Kings 18:21",
+  "note": "Elijah to the people on Mount Carmel."
+ },
+ {
+  "id": "ws-209",
+  "tier": 2,
+  "quote": "Who knoweth whether thou art come to the kingdom for such a time as this?",
+  "answer": "Mordecai",
+  "options": [
+   "Mordecai",
+   "Haman",
+   "Hegai",
+   "Ahasuerus"
+  ],
+  "ref": "Esther 4:14",
+  "note": "Mordecai urging Esther to act."
+ },
+ {
+  "id": "ws-210",
+  "tier": 2,
+  "quote": "What have I done unto thee, that thou hast smitten me these three times?",
+  "answer": "Balaam's donkey",
+  "options": [
+   "Balaam's donkey",
+   "Balaam",
+   "Balak",
+   "The angel of the LORD"
+  ],
+  "ref": "Numbers 22:28",
+  "note": "The LORD opened the donkey's mouth to speak."
+ },
+ {
+  "id": "ws-211",
+  "tier": 2,
+  "quote": "Doth Job fear God for nought?",
+  "answer": "Satan",
+  "options": [
+   "Satan",
+   "Eliphaz",
+   "Bildad",
+   "Elihu"
+  ],
+  "ref": "Job 1:9",
+  "note": "Satan's challenge to God about Job's loyalty."
+ },
+ {
+  "id": "ws-212",
+  "tier": 2,
+  "quote": "Thou art Peter, and upon this rock I will build my church.",
+  "answer": "Jesus",
+  "options": [
+   "Jesus",
+   "John the Baptist",
+   "Paul",
+   "Andrew"
+  ],
+  "ref": "Matthew 16:18",
+  "note": "Jesus to Simon after his confession."
+ },
+ {
+  "id": "ws-213",
+  "tier": 2,
+  "quote": "Silver and gold have I none; but such as I have give I thee.",
+  "answer": "Peter",
+  "options": [
+   "Peter",
+   "Paul",
+   "John",
+   "Stephen"
+  ],
+  "ref": "Acts 3:6",
+  "note": "Peter to the lame man at the temple gate."
+ },
+ {
+  "id": "ws-214",
+  "tier": 2,
+  "quote": "Can there any good thing come out of Nazareth?",
+  "answer": "Nathanael",
+  "options": [
+   "Nathanael",
+   "Philip",
+   "Thomas",
+   "Nicodemus"
+  ],
+  "ref": "John 1:46",
+  "note": "Nathanael's reaction when Philip described Jesus."
+ },
+ {
+  "id": "ws-215",
+  "tier": 2,
+  "quote": "How can a man be born when he is old?",
+  "answer": "Nicodemus",
+  "options": [
+   "Nicodemus",
+   "Gamaliel",
+   "Caiaphas",
+   "Joseph of Arimathaea"
+  ],
+  "ref": "John 3:4",
+  "note": "Nicodemus puzzled by being born again."
+ },
+ {
+  "id": "ws-216",
+  "tier": 2,
+  "quote": "Jesus, thou son of David, have mercy on me.",
+  "answer": "Bartimaeus",
+  "options": [
+   "Bartimaeus",
+   "Zacchaeus",
+   "Jairus",
+   "Lazarus"
+  ],
+  "ref": "Mark 10:47",
+  "note": "A blind beggar near Jericho."
+ },
+ {
+  "id": "ws-217",
+  "tier": 2,
+  "quote": "What will ye give me, and I will deliver him unto you?",
+  "answer": "Judas Iscariot",
+  "options": [
+   "Judas Iscariot",
+   "Caiaphas",
+   "Peter",
+   "Pilate"
+  ],
+  "ref": "Matthew 26:15",
+  "note": "Judas to the chief priests."
+ },
+ {
+  "id": "ws-218",
+  "tier": 2,
+  "quote": "He must increase, but I must decrease.",
+  "answer": "John the Baptist",
+  "options": [
+   "John the Baptist",
+   "Andrew",
+   "Peter",
+   "Simeon"
+  ],
+  "ref": "John 3:30",
+  "note": "John speaking about Jesus' growing ministry."
+ },
+ {
+  "id": "ws-301",
+  "tier": 3,
+  "quote": "Now therefore give me this mountain, whereof the LORD spake in that day.",
+  "answer": "Caleb",
+  "options": [
+   "Caleb",
+   "Joshua",
+   "Othniel",
+   "Gideon"
+  ],
+  "ref": "Joshua 14:12",
+  "note": "Caleb, at eighty-five, asks for Hebron's hill country."
+ },
+ {
+  "id": "ws-302",
+  "tier": 3,
+  "quote": "Out of the eater came forth meat, and out of the strong came forth sweetness.",
+  "answer": "Samson",
+  "options": [
+   "Samson",
+   "Delilah",
+   "Manoah",
+   "Gideon"
+  ],
+  "ref": "Judges 14:14",
+  "note": "His riddle at the wedding feast."
+ },
+ {
+  "id": "ws-303",
+  "tier": 3,
+  "quote": "Call me not Naomi, call me Mara: for the Almighty hath dealt very bitterly with me.",
+  "answer": "Naomi",
+  "options": [
+   "Naomi",
+   "Ruth",
+   "Orpah",
+   "Boaz"
+  ],
+  "ref": "Ruth 1:20",
+  "note": "Naomi returning to Bethlehem."
+ },
+ {
+  "id": "ws-304",
+  "tier": 3,
+  "quote": "For this child I prayed; and the LORD hath given me my petition which I asked of him.",
+  "answer": "Hannah",
+  "options": [
+   "Hannah",
+   "Peninnah",
+   "Abigail",
+   "Michal"
+  ],
+  "ref": "1 Samuel 1:27",
+  "note": "Hannah presenting young Samuel at Shiloh."
+ },
+ {
+  "id": "ws-305",
+  "tier": 3,
+  "quote": "Behold, I have played the fool, and have erred exceedingly.",
+  "answer": "Saul",
+  "options": [
+   "Saul",
+   "Ahab",
+   "Eli",
+   "Abner"
+  ],
+  "ref": "1 Samuel 26:21",
+  "note": "Saul after David spared his life in the wilderness."
+ },
+ {
+  "id": "ws-306",
+  "tier": 3,
+  "quote": "How are the mighty fallen!",
+  "answer": "David",
+  "options": [
+   "David",
+   "Joab",
+   "Abner",
+   "Samuel"
+  ],
+  "ref": "2 Samuel 1:19",
+  "note": "David's lament for Saul and Jonathan."
+ },
+ {
+  "id": "ws-307",
+  "tier": 3,
+  "quote": "Fear not: for they that be with us are more than they that be with them.",
+  "answer": "Elisha",
+  "options": [
+   "Elisha",
+   "Elijah",
+   "Gehazi",
+   "Isaiah"
+  ],
+  "ref": "2 Kings 6:16",
+  "note": "To his frightened servant surrounded by an army at Dothan."
+ },
+ {
+  "id": "ws-308",
+  "tier": 3,
+  "quote": "I am doing a great work, so that I cannot come down.",
+  "answer": "Nehemiah",
+  "options": [
+   "Nehemiah",
+   "Ezra",
+   "Zerubbabel",
+   "Mordecai"
+  ],
+  "ref": "Nehemiah 6:3",
+  "note": "Replying to those who wanted him to leave the wall."
+ },
+ {
+  "id": "ws-309",
+  "tier": 3,
+  "quote": "Is not this great Babylon, that I have built for the house of the kingdom by the might of my power, and for the honour of my majesty?",
+  "answer": "Nebuchadnezzar",
+  "options": [
+   "Nebuchadnezzar",
+   "Belshazzar",
+   "Darius",
+   "Cyrus"
+  ],
+  "ref": "Daniel 4:30",
+  "note": "Said on his palace roof, just before he lost his reason."
+ },
+ {
+  "id": "ws-310",
+  "tier": 3,
+  "quote": "Our God whom we serve is able to deliver us from the burning fiery furnace.",
+  "answer": "Shadrach, Meshach and Abednego",
+  "options": [
+   "Shadrach, Meshach and Abednego",
+   "Daniel",
+   "Nebuchadnezzar",
+   "Darius"
+  ],
+  "ref": "Daniel 3:17",
+  "note": "Their answer to the king before the furnace."
+ },
+ {
+  "id": "ws-311",
+  "tier": 3,
+  "quote": "I fear the LORD, the God of heaven, which hath made the sea and the dry land.",
+  "answer": "Jonah",
+  "options": [
+   "Jonah",
+   "Jeremiah",
+   "Obadiah",
+   "The ship's captain"
+  ],
+  "ref": "Jonah 1:9",
+  "note": "Jonah answering the sailors who asked who he was."
+ },
+ {
+  "id": "ws-312",
+  "tier": 3,
+  "quote": "Ah, Lord GOD! behold, I cannot speak: for I am a child.",
+  "answer": "Jeremiah",
+  "options": [
+   "Jeremiah",
+   "Isaiah",
+   "Ezekiel",
+   "Samuel"
+  ],
+  "ref": "Jeremiah 1:6",
+  "note": "Jeremiah's response when called as a prophet."
+ },
+ {
+  "id": "ws-313",
+  "tier": 3,
+  "quote": "Fear not, Mary: for thou hast found favour with God.",
+  "answer": "Gabriel",
+  "options": [
+   "Gabriel",
+   "Michael",
+   "Zacharias",
+   "Joseph"
+  ],
+  "ref": "Luke 1:30",
+  "note": "The angel to Mary in Nazareth."
+ },
+ {
+  "id": "ws-314",
+  "tier": 3,
+  "quote": "Lord, now lettest thou thy servant depart in peace, according to thy word.",
+  "answer": "Simeon",
+  "options": [
+   "Simeon",
+   "Zacharias",
+   "Joseph",
+   "Anna"
+  ],
+  "ref": "Luke 2:29",
+  "note": "Simeon holding the infant Jesus in the temple."
+ },
+ {
+  "id": "ws-315",
+  "tier": 3,
+  "quote": "Lord, to whom shall we go? thou hast the words of eternal life.",
+  "answer": "Peter",
+  "options": [
+   "Peter",
+   "Judas Iscariot",
+   "Andrew",
+   "Thomas"
+  ],
+  "ref": "John 6:68",
+  "note": "Peter after many disciples turned away."
+ },
+ {
+  "id": "ws-316",
+  "tier": 3,
+  "quote": "Paul, thou art beside thyself; much learning doth make thee mad.",
+  "answer": "Festus",
+  "options": [
+   "Festus",
+   "Agrippa",
+   "Felix",
+   "Gamaliel"
+  ],
+  "ref": "Acts 26:24",
+  "note": "Festus interrupting Paul's defense."
+ },
+ {
+  "id": "ws-317",
+  "tier": 3,
+  "quote": "Behold, I see the heavens opened, and the Son of man standing on the right hand of God.",
+  "answer": "Stephen",
+  "options": [
+   "Stephen",
+   "Peter",
+   "Philip",
+   "Paul"
+  ],
+  "ref": "Acts 7:56",
+  "note": "Stephen's vision before the council."
+ },
+ {
+  "id": "ws-318",
+  "tier": 3,
+  "quote": "Sirs, what must I do to be saved?",
+  "answer": "The Philippian jailer",
+  "options": [
+   "The Philippian jailer",
+   "Cornelius",
+   "The Ethiopian eunuch",
+   "Lydia"
+  ],
+  "ref": "Acts 16:30",
+  "note": "After an earthquake opened the prison doors in Philippi."
+ },
+ {
+  "id": "ws-401",
+  "tier": 4,
+  "quote": "I will go.",
+  "answer": "Rebekah",
+  "options": [
+   "Rebekah",
+   "Rachel",
+   "Leah",
+   "Sarah"
+  ],
+  "ref": "Genesis 24:58",
+  "note": "Asked whether she would leave with Abraham's servant."
+ },
+ {
+  "id": "ws-402",
+  "tier": 4,
+  "quote": "I have enough, my brother; keep that thou hast unto thyself.",
+  "answer": "Esau",
+  "options": [
+   "Esau",
+   "Laban",
+   "Isaac",
+   "Jacob"
+  ],
+  "ref": "Genesis 33:9",
+  "note": "Esau declining Jacob's gift at their reunion."
+ },
+ {
+  "id": "ws-403",
+  "tier": 4,
+  "quote": "Can we find such a one as this is, a man in whom the Spirit of God is?",
+  "answer": "Pharaoh",
+  "options": [
+   "Pharaoh",
+   "Potiphar",
+   "The chief butler",
+   "Joseph's brothers"
+  ],
+  "ref": "Genesis 41:38",
+  "note": "Pharaoh to his servants about Joseph."
+ },
+ {
+  "id": "ws-404",
+  "tier": 4,
+  "quote": "Speak thou with us, and we will hear: but let not God speak with us, lest we die.",
+  "answer": "The people of Israel",
+  "options": [
+   "The people of Israel",
+   "Moses",
+   "Aaron",
+   "Joshua"
+  ],
+  "ref": "Exodus 20:19",
+  "note": "The people at the foot of Sinai after the thunder."
+ },
+ {
+  "id": "ws-405",
+  "tier": 4,
+  "quote": "Why hast thou troubled us? the LORD shall trouble thee this day.",
+  "answer": "Joshua",
+  "options": [
+   "Joshua",
+   "Achan",
+   "Caleb",
+   "Phinehas"
+  ],
+  "ref": "Joshua 7:25",
+  "note": "Joshua to Achan after the defeat at Ai."
+ },
+ {
+  "id": "ws-406",
+  "tier": 4,
+  "quote": "There is no restraint to the LORD to save by many or by few.",
+  "answer": "Jonathan",
+  "options": [
+   "Jonathan",
+   "David",
+   "Saul",
+   "Abner"
+  ],
+  "ref": "1 Samuel 14:6",
+  "note": "Jonathan proposing a raid on a Philistine outpost."
+ },
+ {
+  "id": "ws-407",
+  "tier": 4,
+  "quote": "Whose ox have I taken? or whose ass have I taken?",
+  "answer": "Samuel",
+  "options": [
+   "Samuel",
+   "Eli",
+   "Nathan",
+   "Gad"
+  ],
+  "ref": "1 Samuel 12:3",
+  "note": "Samuel's farewell speech to Israel."
+ },
+ {
+  "id": "ws-408",
+  "tier": 4,
+  "quote": "Thou hast asked a hard thing.",
+  "answer": "Elijah",
+  "options": [
+   "Elijah",
+   "Elisha",
+   "Gehazi",
+   "Jehu"
+  ],
+  "ref": "2 Kings 2:10",
+  "note": "Elijah's reply when Elisha asked for a double portion of his spirit."
+ },
+ {
+  "id": "ws-409",
+  "tier": 4,
+  "quote": "Are not Abana and Pharpar, rivers of Damascus, better than all the waters of Israel?",
+  "answer": "Naaman",
+  "options": [
+   "Naaman",
+   "Gehazi",
+   "Ben-hadad",
+   "Jehu"
+  ],
+  "ref": "2 Kings 5:12",
+  "note": "Naaman's angry reaction to the prophet's instruction."
+ },
+ {
+  "id": "ws-410",
+  "tier": 4,
+  "quote": "Hast thou found me, O mine enemy?",
+  "answer": "Ahab",
+  "options": [
+   "Ahab",
+   "Jehu",
+   "Jeroboam",
+   "Omri"
+  ],
+  "ref": "1 Kings 21:20",
+  "note": "Ahab to Elijah after the seizure of Naboth's vineyard."
+ },
+ {
+  "id": "ws-411",
+  "tier": 4,
+  "quote": "I was no prophet, neither was I a prophet's son; but I was an herdman.",
+  "answer": "Amos",
+  "options": [
+   "Amos",
+   "Hosea",
+   "Micah",
+   "Joel"
+  ],
+  "ref": "Amos 7:14",
+  "note": "Amos to the priest Amaziah at Bethel."
+ },
+ {
+  "id": "ws-412",
+  "tier": 4,
+  "quote": "His name is John.",
+  "answer": "Zacharias",
+  "options": [
+   "Zacharias",
+   "Elizabeth",
+   "Joseph",
+   "Simeon"
+  ],
+  "ref": "Luke 1:63",
+  "note": "Written on a tablet while he could not speak."
+ },
+ {
+  "id": "ws-413",
+  "tier": 4,
+  "quote": "We have found him, of whom Moses in the law, and the prophets, did write, Jesus of Nazareth, the son of Joseph.",
+  "answer": "Philip",
+  "options": [
+   "Philip",
+   "Andrew",
+   "Nathanael",
+   "Peter"
+  ],
+  "ref": "John 1:45",
+  "note": "Philip telling Nathanael about Jesus."
+ },
+ {
+  "id": "ws-414",
+  "tier": 4,
+  "quote": "Behold an Israelite indeed, in whom is no guile!",
+  "answer": "Jesus",
+  "options": [
+   "Jesus",
+   "Philip",
+   "John the Baptist",
+   "Andrew"
+  ],
+  "ref": "John 1:47",
+  "note": "Said of Nathanael as he approached."
+ },
+ {
+  "id": "ws-415",
+  "tier": 4,
+  "quote": "Go thy way for this time; when I have a convenient season, I will call for thee.",
+  "answer": "Felix",
+  "options": [
+   "Felix",
+   "Festus",
+   "Agrippa",
+   "Lysias"
+  ],
+  "ref": "Acts 24:25",
+  "note": "Felix after Paul spoke of righteousness and judgment to come."
+ },
+ {
+  "id": "ws-416",
+  "tier": 4,
+  "quote": "Refrain from these men, and let them alone.",
+  "answer": "Gamaliel",
+  "options": [
+   "Gamaliel",
+   "Caiaphas",
+   "Nicodemus",
+   "Festus"
+  ],
+  "ref": "Acts 5:38",
+  "note": "Advising the council about the apostles."
+ },
+ {
+  "id": "ws-417",
+  "tier": 4,
+  "quote": "Sirs, ye should have hearkened unto me, and not have loosed from Crete, and to have gained this harm and loss.",
+  "answer": "Paul",
+  "options": [
+   "Paul",
+   "Luke",
+   "Julius the centurion",
+   "Aristarchus"
+  ],
+  "ref": "Acts 27:21",
+  "note": "Paul reminding the sailors of his earlier warning."
+ },
+ {
+  "id": "ws-418",
+  "tier": 4,
+  "quote": "Almost thou persuadest me to be a Christian.",
+  "answer": "Agrippa",
+  "options": [
+   "Agrippa",
+   "Felix",
+   "Festus",
+   "Pilate"
+  ],
+  "ref": "Acts 26:28",
+  "note": "Agrippa's reply to Paul's defense."
+ }
+]

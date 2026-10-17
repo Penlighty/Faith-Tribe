@@ -1,0 +1,428 @@
+{
+  "categories": [
+    {
+      "id": "cat_1",
+      "title": "Books of the Old Testament",
+      "difficulty": "easy",
+      "items": [
+        { "name": "Genesis", "aliases": ["Gen"] },
+        { "name": "Exodus", "aliases": ["Exod", "Ex"] },
+        { "name": "Leviticus", "aliases": ["Lev"] },
+        { "name": "Numbers", "aliases": ["Num"] },
+        { "name": "Deuteronomy", "aliases": ["Deut"] },
+        { "name": "Joshua", "aliases": ["Josh"] },
+        { "name": "Judges", "aliases": ["Judg"] },
+        { "name": "Ruth", "aliases": [] },
+        { "name": "1 Samuel", "aliases": ["First Samuel"] },
+        { "name": "2 Samuel", "aliases": ["Second Samuel"] },
+        { "name": "1 Kings", "aliases": ["First Kings"] },
+        { "name": "2 Kings", "aliases": ["Second Kings"] },
+        { "name": "Psalms", "aliases": ["Psalm"] },
+        { "name": "Proverbs", "aliases": ["Prov"] },
+        { "name": "Isaiah", "aliases": ["Isa"] },
+        { "name": "Jeremiah", "aliases": ["Jer"] },
+        { "name": "Daniel", "aliases": ["Dan"] },
+        { "name": "Jonah", "aliases": [] },
+        { "name": "Malachi", "aliases": ["Mal"] }
+      ],
+      "references": ["Luke 24:44", "2 Timothy 3:16"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_2",
+      "title": "The Twelve Apostles of Jesus",
+      "difficulty": "easy",
+      "items": [
+        { "name": "Peter", "aliases": ["Simon Peter", "Cephas"] },
+        { "name": "Andrew", "aliases": [] },
+        { "name": "James son of Zebedee", "aliases": ["James"] },
+        { "name": "John", "aliases": [] },
+        { "name": "Philip", "aliases": [] },
+        { "name": "Bartholomew", "aliases": ["Nathanael"] },
+        { "name": "Thomas", "aliases": ["Didymus"] },
+        { "name": "Matthew", "aliases": ["Levi"] },
+        { "name": "James son of Alphaeus", "aliases": [] },
+        { "name": "Thaddaeus", "aliases": ["Judas son of James", "Lebbaeus"] },
+        { "name": "Simon the Zealot", "aliases": ["Simon the Canaanite"] },
+        { "name": "Judas Iscariot", "aliases": [] },
+        { "name": "Matthias", "aliases": [] }
+      ],
+      "references": ["Matthew 10:2-4", "Acts 1:13-26"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_3",
+      "title": "Animals Mentioned in Scripture",
+      "difficulty": "easy",
+      "items": [
+        { "name": "Lion", "aliases": [] },
+        { "name": "Lamb", "aliases": ["Sheep"] },
+        { "name": "Dove", "aliases": ["Pigeon"] },
+        { "name": "Donkey", "aliases": ["Ass"] },
+        { "name": "Camel", "aliases": [] },
+        { "name": "Serpent", "aliases": ["Snake"] },
+        { "name": "Fish", "aliases": ["Whale"] },
+        { "name": "Eagle", "aliases": [] },
+        { "name": "Raven", "aliases": [] },
+        { "name": "Goat", "aliases": [] },
+        { "name": "Ox", "aliases": ["Bull", "Calf"] },
+        { "name": "Horse", "aliases": [] },
+        { "name": "Locust", "aliases": [] },
+        { "name": "Wolf", "aliases": [] },
+        { "name": "Bear", "aliases": [] },
+        { "name": "Leopard", "aliases": [] }
+      ],
+      "references": ["Genesis 1:24-25", "Isaiah 11:6-9", "Leviticus 11"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_4",
+      "title": "Women of the Bible",
+      "difficulty": "easy",
+      "items": [
+        { "name": "Eve", "aliases": [] },
+        { "name": "Sarah", "aliases": ["Sarai"] },
+        { "name": "Rebekah", "aliases": ["Rebecca"] },
+        { "name": "Rachel", "aliases": [] },
+        { "name": "Leah", "aliases": [] },
+        { "name": "Miriam", "aliases": [] },
+        { "name": "Rahab", "aliases": [] },
+        { "name": "Deborah", "aliases": [] },
+        { "name": "Ruth", "aliases": [] },
+        { "name": "Hannah", "aliases": [] },
+        { "name": "Abigail", "aliases": [] },
+        { "name": "Esther", "aliases": ["Hadassah"] },
+        { "name": "Mary mother of Jesus", "aliases": ["Mary"] },
+        { "name": "Mary Magdalene", "aliases": [] },
+        { "name": "Martha", "aliases": [] },
+        { "name": "Elizabeth", "aliases": [] },
+        { "name": "Priscilla", "aliases": ["Prisca"] },
+        { "name": "Lydia", "aliases": [] }
+      ],
+      "references": ["Genesis 3:20", "Hebrews 11:11", "Luke 1:26-38", "Romans 16:3"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_5",
+      "title": "Plagues of Egypt",
+      "difficulty": "medium",
+      "items": [
+        { "name": "Water to Blood", "aliases": ["Blood"] },
+        { "name": "Frogs", "aliases": [] },
+        { "name": "Lice", "aliases": ["Gnats"] },
+        { "name": "Flies", "aliases": [] },
+        { "name": "Livestock Pestilence", "aliases": ["Diseased Livestock", "Murrain"] },
+        { "name": "Boils", "aliases": [] },
+        { "name": "Hail with Fire", "aliases": ["Hail"] },
+        { "name": "Locusts", "aliases": [] },
+        { "name": "Darkness", "aliases": [] },
+        { "name": "Death of the Firstborn", "aliases": ["Firstborn"] }
+      ],
+      "references": ["Exodus 7:14-12:30", "Psalm 78:43-51"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_6",
+      "title": "Fruit of the Spirit",
+      "difficulty": "easy",
+      "items": [
+        { "name": "Love", "aliases": ["Charity"] },
+        { "name": "Joy", "aliases": [] },
+        { "name": "Peace", "aliases": [] },
+        { "name": "Longsuffering", "aliases": ["Patience"] },
+        { "name": "Gentleness", "aliases": ["Kindness"] },
+        { "name": "Goodness", "aliases": [] },
+        { "name": "Faith", "aliases": ["Faithfulness"] },
+        { "name": "Meekness", "aliases": ["Gentleness"] },
+        { "name": "Temperance", "aliases": ["Self-control"] }
+      ],
+      "references": ["Galatians 5:22-23"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_7",
+      "title": "Cities Mentioned in the New Testament",
+      "difficulty": "medium",
+      "items": [
+        { "name": "Jerusalem", "aliases": [] },
+        { "name": "Bethlehem", "aliases": [] },
+        { "name": "Nazareth", "aliases": [] },
+        { "name": "Capernaum", "aliases": [] },
+        { "name": "Jericho", "aliases": [] },
+        { "name": "Antioch", "aliases": [] },
+        { "name": "Damascus", "aliases": [] },
+        { "name": "Athens", "aliases": [] },
+        { "name": "Corinth", "aliases": [] },
+        { "name": "Ephesus", "aliases": [] },
+        { "name": "Philippi", "aliases": [] },
+        { "name": "Rome", "aliases": [] },
+        { "name": "Thessalonica", "aliases": [] }
+      ],
+      "references": ["Acts 1:8", "Acts 17:16", "Luke 2:4"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_8",
+      "title": "Kings of Israel and Judah",
+      "difficulty": "medium",
+      "items": [
+        { "name": "Saul", "aliases": [] },
+        { "name": "David", "aliases": [] },
+        { "name": "Solomon", "aliases": [] },
+        { "name": "Rehoboam", "aliases": [] },
+        { "name": "Jeroboam", "aliases": [] },
+        { "name": "Ahab", "aliases": [] },
+        { "name": "Jehoshaphat", "aliases": [] },
+        { "name": "Hezekiah", "aliases": [] },
+        { "name": "Josiah", "aliases": [] },
+        { "name": "Uzziah", "aliases": [] },
+        { "name": "Manasseh", "aliases": [] }
+      ],
+      "references": ["1 Samuel 10:1", "2 Samuel 5:4", "1 Kings 11:42", "2 Kings 18-20"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_9",
+      "title": "Prophets of God",
+      "difficulty": "easy",
+      "items": [
+        { "name": "Moses", "aliases": [] },
+        { "name": "Samuel", "aliases": [] },
+        { "name": "Elijah", "aliases": [] },
+        { "name": "Elisha", "aliases": [] },
+        { "name": "Isaiah", "aliases": [] },
+        { "name": "Jeremiah", "aliases": [] },
+        { "name": "Ezekiel", "aliases": [] },
+        { "name": "Daniel", "aliases": [] },
+        { "name": "Hosea", "aliases": [] },
+        { "name": "Joel", "aliases": [] },
+        { "name": "Amos", "aliases": [] },
+        { "name": "Jonah", "aliases": [] },
+        { "name": "Micah", "aliases": [] },
+        { "name": "Habakkuk", "aliases": [] },
+        { "name": "John the Baptist", "aliases": [] }
+      ],
+      "references": ["Deuteronomy 18:18", "Hebrews 1:1", "Matthew 11:11"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_10",
+      "title": "Mountains in the Bible",
+      "difficulty": "medium",
+      "items": [
+        { "name": "Mount Sinai", "aliases": ["Horeb"] },
+        { "name": "Mount Ararat", "aliases": ["Ararat"] },
+        { "name": "Mount Moriah", "aliases": ["Moriah"] },
+        { "name": "Mount Carmel", "aliases": ["Carmel"] },
+        { "name": "Mount of Olives", "aliases": ["Olivet"] },
+        { "name": "Mount Zion", "aliases": ["Zion"] },
+        { "name": "Mount Nebo", "aliases": ["Pisgah"] },
+        { "name": "Mount Hermon", "aliases": [] },
+        { "name": "Mount Gerizim", "aliases": [] }
+      ],
+      "references": ["Genesis 8:4", "Exodus 19:20", "1 Kings 18:19", "Acts 1:12"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_11",
+      "title": "Bodies of Water in Scripture",
+      "difficulty": "medium",
+      "items": [
+        { "name": "Jordan River", "aliases": ["River Jordan"] },
+        { "name": "Red Sea", "aliases": [] },
+        { "name": "Sea of Galilee", "aliases": ["Tiberias", "Gennesaret"] },
+        { "name": "Dead Sea", "aliases": ["Salt Sea"] },
+        { "name": "Nile River", "aliases": ["The River of Egypt"] },
+        { "name": "Euphrates River", "aliases": ["Euphrates"] },
+        { "name": "Tigris River", "aliases": ["Hiddekel"] },
+        { "name": "Mediterranean Sea", "aliases": ["Great Sea"] }
+      ],
+      "references": ["Joshua 3:17", "Exodus 14:21", "Matthew 4:18", "Genesis 2:14"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_12",
+      "title": "Armor of God",
+      "difficulty": "easy",
+      "items": [
+        { "name": "Belt of Truth", "aliases": ["Girdle of Truth", "Truth"] },
+        { "name": "Breastplate of Righteousness", "aliases": ["Righteousness"] },
+        { "name": "Shoes of the Gospel of Peace", "aliases": ["Gospel of Peace", "Gospel Shoes"] },
+        { "name": "Shield of Faith", "aliases": ["Faith"] },
+        { "name": "Helmet of Salvation", "aliases": ["Salvation"] },
+        { "name": "Sword of the Spirit", "aliases": ["Word of God", "Spirit"] }
+      ],
+      "references": ["Ephesians 6:13-17"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_13",
+      "title": "Miracles Performed by Jesus",
+      "difficulty": "easy",
+      "items": [
+        { "name": "Water into Wine", "aliases": ["Cana wedding"] },
+        { "name": "Feeding the 5000", "aliases": ["Multiplication of loaves", "5000"] },
+        { "name": "Walking on Water", "aliases": ["Sea walk"] },
+        { "name": "Calming the Storm", "aliases": ["Stilling the tempest"] },
+        { "name": "Raising Lazarus", "aliases": ["Lazarus from the dead"] },
+        { "name": "Healing the Blind Bartimaeus", "aliases": ["Blind man"] },
+        { "name": "Healing the Ten Lepers", "aliases": ["Cleansing lepers"] },
+        { "name": "Raising Jairus's Daughter", "aliases": ["Jairus"] },
+        { "name": "Healing the Paralytic Lowered through Roof", "aliases": ["Paralytic"] }
+      ],
+      "references": ["John 2:1-11", "Matthew 14:13-33", "John 11:38-44", "Mark 2:1-12"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_14",
+      "title": "Parables Told by Jesus",
+      "difficulty": "easy",
+      "items": [
+        { "name": "The Good Samaritan", "aliases": ["Good Samaritan"] },
+        { "name": "The Prodigal Son", "aliases": ["Lost Son"] },
+        { "name": "The Sower", "aliases": ["Parable of the Soils"] },
+        { "name": "The Mustard Seed", "aliases": ["Mustard Seed"] },
+        { "name": "The Lost Sheep", "aliases": ["Lost Sheep"] },
+        { "name": "The Pearl of Great Price", "aliases": ["Hidden Treasure"] },
+        { "name": "The Ten Virgins", "aliases": ["Ten Bridesmaids"] },
+        { "name": "The Talents", "aliases": ["Minas"] },
+        { "name": "The Wheat and Tares", "aliases": ["Weeds"] },
+        { "name": "The Pharisee and the Tax Collector", "aliases": ["Publican"] }
+      ],
+      "references": ["Luke 10:25-37", "Luke 15:11-32", "Matthew 13", "Matthew 25"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_15",
+      "title": "Musical Instruments in the Bible",
+      "difficulty": "medium",
+      "items": [
+        { "name": "Harp", "aliases": ["Lyre"] },
+        { "name": "Psaltery", "aliases": ["Lute"] },
+        { "name": "Shofar", "aliases": ["Ram's Horn", "Trumpet"] },
+        { "name": "Timbrel", "aliases": ["Tambourine"] },
+        { "name": "Cymbals", "aliases": [] },
+        { "name": "Flute", "aliases": ["Pipe"] },
+        { "name": "Cornet", "aliases": ["Horn"] }
+      ],
+      "references": ["Psalm 150:3-5", "1 Samuel 16:23", "Daniel 3:5"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_16",
+      "title": "Food and Drink in Scripture",
+      "difficulty": "easy",
+      "items": [
+        { "name": "Manna", "aliases": [] },
+        { "name": "Bread", "aliases": ["Unleavened bread"] },
+        { "name": "Honey", "aliases": ["Honeycomb"] },
+        { "name": "Figs", "aliases": ["Fig cake"] },
+        { "name": "Olives", "aliases": ["Olive oil"] },
+        { "name": "Grapes", "aliases": ["Raisins"] },
+        { "name": "Wine", "aliases": ["New wine"] },
+        { "name": "Fish", "aliases": [] },
+        { "name": "Pomegranates", "aliases": [] },
+        { "name": "Milk", "aliases": [] },
+        { "name": "Quail", "aliases": [] }
+      ],
+      "references": ["Exodus 16:31", "Deuteronomy 8:8", "John 6:9", "Numbers 11:31"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_17",
+      "title": "Sons of Jacob (Tribes of Israel)",
+      "difficulty": "hard",
+      "items": [
+        { "name": "Reuben", "aliases": [] },
+        { "name": "Simeon", "aliases": [] },
+        { "name": "Levi", "aliases": [] },
+        { "name": "Judah", "aliases": [] },
+        { "name": "Dan", "aliases": [] },
+        { "name": "Naphtali", "aliases": [] },
+        { "name": "Gad", "aliases": [] },
+        { "name": "Asher", "aliases": [] },
+        { "name": "Issachar", "aliases": [] },
+        { "name": "Zebulun", "aliases": [] },
+        { "name": "Joseph", "aliases": ["Ephraim", "Manasseh"] },
+        { "name": "Benjamin", "aliases": [] }
+      ],
+      "references": ["Genesis 35:23-26", "Genesis 49:1-28"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_18",
+      "title": "Judges of Israel",
+      "difficulty": "hard",
+      "items": [
+        { "name": "Othniel", "aliases": [] },
+        { "name": "Ehud", "aliases": [] },
+        { "name": "Deborah", "aliases": [] },
+        { "name": "Gideon", "aliases": ["Jerubbaal"] },
+        { "name": "Jephthah", "aliases": [] },
+        { "name": "Samson", "aliases": [] },
+        { "name": "Shamgar", "aliases": [] },
+        { "name": "Eli", "aliases": [] },
+        { "name": "Samuel", "aliases": [] }
+      ],
+      "references": ["Judges 2:16", "Judges 3-16", "1 Samuel 7:15"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_19",
+      "title": "Occupations and Trades in the Bible",
+      "difficulty": "easy",
+      "items": [
+        { "name": "Shepherd", "aliases": [] },
+        { "name": "Carpenter", "aliases": ["Woodworker"] },
+        { "name": "Fisherman", "aliases": ["Fisher"] },
+        { "name": "Tentmaker", "aliases": [] },
+        { "name": "Tax Collector", "aliases": ["Publican"] },
+        { "name": "Physician", "aliases": ["Doctor"] },
+        { "name": "Priest", "aliases": [] },
+        { "name": "Scribe", "aliases": [] },
+        { "name": "Potter", "aliases": [] },
+        { "name": "Blacksmith", "aliases": ["Smith"] },
+        { "name": "Tanner", "aliases": [] }
+      ],
+      "references": ["Mark 6:3", "Matthew 4:18", "Acts 18:3", "Luke 5:27", "Jeremiah 18:2"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_20",
+      "title": "Gifts of the Holy Spirit",
+      "difficulty": "hard",
+      "items": [
+        { "name": "Word of Wisdom", "aliases": ["Wisdom"] },
+        { "name": "Word of Knowledge", "aliases": ["Knowledge"] },
+        { "name": "Faith", "aliases": [] },
+        { "name": "Gifts of Healing", "aliases": ["Healing"] },
+        { "name": "Working of Miracles", "aliases": ["Miracles"] },
+        { "name": "Prophecy", "aliases": [] },
+        { "name": "Discerning of Spirits", "aliases": ["Discernment"] },
+        { "name": "Divers Kinds of Tongues", "aliases": ["Tongues"] },
+        { "name": "Interpretation of Tongues", "aliases": ["Interpretation"] }
+      ],
+      "references": ["1 Corinthians 12:8-10", "Romans 12:6-8"],
+      "needsReview": true
+    },
+    {
+      "id": "cat_21",
+      "title": "Trees and Plants of the Bible",
+      "difficulty": "hard",
+      "items": [
+        { "name": "Olive Tree", "aliases": ["Olive"] },
+        { "name": "Fig Tree", "aliases": ["Fig"] },
+        { "name": "Vine", "aliases": ["Grapevine"] },
+        { "name": "Cedar of Lebanon", "aliases": ["Cedar"] },
+        { "name": "Sycamore Tree", "aliases": ["Sycomore"] },
+        { "name": "Oak Tree", "aliases": ["Oak"] },
+        { "name": "Palm Tree", "aliases": ["Date Palm"] },
+        { "name": "Myrtle", "aliases": [] },
+        { "name": "Hyssop", "aliases": [] },
+        { "name": "Mustard", "aliases": [] }
+      ],
+      "references": ["Psalm 92:12", "1 Kings 4:33", "Luke 19:4", "John 15:1"],
+      "needsReview": true
+    }
+  ]
+}
