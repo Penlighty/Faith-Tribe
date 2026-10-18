@@ -39,26 +39,24 @@ const STORAGE_KEY_USER_NAME = 'faith_tribe_player_name';
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { setPaletteKey, soundEnabled } = useTheme();
 
-  // Persistent user identity
+  // Persistent user identity per tab
   const [currentUser, setCurrentUser] = useState<Player | null>(() => {
-    const savedId = localStorage.getItem(STORAGE_KEY_USER_ID) || localStorage.getItem('agape_player_id');
-    const savedName = localStorage.getItem(STORAGE_KEY_USER_NAME) || localStorage.getItem('agape_player_name') || 'Player';
-    if (savedId) {
-      return {
-        id: savedId,
-        name: savedName,
-        isHost: false,
-        avatarSeed: savedId,
-        score: 0,
-      };
+    const savedTabId = typeof window !== 'undefined' ? sessionStorage.getItem(STORAGE_KEY_USER_ID) : null;
+    const savedName =
+      (typeof window !== 'undefined'
+        ? localStorage.getItem(STORAGE_KEY_USER_NAME) || localStorage.getItem('agape_player_name')
+        : null) || 'Player';
+
+    const userId = savedTabId || 'p_' + Math.random().toString(36).substring(2, 9);
+    if (typeof window !== 'undefined' && !savedTabId) {
+      sessionStorage.setItem(STORAGE_KEY_USER_ID, userId);
     }
-    const newId = 'p_' + Math.random().toString(36).substring(2, 9);
-    localStorage.setItem(STORAGE_KEY_USER_ID, newId);
+
     return {
-      id: newId,
+      id: userId,
       name: savedName,
       isHost: false,
-      avatarSeed: newId,
+      avatarSeed: userId,
       score: 0,
     };
   });
@@ -93,7 +91,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Initialize transport
   if (!transportRef.current) {
-    transportRef.current = createTransport('supabase');
+    transportRef.current = createTransport('auto');
   }
 
   // Update theme seed color when game changes
@@ -291,6 +289,29 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         if (isHostRef.current) {
           handleHostIntent(msg.payload as GameIntent);
         }
+      } else if (msg.type === 'PLAYER_JOIN') {
+        if (isHostRef.current) {
+          const joiningPlayer = msg.payload?.player as Player;
+          if (joiningPlayer) {
+            setPlayers((prev) => {
+              const exists = prev.some((p) => p.id === joiningPlayer.id);
+              const next = exists
+                ? prev.map((p) => (p.id === joiningPlayer.id ? { ...p, ...joiningPlayer } : p))
+                : [...prev, joiningPlayer];
+
+              if (snapshotRef.current) {
+                const nextSnapshot: SessionSnapshot = {
+                  ...snapshotRef.current,
+                  version: snapshotRef.current.version + 1,
+                  players: next,
+                };
+                setSnapshot(nextSnapshot);
+                transport.send('SNAPSHOT', nextSnapshot, nextSnapshot.version);
+              }
+              return next;
+            });
+          }
+        }
       } else if (msg.type === 'REQUEST_SNAPSHOT') {
         // Late joiner or reconnect requested snapshot
         if (isHostRef.current && snapshotRef.current) {
@@ -313,10 +334,28 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       setPlayers((currentPlayers) => {
         // Retain existing scores if present
-        return mappedPlayers.map((p) => {
+        const merged = mappedPlayers.map((p) => {
           const existing = currentPlayers.find((cp) => cp.id === p.id);
           return existing ? { ...p, score: existing.score } : p;
         });
+
+        // Ensure host is always in the list
+        if (currentUser && currentUser.isHost && !merged.some((p) => p.id === currentUser.id)) {
+          merged.unshift(currentUser);
+        }
+
+        // If host, update snapshot with full live player list and broadcast to all disciples
+        if (isHostRef.current && snapshotRef.current) {
+          const updatedSnapshot: SessionSnapshot = {
+            ...snapshotRef.current,
+            version: snapshotRef.current.version + 1,
+            players: merged,
+          };
+          setSnapshot(updatedSnapshot);
+          transport.send('SNAPSHOT', updatedSnapshot, updatedSnapshot.version);
+        }
+
+        return merged;
       });
     });
 
@@ -332,21 +371,26 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const cleanName = sanitizePlayerName(hostName);
     localStorage.setItem(STORAGE_KEY_USER_NAME, cleanName);
 
+    let hostId = typeof window !== 'undefined' ? sessionStorage.getItem(STORAGE_KEY_USER_ID) : null;
+    if (!hostId) {
+      hostId = 'p_' + Math.random().toString(36).substring(2, 9);
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem(STORAGE_KEY_USER_ID, hostId);
+      }
+    }
+
     const hostUser: Player = {
-      ...(currentUser || {
-        id: 'p_' + Math.random().toString(36).substring(2, 9),
-        name: cleanName,
-        avatarSeed: cleanName,
-        score: 0,
-        isHost: true,
-      }),
+      id: hostId,
       name: cleanName,
+      avatarSeed: hostId,
+      score: 0,
       isHost: true,
     };
 
     setCurrentUser(hostUser);
     setRoomCode(code);
     setIsHost(true);
+    setPlayers([hostUser]);
 
     const initialConfig: SessionConfig = {
       roomCode: code,
@@ -396,15 +440,19 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const cleanName = sanitizePlayerName(playerName);
     localStorage.setItem(STORAGE_KEY_USER_NAME, cleanName);
 
+    let playerId = typeof window !== 'undefined' ? sessionStorage.getItem(STORAGE_KEY_USER_ID) : null;
+    if (!playerId) {
+      playerId = 'p_' + Math.random().toString(36).substring(2, 9);
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem(STORAGE_KEY_USER_ID, playerId);
+      }
+    }
+
     const playerUser: Player = {
-      ...(currentUser || {
-        id: 'p_' + Math.random().toString(36).substring(2, 9),
-        name: cleanName,
-        avatarSeed: cleanName,
-        score: 0,
-        isHost: false,
-      }),
+      id: playerId,
       name: cleanName,
+      avatarSeed: playerId,
+      score: 0,
       isHost: false,
     };
 
@@ -422,6 +470,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
 
     setIsConnected(true);
+
+    // Explicitly notify host of player join
+    await transport.send('PLAYER_JOIN', { player: playerUser });
 
     // Request snapshot from host
     await transport.send('REQUEST_SNAPSHOT', { playerId: playerUser.id });

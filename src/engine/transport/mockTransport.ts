@@ -194,6 +194,21 @@ export class MockTransport implements Transport {
     if (data.action === 'JOIN' && data.user) {
       room.presence.set(data.user.id, data.user);
       this.notifyPresence();
+
+      // Announce our presence back to the joining tab so it knows we exist
+      if (this.user && this.broadcastChannel) {
+        try {
+          this.broadcastChannel.postMessage({
+            kind: 'PRESENCE',
+            data: { action: 'ANNOUNCE', user: this.user },
+          });
+        } catch {
+          // ignore
+        }
+      }
+    } else if (data.action === 'ANNOUNCE' && data.user) {
+      room.presence.set(data.user.id, data.user);
+      this.notifyPresence();
     } else if (data.action === 'LEAVE' && data.userId) {
       room.presence.delete(data.userId);
       this.notifyPresence();

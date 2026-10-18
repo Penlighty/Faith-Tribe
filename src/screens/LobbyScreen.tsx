@@ -35,9 +35,19 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
   const minPlayers = game?.meta?.minPlayers || 4;
   const canStart = players.length >= 1; // Allows testing with 1+
 
-  const joinUrl = typeof window !== 'undefined'
-    ? `${window.location.origin}?join=${roomCode}`
-    : `https://faithtribe.app?join=${roomCode}`;
+  const isLocalhost =
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  const [useCloudUrl, setUseCloudUrl] = useState(isLocalhost);
+
+  const baseOrigin =
+    isLocalhost && useCloudUrl
+      ? 'https://faith-tribe.vercel.app'
+      : typeof window !== 'undefined'
+      ? window.location.origin
+      : 'https://faith-tribe.vercel.app';
+
+  const joinUrl = `${baseOrigin}?join=${roomCode}`;
 
   const handleCopyLink = () => {
     triggerHaptic('light');
@@ -99,6 +109,30 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
               <span className="text-[11px] text-gray-700 font-bold flex items-center gap-1">
                 <Icon name="qr" size={14} /> Scan with phone camera to join
               </span>
+
+              {/* Localhost helper toggle: Phone Camera (Cloud) vs Localhost */}
+              {isLocalhost && (
+                <div className="mt-1 flex items-center gap-1 bg-gray-100 p-1 rounded-xl text-[10px] font-bold text-gray-600">
+                  <button
+                    type="button"
+                    onClick={() => setUseCloudUrl(true)}
+                    className={`px-2 py-0.5 rounded-lg transition-colors cursor-pointer ${
+                      useCloudUrl ? 'bg-white text-gray-900 shadow-xs' : 'hover:text-gray-900'
+                    }`}
+                  >
+                    📱 Phone (Cloud URL)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setUseCloudUrl(false)}
+                    className={`px-2 py-0.5 rounded-lg transition-colors cursor-pointer ${
+                      !useCloudUrl ? 'bg-white text-gray-900 shadow-xs' : 'hover:text-gray-900'
+                    }`}
+                  >
+                    💻 Localhost
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="flex gap-2 w-full">
