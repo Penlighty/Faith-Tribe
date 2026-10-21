@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
-import { Player, Team, SessionConfig, SessionSnapshot, BaseGameState, GameIntent } from '../types';
+import { Player, Team, SessionConfig, SessionSnapshot, BaseGameState, GameIntent, ConnectionMode, HotspotInfo } from '../types';
 import { Transport, PresenceUser, TransportMessage, createTransport } from '../transport';
 import { gameRegistry } from '../registry';
 import { balanceTeams } from '../services/teamBalancer';
@@ -7,8 +7,9 @@ import { generateRoomCode } from '../services/roomCode';
 import { sanitizePlayerName } from '../services/sanitizer';
 import { useTheme } from '../../theme/ThemeContext';
 import { soundManager } from '../services/audio';
+import { recordGameResult } from '../services/gameDataService';
 
-interface SessionContextType {
+export interface SessionContextType {
   roomCode: string;
   isHost: boolean;
   currentUser: Player | null;
@@ -18,8 +19,17 @@ interface SessionContextType {
   snapshot: SessionSnapshot | null;
   transportName: string;
   isConnected: boolean;
-  createSession: (gameId: string, hostName: string) => Promise<string>;
-  joinSession: (code: string, playerName: string) => Promise<boolean>;
+  createSession: (
+    gameId: string,
+    hostName: string,
+    connectionMode?: ConnectionMode,
+    hotspotInfo?: HotspotInfo
+  ) => Promise<string>;
+  joinSession: (
+    code: string,
+    playerName: string,
+    connectionMode?: ConnectionMode
+  ) => Promise<boolean>;
   leaveSession: () => Promise<void>;
   updateConfig: (patch: Partial<SessionConfig>) => void;
   setPlayerTeam: (playerId: string, teamId?: string) => void;
@@ -76,7 +86,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [snapshot, setSnapshot] = useState<SessionSnapshot | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
-  const transportRef = useRef<Transport | null>(null);
+  const [currentTransport, setCurrentTransport] = useState<Transport>(() => createTransport('auto'));
+  const transportRef = useRef<Transport>(currentTransport);
+  transportRef.current = currentTransport;
   const timerIntervalRef = useRef<any>(null);
   const snapshotRef = useRef<SessionSnapshot | null>(null);
   snapshotRef.current = snapshot;
@@ -89,10 +101,15 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const configRef = useRef<SessionConfig>(config);
   configRef.current = config;
 
-  // Initialize transport
-  if (!transportRef.current) {
-    transportRef.current = createTransport('auto');
-  }
+  const initOrSwitchTransport = useCallback((preference: 'webrtc' | 'auto') => {
+    if (transportRef.current) {
+      transportRef.current.disconnect().catch(() => {});
+    }
+    const next = createTransport(preference);
+    transportRef.current = next;
+    setCurrentTransport(next);
+    return next;
+  }, []);
 
   // Update theme seed color when game changes
   useEffect(() => {
@@ -205,6 +222,17 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           },
         };
         broadcastSnapshot(finalSnapshot);
+
+        // Record completed session to database
+        recordGameResult(
+          current.gameId,
+          game?.meta?.name || 'Fellowship Game',
+          current.roomCode,
+          current.config.connectionMode || 'online',
+          totalRounds,
+          current.players,
+          current.teams
+        );
       } else {
         // Next round
         const firstPhase = game.phases[0];
@@ -330,6 +358,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         teamId: p.teamId,
         score: 0,
         isReady: p.isReady,
+        connectionMode: (p.connectionMode as ConnectionMode) || (configRef.current?.connectionMode ?? 'online'),
       }));
 
       setPlayers((currentPlayers) => {
@@ -363,10 +392,15 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       unsubMsg();
       unsubPresence();
     };
-  }, [handleHostIntent]);
+  }, [currentTransport, handleHostIntent]);
 
   // Host creates session
-  const createSession = async (gameId: string, hostName: string): Promise<string> => {
+  const createSession = async (
+    gameId: string,
+    hostName: string,
+    connectionMode: ConnectionMode = 'online',
+    hotspotInfo?: HotspotInfo
+  ): Promise<string> => {
     const code = generateRoomCode();
     const cleanName = sanitizePlayerName(hostName);
     localStorage.setItem(STORAGE_KEY_USER_NAME, cleanName);
@@ -385,6 +419,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       avatarSeed: hostId,
       score: 0,
       isHost: true,
+      connectionMode,
     };
 
     setCurrentUser(hostUser);
@@ -399,6 +434,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       roundsCount: 4,
       timerMultiplier: 1.0,
       soundEffects: true,
+      connectionMode,
+      hotspotInfo,
     };
     setConfig(initialConfig);
 
@@ -421,13 +458,14 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
     setSnapshot(initialSnapshot);
 
-    const transport = transportRef.current!;
+    const transport = initOrSwitchTransport(connectionMode === 'onsite' ? 'webrtc' : 'auto');
     await transport.connect(code, {
       id: hostUser.id,
       name: hostUser.name,
       isHost: true,
       avatarSeed: hostUser.avatarSeed,
       joinedAt: Date.now(),
+      connectionMode,
     });
 
     setIsConnected(true);
@@ -435,7 +473,11 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   // Player joins session
-  const joinSession = async (code: string, playerName: string): Promise<boolean> => {
+  const joinSession = async (
+    code: string,
+    playerName: string,
+    connectionMode: ConnectionMode = 'online'
+  ): Promise<boolean> => {
     const cleanCode = code.trim().toUpperCase();
     const cleanName = sanitizePlayerName(playerName);
     localStorage.setItem(STORAGE_KEY_USER_NAME, cleanName);
@@ -454,19 +496,21 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       avatarSeed: playerId,
       score: 0,
       isHost: false,
+      connectionMode,
     };
 
     setCurrentUser(playerUser);
     setRoomCode(cleanCode);
     setIsHost(false);
 
-    const transport = transportRef.current!;
+    const transport = initOrSwitchTransport(connectionMode === 'onsite' ? 'webrtc' : 'auto');
     await transport.connect(cleanCode, {
       id: playerUser.id,
       name: playerUser.name,
       isHost: false,
       avatarSeed: playerUser.avatarSeed,
       joinedAt: Date.now(),
+      connectionMode,
     });
 
     setIsConnected(true);
@@ -593,6 +637,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const hostEndGame = () => {
     if (!isHost || !snapshot) return;
+    const game = gameRegistry.get(snapshot.gameId);
     broadcastSnapshot({
       ...snapshot,
       version: snapshot.version + 1,
@@ -602,6 +647,16 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         isGameOver: true,
       },
     });
+
+    recordGameResult(
+      snapshot.gameId,
+      game?.meta?.name || 'Fellowship Game',
+      snapshot.roomCode,
+      snapshot.config.connectionMode || 'online',
+      snapshot.gameState.totalRounds || snapshot.config.roundsCount || 4,
+      snapshot.players,
+      snapshot.teams
+    );
   };
 
   const rematch = () => {

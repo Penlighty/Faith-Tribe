@@ -21,6 +21,15 @@ class GameRegistry {
   getAllMeta() {
     return this.getAll().map((g) => g.meta);
   }
+
+  updateContent(id: string, content: any): boolean {
+    const game = this.games.get(id);
+    if (game) {
+      game.content = content;
+      return true;
+    }
+    return false;
+  }
 }
 
 export const gameRegistry = new GameRegistry();

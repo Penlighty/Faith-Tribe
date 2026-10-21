@@ -140,6 +140,140 @@ class SoundManager {
       // AudioContext unavailable
     }
   }
+
+  playCorrect(enabled: boolean = true) {
+    if (!enabled || this.masterVolume <= 0 || this.sfxVolume <= 0) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      const now = this.ctx.currentTime;
+      // Uplifting, sparkling major arpeggio: C5 -> E5 -> G5 -> C6
+      const notes = [523.25, 659.25, 783.99, 1046.5];
+      notes.forEach((freq, idx) => {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        const startTime = now + idx * 0.055;
+        osc.frequency.setValueAtTime(freq, startTime);
+
+        const effective = this.getEffectiveGain(0.14);
+        gain.gain.setValueAtTime(0.0001, startTime);
+        gain.gain.exponentialRampToValueAtTime(effective, startTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.35);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + 0.38);
+      });
+    } catch {
+      // AudioContext unavailable
+    }
+  }
+
+  playWrong(enabled: boolean = true) {
+    if (!enabled || this.masterVolume <= 0 || this.sfxVolume <= 0) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      const now = this.ctx.currentTime;
+      // Friendly, encouraging soft double-boop (gentle on the ears, not abrasive)
+      const freqs = [260, 210];
+      freqs.forEach((freq, idx) => {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        const startTime = now + idx * 0.12;
+        osc.frequency.setValueAtTime(freq, startTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.85, startTime + 0.18);
+
+        const effective = this.getEffectiveGain(0.12);
+        gain.gain.setValueAtTime(effective, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.19);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + 0.2);
+      });
+    } catch {
+      // AudioContext unavailable
+    }
+  }
+
+  playStreakMilestone(streak: number, enabled: boolean = true) {
+    if (!enabled || this.masterVolume <= 0 || this.sfxVolume <= 0) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      const now = this.ctx.currentTime;
+
+      if (streak >= 7) {
+        // Elijah Level & Solomon's Wisdom: Triumphant multi-voice fanfare with fire/lightning sparkle!
+        const fanfareNotes = [523.25, 659.25, 783.99, 1046.5, 1318.51, 1567.98];
+        fanfareNotes.forEach((freq, idx) => {
+          if (!this.ctx) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = idx % 2 === 0 ? 'triangle' : 'sine';
+          const startTime = now + idx * 0.07;
+          osc.frequency.setValueAtTime(freq, startTime);
+
+          const effective = this.getEffectiveGain(0.16);
+          gain.gain.setValueAtTime(0.001, startTime);
+          gain.gain.exponentialRampToValueAtTime(effective, startTime + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.55);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(startTime);
+          osc.stop(startTime + 0.6);
+        });
+
+        // High shimmer sparkle
+        const shimmer = this.ctx.createOscillator();
+        const shimmerGain = this.ctx.createGain();
+        shimmer.type = 'sine';
+        shimmer.frequency.setValueAtTime(1760, now + 0.35);
+        shimmer.frequency.exponentialRampToValueAtTime(3520, now + 0.8);
+        shimmerGain.gain.setValueAtTime(this.getEffectiveGain(0.08), now + 0.35);
+        shimmerGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.85);
+
+        shimmer.connect(shimmerGain);
+        shimmerGain.connect(this.ctx.destination);
+        shimmer.start(now + 0.35);
+        shimmer.stop(now + 0.86);
+      } else {
+        // Streaks 3 & 5: Energetic ascending streak cheer
+        const notes = [440, 554.37, 659.25, 880, 1108.73];
+        notes.forEach((freq, idx) => {
+          if (!this.ctx) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          const startTime = now + idx * 0.06;
+          osc.frequency.setValueAtTime(freq, startTime);
+
+          const effective = this.getEffectiveGain(0.13);
+          gain.gain.setValueAtTime(0.001, startTime);
+          gain.gain.exponentialRampToValueAtTime(effective, startTime + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.4);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(startTime);
+          osc.stop(startTime + 0.42);
+        });
+      }
+    } catch {
+      // AudioContext unavailable
+    }
+  }
 }
 
 export const soundManager = new SoundManager();

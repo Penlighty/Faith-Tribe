@@ -1,21 +1,13 @@
 import { FakeAProverbState, FakeAProverbContent, ProverbItem } from './types';
 import { GameIntent, Player, Team, SessionConfig, LeaderboardEntry } from '../../engine/types';
 import { sanitizeInput } from '../../engine/services/sanitizer';
-
-function shuffle<T>(array: T[]): T[] {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
+import { getFreshPool, shuffle } from '../../engine/services/randomizer';
 
 export function planProverbsSession(proverbs: ProverbItem[], totalRounds: number = 6): ProverbItem[] {
   if (proverbs.length === 0) return [];
-  const easy = shuffle(proverbs.filter((p) => p.difficulty === 'easy'));
-  const medium = shuffle(proverbs.filter((p) => p.difficulty === 'medium'));
-  const hard = shuffle(proverbs.filter((p) => p.difficulty === 'hard'));
+  const easy = getFreshPool(proverbs.filter((p) => p.difficulty === 'easy'), 'fake-a-proverb-easy');
+  const medium = getFreshPool(proverbs.filter((p) => p.difficulty === 'medium'), 'fake-a-proverb-medium');
+  const hard = getFreshPool(proverbs.filter((p) => p.difficulty === 'hard'), 'fake-a-proverb-hard');
 
   const planned: ProverbItem[] = [];
   const easyCount = Math.max(1, Math.round(totalRounds * 0.35));

@@ -1,10 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GameViewProps } from '../../engine/types';
 import { WhoSaidState, WhoSaidPowerUp } from './types';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { useTheme } from '../../theme/ThemeContext';
 import { Icon } from '@design/icons';
+import { soundManager } from '../../engine/services/audio';
+import { fireConfettiBurst, StreakMilestoneModal } from '../../components/ui/StreakCelebration';
+import { getStreakMilestone, StreakMilestone } from '../../engine/services/streakRewards';
 
 const TIER_THEMES: Record<1 | 2 | 3 | 4, { label: string; badgeClass: string; borderClass: string }> = {
   1: { label: 'Tier 1: Iconic Scripture', badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300', borderClass: 'border-emerald-300/40' },
@@ -19,6 +22,7 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
   dispatchIntent,
 }) => {
   const { triggerHaptic } = useTheme();
+  const [activeMilestone, setActiveMilestone] = useState<StreakMilestone | null>(null);
   const { currentQuestion, currentPhaseId, playerStates, isCloseCall, firstCorrectPlayerId } = state;
   const pState = playerStates[playerId] || {
     playerId,
@@ -41,12 +45,24 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
   const tierInfo = TIER_THEMES[currentQuestion.tier];
   const isFirstCorrect = playerId === firstCorrectPlayerId;
 
-  // Haptic on reveal
+  // Sound and Haptic on reveal
   useEffect(() => {
     if (isReveal) {
       triggerHaptic(pState.isCorrect ? 'heavy' : 'medium');
+      if (pState.isCorrect) {
+        soundManager.playCorrect();
+        const milestone = getStreakMilestone(pState.streakCount);
+        if (milestone) {
+          soundManager.playStreakMilestone(pState.streakCount);
+          setActiveMilestone(milestone);
+        } else {
+          fireConfettiBurst(pState.streakCount >= 5 ? 'medium' : 'light');
+        }
+      } else {
+        soundManager.playWrong();
+      }
     }
-  }, [isReveal, pState.isCorrect, triggerHaptic]);
+  }, [isReveal, pState.isCorrect, pState.streakCount, triggerHaptic]);
 
   const handleSelectSpeaker = (speaker: string) => {
     if (pState.locked || isReveal) return;

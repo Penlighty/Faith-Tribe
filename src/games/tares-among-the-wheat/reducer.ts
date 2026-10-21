@@ -1,14 +1,6 @@
 import { TaresState, TaresContent, PassageItem } from './types';
 import { GameIntent, Player, Team, SessionConfig, LeaderboardEntry } from '../../engine/types';
-
-function shuffle<T>(array: T[]): T[] {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
+import { getFreshPool, shuffle } from '../../engine/services/randomizer';
 
 export function getPassageDifficulty(p: PassageItem): 'easy' | 'medium' | 'hard' {
   if (p.difficulty) return p.difficulty;
@@ -22,9 +14,9 @@ export function getPassageDifficulty(p: PassageItem): 'easy' | 'medium' | 'hard'
 
 export function planTaresSession(passages: PassageItem[], totalRounds: number = 6): PassageItem[] {
   if (passages.length === 0) return [];
-  const easy = shuffle(passages.filter((p) => getPassageDifficulty(p) === 'easy'));
-  const medium = shuffle(passages.filter((p) => getPassageDifficulty(p) === 'medium'));
-  const hard = shuffle(passages.filter((p) => getPassageDifficulty(p) === 'hard'));
+  const easy = getFreshPool(passages.filter((p) => getPassageDifficulty(p) === 'easy'), 'tares-easy');
+  const medium = getFreshPool(passages.filter((p) => getPassageDifficulty(p) === 'medium'), 'tares-medium');
+  const hard = getFreshPool(passages.filter((p) => getPassageDifficulty(p) === 'hard'), 'tares-hard');
 
   const planned: PassageItem[] = [];
   const easyCount = Math.max(1, Math.round(totalRounds * 0.35));

@@ -6,6 +6,7 @@ export interface PresenceUser {
   joinedAt: number;
   avatarSeed?: string;
   isReady?: boolean;
+  connectionMode?: 'online' | 'onsite';
 }
 
 export interface TransportMessage<T = unknown> {

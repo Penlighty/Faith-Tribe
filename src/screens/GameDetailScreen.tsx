@@ -3,14 +3,20 @@ import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Chip } from '../components/ui/Chip';
 import { gameRegistry } from '../engine/registry';
-import { PlayMode } from '../engine/types';
+import { PlayMode, ConnectionMode, HotspotInfo } from '../engine/types';
 import { useSession } from '../engine/session/SessionContext';
 import { Icon, GameBadge } from '../design/icons';
+import { HostSessionModal } from '../components/session/HostSessionModal';
 
 export interface GameDetailScreenProps {
   gameId: string;
   onBack: () => void;
-  onHostSession: (gameId: string, playMode: PlayMode) => void;
+  onHostSession: (
+    gameId: string,
+    playMode: PlayMode,
+    connectionMode?: ConnectionMode,
+    hotspotInfo?: HotspotInfo
+  ) => void;
   onSoloPractice: (gameId: string) => void;
 }
 
@@ -22,6 +28,7 @@ export const GameDetailScreen: React.FC<GameDetailScreenProps> = ({
 }) => {
   const game = gameRegistry.get(gameId);
   const [selectedMode, setSelectedMode] = useState<PlayMode>('individuals');
+  const [showHostModal, setShowHostModal] = useState(false);
   const { currentUser } = useSession();
 
   React.useEffect(() => {
@@ -90,7 +97,7 @@ export const GameDetailScreen: React.FC<GameDetailScreenProps> = ({
               pill
               leftIcon={<Icon name="play" variant="tonal" size={20} />}
               className="w-full shadow-lg"
-              onClick={() => onHostSession(meta.id, selectedMode)}
+              onClick={() => setShowHostModal(true)}
             >
               Host Game Session
             </Button>
@@ -171,6 +178,17 @@ export const GameDetailScreen: React.FC<GameDetailScreenProps> = ({
           </Card>
         </div>
       </div>
+
+      {/* Host Session Architecture Modal */}
+      <HostSessionModal
+        isOpen={showHostModal}
+        gameName={meta.name}
+        onConfirm={(connMode, hotspot) => {
+          setShowHostModal(false);
+          onHostSession(meta.id, selectedMode, connMode, hotspot);
+        }}
+        onCancel={() => setShowHostModal(false)}
+      />
     </div>
   );
 };

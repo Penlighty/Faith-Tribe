@@ -1,20 +1,12 @@
 import { HotCoalState, HotCoalContent, HotCoalCategory } from './types';
 import { GameIntent, Player, Team, SessionConfig, LeaderboardEntry } from '../../engine/types';
-
-function shuffle<T>(array: T[]): T[] {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
+import { getFreshPool, shuffle } from '../../engine/services/randomizer';
 
 export function planHotCoalSession(categories: HotCoalCategory[], totalRounds: number = 5): HotCoalCategory[] {
   if (categories.length === 0) return [];
-  const easy = shuffle(categories.filter((c) => c.difficulty === 'easy'));
-  const medium = shuffle(categories.filter((c) => c.difficulty === 'medium'));
-  const hard = shuffle(categories.filter((c) => c.difficulty === 'hard'));
+  const easy = getFreshPool(categories.filter((c) => c.difficulty === 'easy'), 'hot-coal-easy');
+  const medium = getFreshPool(categories.filter((c) => c.difficulty === 'medium'), 'hot-coal-medium');
+  const hard = getFreshPool(categories.filter((c) => c.difficulty === 'hard'), 'hot-coal-hard');
 
   const planned: HotCoalCategory[] = [];
   const easyCount = Math.max(1, Math.round(totalRounds * 0.4));

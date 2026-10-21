@@ -1,0 +1,38 @@
+{
+  "rules": {
+    "content": {
+      // Game questions, scripture verses, proverb prompts, and cards stored on database
+      ".read": true,
+      ".write": true
+    },
+    "game_results": {
+      // Completed game session records, winners, scores, and match statistics
+      ".read": true,
+      ".write": true,
+      "$resultId": {
+        ".validate": "newData.hasChildren(['gameId', 'roomCode', 'finishedAt'])"
+      }
+    },
+    "rooms": {
+      "$roomCode": {
+        // Realtime party session coordination
+        ".read": true,
+        ".write": true,
+
+        "presence": {
+          "$userId": {
+            ".write": true,
+            ".validate": "newData.hasChildren(['id', 'name', 'isHost', 'joinedAt'])"
+          }
+        },
+
+        "messages": {
+          "$messageId": {
+            ".write": true,
+            ".validate": "newData.hasChildren(['type', 'senderId', 'payload', 'timestamp'])"
+          }
+        }
+      }
+    }
+  }
+}

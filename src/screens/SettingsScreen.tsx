@@ -7,6 +7,7 @@ import { Chip } from '../components/ui/Chip';
 import { useTheme } from '../theme/ThemeContext';
 import { useSession } from '../engine/session/SessionContext';
 import { soundManager } from '../engine/services/audio';
+import { seedAllGamesToDatabase } from '../engine/services/gameDataService';
 
 export const SettingsScreen: React.FC = () => {
   const {
@@ -33,6 +34,23 @@ export const SettingsScreen: React.FC = () => {
   // PWA install prompt deferred event
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstalled, setIsInstalled] = useState(false);
+
+  // Cloud Database Seeding State
+  const [isSeeding, setIsSeeding] = useState(false);
+  const [seedResult, setSeedResult] = useState<{ success: boolean; message: string } | null>(null);
+
+  const handleSeedDatabase = async () => {
+    setIsSeeding(true);
+    setSeedResult(null);
+    try {
+      const res = await seedAllGamesToDatabase();
+      setSeedResult(res);
+    } catch (err: any) {
+      setSeedResult({ success: false, message: err?.message || String(err) });
+    } finally {
+      setIsSeeding(false);
+    }
+  };
 
   useEffect(() => {
     const handleBeforeInstall = (e: Event) => {
@@ -335,6 +353,52 @@ export const SettingsScreen: React.FC = () => {
                 View Icon Kit Gallery (/dev/icons)
               </Button>
             </div>
+          </Card>
+
+          {/* Cloud Database (Firebase) Card */}
+          <Card variant="tonal" padding="md" className="flex flex-col gap-3 shadow-sm border border-[var(--border-tint)]">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)] flex items-center gap-1.5">
+                <Icon name="database" size={14} className="text-[var(--primary-action)]" /> Cloud Database (Firebase)
+              </span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 font-bold">
+                Connected
+              </span>
+            </div>
+
+            <p className="text-xs text-[var(--on-container-variant)]">
+              Store and load all game questions, proverbs, passages, and match history directly from Firebase Realtime Database.
+            </p>
+
+            <div className="text-[11px] font-mono p-2 rounded-xl bg-[var(--surface-container)] text-[var(--on-container-variant)] truncate">
+              https://faith-tribe-f47c3-default-rtdb.firebaseio.com
+            </div>
+
+            <Button
+              variant="primary"
+              size="md"
+              pill
+              disabled={isSeeding}
+              onClick={handleSeedDatabase}
+              className="w-full font-bold shadow-sm"
+            >
+              {isSeeding ? 'Uploading Datasets...' : 'Upload All Game Data to Firebase'}
+            </Button>
+
+            {seedResult && (
+              <div
+                className={`p-3 rounded-2xl text-xs font-medium border leading-relaxed ${
+                  seedResult.success
+                    ? 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-300 text-emerald-800 dark:text-emerald-200'
+                    : 'bg-rose-50 dark:bg-rose-950/50 border-rose-300 text-rose-800 dark:text-rose-200'
+                }`}
+              >
+                <div className="font-bold flex items-center gap-1.5 mb-1">
+                  {seedResult.success ? '✅ Database Seeded Successfully' : '⚠️ Action Required'}
+                </div>
+                <div>{seedResult.message}</div>
+              </div>
+            )}
           </Card>
         </div>
       </div>

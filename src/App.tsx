@@ -13,7 +13,8 @@ import { JoinScreen } from './screens/JoinScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { SoloPracticeScreen } from './screens/SoloPracticeScreen';
 import { DevIconGalleryScreen } from './screens/DevIconGalleryScreen';
-import { PlayMode } from './engine/types';
+import { PlayMode, ConnectionMode, HotspotInfo } from './engine/types';
+import { syncAllGamesContent } from './engine/services/gameDataService';
 
 // Initialize launch games once
 registerLaunchGames();
@@ -51,8 +52,11 @@ const AppContent: React.FC = () => {
     }
   }, [snapshot]);
 
-  // Handle URL join link or /dev/icons on mount
+  // Handle URL join link, /dev/icons, and sync database content on mount
   useEffect(() => {
+    // Sync latest game content from Firebase Realtime Database
+    syncAllGamesContent().catch(() => {});
+
     if (window.location.pathname === '/dev/icons' || window.location.pathname === '/dev/icons/') {
       setCurrentView('dev_icons');
       return;
@@ -84,9 +88,14 @@ const AppContent: React.FC = () => {
     setCurrentView('game_detail');
   };
 
-  const handleHostSession = async (gameId: string, playMode: PlayMode) => {
+  const handleHostSession = async (
+    gameId: string,
+    playMode: PlayMode,
+    connectionMode: ConnectionMode = 'online',
+    hotspotInfo?: HotspotInfo
+  ) => {
     const hostName = currentUser?.name || 'Host Disciple';
-    await createSession(gameId, hostName);
+    await createSession(gameId, hostName, connectionMode, hotspotInfo);
     setCurrentView('lobby');
   };
 

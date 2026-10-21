@@ -3,6 +3,16 @@ import { PaletteKey } from '../theme/ThemeContext';
 
 export type PlayMode = 'individuals' | 'pairs' | 'teams';
 
+export type ConnectionMode = 'online' | 'onsite';
+
+export interface HotspotInfo {
+  ssid: string;
+  password?: string;
+  security?: 'WPA' | 'WEP' | 'nopass';
+  frequency?: '2.4GHz' | '5GHz' | 'any';
+  ipAddress?: string;
+}
+
 export interface Player {
   id: string;
   name: string;
@@ -11,6 +21,7 @@ export interface Player {
   teamId?: string;
   score: number;
   isReady?: boolean;
+  connectionMode?: ConnectionMode;
 }
 
 export interface Team {
@@ -28,7 +39,10 @@ export interface SessionConfig {
   roundsCount?: number;
   timerMultiplier?: number; // 0.8 fast, 1 normal, 1.2 relaxed
   soundEffects: boolean;
+  connectionMode?: ConnectionMode; // 'online' (Cloud) | 'onsite' (Local Hotspot P2P)
+  hotspotInfo?: HotspotInfo;
 }
+
 
 export interface LeaderboardEntry {
   id: string; // playerId or teamId

@@ -17,14 +17,9 @@ import { calculateTestamentSortScore, getTestamentSortTimeLimit } from '../games
 import { TestamentChoice } from '../games/testament-sort/types';
 import { getPassageDifficulty } from '../games/tares-among-the-wheat/reducer';
 
-function shuffle<T>(array: T[]): T[] {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
+import { getFreshPool, markItemSeen, shuffle } from '../engine/services/randomizer';
+import { getStreakMilestone, getRandomEncouragement, StreakMilestone } from '../engine/services/streakRewards';
+import { AnswerFeedbackBanner, StreakMilestoneModal, fireConfettiBurst } from '../components/ui/StreakCelebration';
 
 export interface SoloPracticeScreenProps {
   gameId: string;
@@ -92,10 +87,12 @@ const WhoSaidSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
   const { triggerHaptic } = useTheme();
 
   const buildPool = () => {
-    const t1 = shuffle(allWhoSaidItems.filter((i) => i.tier === 1));
-    const t2 = shuffle(allWhoSaidItems.filter((i) => i.tier === 2));
-    const t3 = shuffle(allWhoSaidItems.filter((i) => i.tier === 3));
-    const t4 = shuffle(allWhoSaidItems.filter((i) => i.tier === 4));
+    const dbContent = gameRegistry.get('who-said')?.content as any[];
+    const base = dbContent && dbContent.length > 0 ? dbContent : allWhoSaidItems;
+    const t1 = getFreshPool(base.filter((i) => i.tier === 1), 'who-said-t1');
+    const t2 = getFreshPool(base.filter((i) => i.tier === 2), 'who-said-t2');
+    const t3 = getFreshPool(base.filter((i) => i.tier === 3), 'who-said-t3');
+    const t4 = getFreshPool(base.filter((i) => i.tier === 4), 'who-said-t4');
     return [...t1, ...t2, ...t3, ...t4];
   };
 
@@ -109,6 +106,8 @@ const WhoSaidSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
   const [timer, setTimer] = useState(15);
   const [maxTimer, setMaxTimer] = useState(15);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [activeMilestone, setActiveMilestone] = useState<StreakMilestone | null>(null);
+  const [feedbackToast, setFeedbackToast] = useState<{ isCorrect: boolean; message: string; pointsEarned?: number; streak: number } | null>(null);
 
   const currentItem = pool[currentIndex % pool.length];
 
@@ -142,11 +141,16 @@ const WhoSaidSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
   const handleTimeOut = () => {
     if (selectedSpeaker) return;
     setSelectedSpeaker('__timeout__');
-    soundManager.playBuzzer();
+    soundManager.playWrong();
     triggerHaptic('heavy');
     const newStrikes = strikes + 1;
     setStrikes(newStrikes);
     setStreak(0);
+    setFeedbackToast({
+      isCorrect: false,
+      message: getRandomEncouragement(false),
+      streak: 0,
+    });
     if (newStrikes >= 3) setIsGameOver(true);
   };
 
@@ -156,7 +160,7 @@ const WhoSaidSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
 
     const isCorrect = speaker === currentItem.answer;
     if (isCorrect) {
-      soundManager.playChime();
+      soundManager.playCorrect();
       triggerHaptic('medium');
       const earned = calculateWhoSaidScore({
         tier: currentItem.tier,
@@ -170,12 +174,32 @@ const WhoSaidSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
       const nextStreak = streak + 1;
       setStreak(nextStreak);
       if (nextStreak > bestStreak) setBestStreak(nextStreak);
+
+      const milestone = getStreakMilestone(nextStreak);
+      if (milestone) {
+        soundManager.playStreakMilestone(nextStreak);
+        setActiveMilestone(milestone);
+      } else {
+        fireConfettiBurst(nextStreak >= 5 ? 'medium' : 'light');
+      }
+
+      setFeedbackToast({
+        isCorrect: true,
+        message: getRandomEncouragement(true),
+        pointsEarned: earned,
+        streak: nextStreak,
+      });
     } else {
-      soundManager.playBuzzer();
+      soundManager.playWrong();
       triggerHaptic('heavy');
       const newStrikes = strikes + 1;
       setStrikes(newStrikes);
       setStreak(0);
+      setFeedbackToast({
+        isCorrect: false,
+        message: getRandomEncouragement(false),
+        streak: 0,
+      });
       if (newStrikes >= 3) {
         setIsGameOver(true);
       }
@@ -183,12 +207,16 @@ const WhoSaidSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
   };
 
   const handleNext = () => {
+    markItemSeen('who-said', currentItem.id);
     setSelectedSpeaker(null);
+    setFeedbackToast(null);
     setCurrentIndex((prev) => prev + 1);
   };
 
   const handleRestart = () => {
     setSelectedSpeaker(null);
+    setFeedbackToast(null);
+    setActiveMilestone(null);
     setPool(buildPool());
     setCurrentIndex(0);
     setScore(0);
@@ -218,6 +246,22 @@ const WhoSaidSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
         score={score}
         strikes={strikes}
       />
+
+      {feedbackToast && (
+        <AnswerFeedbackBanner
+          isCorrect={feedbackToast.isCorrect}
+          message={feedbackToast.message}
+          pointsEarned={feedbackToast.pointsEarned}
+          streakCount={feedbackToast.streak}
+        />
+      )}
+
+      {activeMilestone && (
+        <StreakMilestoneModal
+          milestone={activeMilestone}
+          onDismiss={() => setActiveMilestone(null)}
+        />
+      )}
 
       <Card variant="hero" padding="lg" className="text-center flex flex-col items-center gap-3 shadow-md relative overflow-hidden">
         <CountdownProgressBar durationSeconds={maxTimer} isStopped={!!selectedSpeaker} roundKey={currentIndex} />
@@ -297,10 +341,12 @@ const TestamentSortSoloPractice: React.FC<{ onBack: () => void; onDirectExit: ()
   const { triggerHaptic } = useTheme();
 
   const buildPool = () => {
-    const t1 = shuffle(allTestamentSortItems.filter((i) => i.tier === 1));
-    const t2 = shuffle(allTestamentSortItems.filter((i) => i.tier === 2));
-    const t3 = shuffle(allTestamentSortItems.filter((i) => i.tier === 3));
-    const t4 = shuffle(allTestamentSortItems.filter((i) => i.tier === 4));
+    const dbContent = gameRegistry.get('testament-sort')?.content as any[];
+    const base = dbContent && dbContent.length > 0 ? dbContent : allTestamentSortItems;
+    const t1 = getFreshPool(base.filter((i) => i.tier === 1), 'testament-sort-t1');
+    const t2 = getFreshPool(base.filter((i) => i.tier === 2), 'testament-sort-t2');
+    const t3 = getFreshPool(base.filter((i) => i.tier === 3), 'testament-sort-t3');
+    const t4 = getFreshPool(base.filter((i) => i.tier === 4), 'testament-sort-t4');
     return [...t1, ...t2, ...t3, ...t4];
   };
 
@@ -315,6 +361,8 @@ const TestamentSortSoloPractice: React.FC<{ onBack: () => void; onDirectExit: ()
   const [timer, setTimer] = useState(12);
   const [maxTimer, setMaxTimer] = useState(12);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [activeMilestone, setActiveMilestone] = useState<StreakMilestone | null>(null);
+  const [feedbackToast, setFeedbackToast] = useState<{ isCorrect: boolean; message: string; pointsEarned?: number; streak: number } | null>(null);
 
   const currentItem = pool[currentIndex % pool.length];
 
@@ -344,11 +392,16 @@ const TestamentSortSoloPractice: React.FC<{ onBack: () => void; onDirectExit: ()
   const handleTimeOut = () => {
     if (selectedChoice) return;
     setSelectedChoice('__timeout__');
-    soundManager.playBuzzer();
+    soundManager.playWrong();
     triggerHaptic('heavy');
     const newStrikes = strikes + 1;
     setStrikes(newStrikes);
     setStreak(0);
+    setFeedbackToast({
+      isCorrect: false,
+      message: getRandomEncouragement(false),
+      streak: 0,
+    });
     if (newStrikes >= 3) setIsGameOver(true);
   };
 
@@ -358,7 +411,7 @@ const TestamentSortSoloPractice: React.FC<{ onBack: () => void; onDirectExit: ()
 
     const isCorrect = choice === currentItem.answer;
     if (isCorrect) {
-      soundManager.playChime();
+      soundManager.playCorrect();
       triggerHaptic('medium');
       const earned = calculateTestamentSortScore({
         tier: currentItem.tier,
@@ -373,25 +426,49 @@ const TestamentSortSoloPractice: React.FC<{ onBack: () => void; onDirectExit: ()
       const nextStreak = streak + 1;
       setStreak(nextStreak);
       if (nextStreak > bestStreak) setBestStreak(nextStreak);
+
+      const milestone = getStreakMilestone(nextStreak);
+      if (milestone) {
+        soundManager.playStreakMilestone(nextStreak);
+        setActiveMilestone(milestone);
+      } else {
+        fireConfettiBurst(nextStreak >= 5 ? 'medium' : 'light');
+      }
+
+      setFeedbackToast({
+        isCorrect: true,
+        message: getRandomEncouragement(true),
+        pointsEarned: earned,
+        streak: nextStreak,
+      });
     } else {
-      soundManager.playBuzzer();
+      soundManager.playWrong();
       triggerHaptic('heavy');
       const newStrikes = strikes + 1;
       setStrikes(newStrikes);
       setStreak(0);
+      setFeedbackToast({
+        isCorrect: false,
+        message: getRandomEncouragement(false),
+        streak: 0,
+      });
       if (newStrikes >= 3) setIsGameOver(true);
     }
   };
 
   const handleNext = () => {
+    markItemSeen('testament-sort', currentItem.id);
     setSelectedChoice(null);
     setHintUsed(false);
+    setFeedbackToast(null);
     setCurrentIndex((prev) => prev + 1);
   };
 
   const handleRestart = () => {
     setSelectedChoice(null);
     setHintUsed(false);
+    setFeedbackToast(null);
+    setActiveMilestone(null);
     setPool(buildPool());
     setCurrentIndex(0);
     setScore(0);
@@ -421,6 +498,22 @@ const TestamentSortSoloPractice: React.FC<{ onBack: () => void; onDirectExit: ()
         score={score}
         strikes={strikes}
       />
+
+      {feedbackToast && (
+        <AnswerFeedbackBanner
+          isCorrect={feedbackToast.isCorrect}
+          message={feedbackToast.message}
+          pointsEarned={feedbackToast.pointsEarned}
+          streakCount={feedbackToast.streak}
+        />
+      )}
+
+      {activeMilestone && (
+        <StreakMilestoneModal
+          milestone={activeMilestone}
+          onDismiss={() => setActiveMilestone(null)}
+        />
+      )}
 
       <Card variant="hero" padding="lg" className="text-center flex flex-col items-center gap-3 shadow-md relative overflow-hidden">
         <CountdownProgressBar durationSeconds={maxTimer} isStopped={!!selectedChoice} roundKey={currentIndex} />
@@ -538,10 +631,11 @@ const FakeAProverbSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () 
   const { triggerHaptic } = useTheme();
 
   const buildPool = () => {
-    const proverbs = proverbsData.proverbs;
-    const easy = shuffle(proverbs.filter((p) => p.difficulty === 'easy'));
-    const medium = shuffle(proverbs.filter((p) => p.difficulty === 'medium'));
-    const hard = shuffle(proverbs.filter((p) => p.difficulty === 'hard'));
+    const dbContent = (gameRegistry.get('fake-a-proverb')?.content as any)?.proverbs;
+    const proverbs = dbContent && dbContent.length > 0 ? dbContent : proverbsData.proverbs;
+    const easy = getFreshPool(proverbs.filter((p: any) => p.difficulty === 'easy'), 'proverb-easy');
+    const medium = getFreshPool(proverbs.filter((p: any) => p.difficulty === 'medium'), 'proverb-medium');
+    const hard = getFreshPool(proverbs.filter((p: any) => p.difficulty === 'hard'), 'proverb-hard');
     return [...easy, ...medium, ...hard];
   };
 
@@ -554,6 +648,8 @@ const FakeAProverbSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () 
   const [strikes, setStrikes] = useState(0);
   const [timer, setTimer] = useState(15);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [activeMilestone, setActiveMilestone] = useState<StreakMilestone | null>(null);
+  const [feedbackToast, setFeedbackToast] = useState<{ isCorrect: boolean; message: string; pointsEarned?: number; streak: number } | null>(null);
 
   const currentItem = pool[currentIndex % pool.length];
 
@@ -589,11 +685,16 @@ const FakeAProverbSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () 
   const handleTimeOut = () => {
     if (selectedEnding) return;
     setSelectedEnding('__timeout__');
-    soundManager.playBuzzer();
+    soundManager.playWrong();
     triggerHaptic('heavy');
     const newStrikes = strikes + 1;
     setStrikes(newStrikes);
     setStreak(0);
+    setFeedbackToast({
+      isCorrect: false,
+      message: getRandomEncouragement(false),
+      streak: 0,
+    });
     if (newStrikes >= 3) setIsGameOver(true);
   };
 
@@ -603,30 +704,54 @@ const FakeAProverbSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () 
 
     const isCorrect = ending === currentItem.realEnding;
     if (isCorrect) {
-      soundManager.playChime();
+      soundManager.playCorrect();
       triggerHaptic('medium');
       const pts = 100 + timer * 5 + streak * 10;
       setScore((prev) => prev + pts);
       const nextStreak = streak + 1;
       setStreak(nextStreak);
       if (nextStreak > bestStreak) setBestStreak(nextStreak);
+
+      const milestone = getStreakMilestone(nextStreak);
+      if (milestone) {
+        soundManager.playStreakMilestone(nextStreak);
+        setActiveMilestone(milestone);
+      } else {
+        fireConfettiBurst(nextStreak >= 5 ? 'medium' : 'light');
+      }
+
+      setFeedbackToast({
+        isCorrect: true,
+        message: getRandomEncouragement(true),
+        pointsEarned: pts,
+        streak: nextStreak,
+      });
     } else {
-      soundManager.playBuzzer();
+      soundManager.playWrong();
       triggerHaptic('heavy');
       const newStrikes = strikes + 1;
       setStrikes(newStrikes);
       setStreak(0);
+      setFeedbackToast({
+        isCorrect: false,
+        message: getRandomEncouragement(false),
+        streak: 0,
+      });
       if (newStrikes >= 3) setIsGameOver(true);
     }
   };
 
   const handleNext = () => {
+    markItemSeen('fake-a-proverb', currentItem.id);
     setSelectedEnding(null);
+    setFeedbackToast(null);
     setCurrentIndex((prev) => prev + 1);
   };
 
   const handleRestart = () => {
     setSelectedEnding(null);
+    setFeedbackToast(null);
+    setActiveMilestone(null);
     setPool(buildPool());
     setCurrentIndex(0);
     setScore(0);
@@ -650,6 +775,22 @@ const FakeAProverbSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () 
   return (
     <>
       <HeaderBar onBack={onBack} streak={streak} bestStreak={bestStreak} score={score} strikes={strikes} />
+
+      {feedbackToast && (
+        <AnswerFeedbackBanner
+          isCorrect={feedbackToast.isCorrect}
+          message={feedbackToast.message}
+          pointsEarned={feedbackToast.pointsEarned}
+          streakCount={feedbackToast.streak}
+        />
+      )}
+
+      {activeMilestone && (
+        <StreakMilestoneModal
+          milestone={activeMilestone}
+          onDismiss={() => setActiveMilestone(null)}
+        />
+      )}
 
       <Card variant="hero" padding="lg" className="text-center flex flex-col items-center gap-3.5 shadow-md relative overflow-hidden">
         <CountdownProgressBar durationSeconds={15} isStopped={!!selectedEnding} roundKey={currentIndex} />
@@ -725,10 +866,11 @@ const TaresSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => void
   const { triggerHaptic } = useTheme();
 
   const buildPool = () => {
-    const passages = taresData.passages;
-    const easy = shuffle(passages.filter((p) => getPassageDifficulty(p as any) === 'easy'));
-    const medium = shuffle(passages.filter((p) => getPassageDifficulty(p as any) === 'medium'));
-    const hard = shuffle(passages.filter((p) => getPassageDifficulty(p as any) === 'hard'));
+    const dbContent = (gameRegistry.get('tares-among-the-wheat')?.content as any)?.passages;
+    const passages = dbContent && dbContent.length > 0 ? dbContent : taresData.passages;
+    const easy = getFreshPool(passages.filter((p: any) => getPassageDifficulty(p as any) === 'easy'), 'tares-easy');
+    const medium = getFreshPool(passages.filter((p: any) => getPassageDifficulty(p as any) === 'medium'), 'tares-medium');
+    const hard = getFreshPool(passages.filter((p: any) => getPassageDifficulty(p as any) === 'hard'), 'tares-hard');
     return [...easy, ...medium, ...hard];
   };
 
@@ -741,6 +883,8 @@ const TaresSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => void
   const [strikes, setStrikes] = useState(0);
   const [timer, setTimer] = useState(15);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [activeMilestone, setActiveMilestone] = useState<StreakMilestone | null>(null);
+  const [feedbackToast, setFeedbackToast] = useState<{ isCorrect: boolean; message: string; pointsEarned?: number; streak: number } | null>(null);
 
   const currentPassage = pool[currentIndex % pool.length];
 
@@ -773,11 +917,16 @@ const TaresSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => void
   const handleTimeOut = () => {
     if (selectedTitle) return;
     setSelectedTitle('__timeout__');
-    soundManager.playBuzzer();
+    soundManager.playWrong();
     triggerHaptic('heavy');
     const newStrikes = strikes + 1;
     setStrikes(newStrikes);
     setStreak(0);
+    setFeedbackToast({
+      isCorrect: false,
+      message: getRandomEncouragement(false),
+      streak: 0,
+    });
     if (newStrikes >= 3) setIsGameOver(true);
   };
 
@@ -787,30 +936,54 @@ const TaresSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => void
 
     const isCorrect = title === currentPassage.title;
     if (isCorrect) {
-      soundManager.playChime();
+      soundManager.playCorrect();
       triggerHaptic('medium');
       const pts = 100 + timer * 5 + streak * 10;
       setScore((prev) => prev + pts);
       const nextStreak = streak + 1;
       setStreak(nextStreak);
       if (nextStreak > bestStreak) setBestStreak(nextStreak);
+
+      const milestone = getStreakMilestone(nextStreak);
+      if (milestone) {
+        soundManager.playStreakMilestone(nextStreak);
+        setActiveMilestone(milestone);
+      } else {
+        fireConfettiBurst(nextStreak >= 5 ? 'medium' : 'light');
+      }
+
+      setFeedbackToast({
+        isCorrect: true,
+        message: getRandomEncouragement(true),
+        pointsEarned: pts,
+        streak: nextStreak,
+      });
     } else {
-      soundManager.playBuzzer();
+      soundManager.playWrong();
       triggerHaptic('heavy');
       const newStrikes = strikes + 1;
       setStrikes(newStrikes);
       setStreak(0);
+      setFeedbackToast({
+        isCorrect: false,
+        message: getRandomEncouragement(false),
+        streak: 0,
+      });
       if (newStrikes >= 3) setIsGameOver(true);
     }
   };
 
   const handleNext = () => {
+    markItemSeen('tares-among-the-wheat', currentPassage.id);
     setSelectedTitle(null);
+    setFeedbackToast(null);
     setCurrentIndex((prev) => prev + 1);
   };
 
   const handleRestart = () => {
     setSelectedTitle(null);
+    setFeedbackToast(null);
+    setActiveMilestone(null);
     setPool(buildPool());
     setCurrentIndex(0);
     setScore(0);
@@ -836,6 +1009,22 @@ const TaresSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => void
   return (
     <>
       <HeaderBar onBack={onBack} streak={streak} bestStreak={bestStreak} score={score} strikes={strikes} />
+
+      {feedbackToast && (
+        <AnswerFeedbackBanner
+          isCorrect={feedbackToast.isCorrect}
+          message={feedbackToast.message}
+          pointsEarned={feedbackToast.pointsEarned}
+          streakCount={feedbackToast.streak}
+        />
+      )}
+
+      {activeMilestone && (
+        <StreakMilestoneModal
+          milestone={activeMilestone}
+          onDismiss={() => setActiveMilestone(null)}
+        />
+      )}
 
       <Card variant="hero" padding="lg" className="text-center flex flex-col items-center gap-3.5 shadow-md relative overflow-hidden">
         <CountdownProgressBar durationSeconds={15} isStopped={!!selectedTitle} roundKey={currentIndex} />
@@ -915,10 +1104,11 @@ const HotCoalSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
   const { triggerHaptic } = useTheme();
 
   const buildPool = () => {
-    const categories = hotCoalData.categories;
-    const easy = shuffle(categories.filter((c) => c.difficulty === 'easy'));
-    const medium = shuffle(categories.filter((c) => c.difficulty === 'medium'));
-    const hard = shuffle(categories.filter((c) => c.difficulty === 'hard'));
+    const dbContent = (gameRegistry.get('hot-coal')?.content as any)?.categories;
+    const categories = dbContent && dbContent.length > 0 ? dbContent : hotCoalData.categories;
+    const easy = getFreshPool(categories.filter((c: any) => c.difficulty === 'easy'), 'hot-coal-easy');
+    const medium = getFreshPool(categories.filter((c: any) => c.difficulty === 'medium'), 'hot-coal-medium');
+    const hard = getFreshPool(categories.filter((c: any) => c.difficulty === 'hard'), 'hot-coal-hard');
     return [...easy, ...medium, ...hard];
   };
 
@@ -931,6 +1121,8 @@ const HotCoalSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
   const [strikes, setStrikes] = useState(0);
   const [timer, setTimer] = useState(12);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [activeMilestone, setActiveMilestone] = useState<StreakMilestone | null>(null);
+  const [feedbackToast, setFeedbackToast] = useState<{ isCorrect: boolean; message: string; pointsEarned?: number; streak: number } | null>(null);
 
   const currentCategory = pool[currentIndex % pool.length];
 
@@ -972,11 +1164,16 @@ const HotCoalSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
   const handleTimeOut = () => {
     if (selectedItem) return;
     setSelectedItem('__timeout__');
-    soundManager.playBuzzer();
+    soundManager.playWrong();
     triggerHaptic('heavy');
     const newStrikes = strikes + 1;
     setStrikes(newStrikes);
     setStreak(0);
+    setFeedbackToast({
+      isCorrect: false,
+      message: getRandomEncouragement(false),
+      streak: 0,
+    });
     if (newStrikes >= 3) setIsGameOver(true);
   };
 
@@ -986,30 +1183,54 @@ const HotCoalSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
 
     const isCorrect = currentCategory.items.some((it) => it.name === name);
     if (isCorrect) {
-      soundManager.playChime();
+      soundManager.playCorrect();
       triggerHaptic('medium');
       const pts = 100 + timer * 8 + streak * 10;
       setScore((prev) => prev + pts);
       const nextStreak = streak + 1;
       setStreak(nextStreak);
       if (nextStreak > bestStreak) setBestStreak(nextStreak);
+
+      const milestone = getStreakMilestone(nextStreak);
+      if (milestone) {
+        soundManager.playStreakMilestone(nextStreak);
+        setActiveMilestone(milestone);
+      } else {
+        fireConfettiBurst(nextStreak >= 5 ? 'medium' : 'light');
+      }
+
+      setFeedbackToast({
+        isCorrect: true,
+        message: getRandomEncouragement(true),
+        pointsEarned: pts,
+        streak: nextStreak,
+      });
     } else {
-      soundManager.playBuzzer();
+      soundManager.playWrong();
       triggerHaptic('heavy');
       const newStrikes = strikes + 1;
       setStrikes(newStrikes);
       setStreak(0);
+      setFeedbackToast({
+        isCorrect: false,
+        message: getRandomEncouragement(false),
+        streak: 0,
+      });
       if (newStrikes >= 3) setIsGameOver(true);
     }
   };
 
   const handleNext = () => {
+    markItemSeen('hot-coal', currentCategory.id);
     setSelectedItem(null);
+    setFeedbackToast(null);
     setCurrentIndex((prev) => prev + 1);
   };
 
   const handleRestart = () => {
     setSelectedItem(null);
+    setFeedbackToast(null);
+    setActiveMilestone(null);
     setPool(buildPool());
     setCurrentIndex(0);
     setScore(0);
@@ -1033,6 +1254,22 @@ const HotCoalSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
   return (
     <>
       <HeaderBar onBack={onBack} streak={streak} bestStreak={bestStreak} score={score} strikes={strikes} />
+
+      {feedbackToast && (
+        <AnswerFeedbackBanner
+          isCorrect={feedbackToast.isCorrect}
+          message={feedbackToast.message}
+          pointsEarned={feedbackToast.pointsEarned}
+          streakCount={feedbackToast.streak}
+        />
+      )}
+
+      {activeMilestone && (
+        <StreakMilestoneModal
+          milestone={activeMilestone}
+          onDismiss={() => setActiveMilestone(null)}
+        />
+      )}
 
       <Card variant="hero" padding="lg" className="text-center flex flex-col items-center gap-3.5 shadow-md relative overflow-hidden">
         <CountdownProgressBar durationSeconds={12} isStopped={!!selectedItem} roundKey={currentIndex} />
