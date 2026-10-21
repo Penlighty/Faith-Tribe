@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Moon, Sun, Monitor, Download, Radio } from 'lucide-react';
+import { Sparkles, Moon, Sun, Monitor, Download, Radio, Database } from 'lucide-react';
 import { Icon } from '@design/icons';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -359,7 +359,7 @@ export const SettingsScreen: React.FC = () => {
           <Card variant="tonal" padding="md" className="flex flex-col gap-3 shadow-sm border border-[var(--border-tint)]">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)] flex items-center gap-1.5">
-                <Icon name="database" size={14} className="text-[var(--primary-action)]" /> Cloud Database (Firebase)
+                <Database size={14} className="text-[var(--primary-action)]" /> Cloud Database (Firebase)
               </span>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 font-bold">
                 Connected

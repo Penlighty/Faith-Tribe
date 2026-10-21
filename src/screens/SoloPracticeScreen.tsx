@@ -15,6 +15,10 @@ import { allWhoSaidItems, allTestamentSortItems } from '../engine/content/loader
 import { calculateWhoSaidScore, calculateWhoSaidTimeLimit } from '../games/who-said/scoring';
 import { calculateTestamentSortScore, getTestamentSortTimeLimit } from '../games/testament-sort/scoring';
 import { TestamentChoice } from '../games/testament-sort/types';
+import { WhoSaidItem, TestamentSortItem } from '../engine/content/schemas';
+import { ProverbItem } from '../games/fake-a-proverb/types';
+import { PassageItem } from '../games/tares-among-the-wheat/types';
+import { HotCoalCategory } from '../games/hot-coal/types';
 import { getPassageDifficulty } from '../games/tares-among-the-wheat/reducer';
 
 import { getFreshPool, markItemSeen, shuffle } from '../engine/services/randomizer';
@@ -86,17 +90,17 @@ export const SoloPracticeScreen: React.FC<SoloPracticeScreenProps> = ({ gameId, 
 const WhoSaidSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => void }> = ({ onBack, onDirectExit }) => {
   const { triggerHaptic } = useTheme();
 
-  const buildPool = () => {
-    const dbContent = gameRegistry.get('who-said')?.content as any[];
-    const base = dbContent && dbContent.length > 0 ? dbContent : allWhoSaidItems;
-    const t1 = getFreshPool(base.filter((i) => i.tier === 1), 'who-said-t1');
-    const t2 = getFreshPool(base.filter((i) => i.tier === 2), 'who-said-t2');
-    const t3 = getFreshPool(base.filter((i) => i.tier === 3), 'who-said-t3');
-    const t4 = getFreshPool(base.filter((i) => i.tier === 4), 'who-said-t4');
+  const buildPool = (): WhoSaidItem[] => {
+    const dbContent = gameRegistry.get('who-said')?.content as WhoSaidItem[] | undefined;
+    const base: WhoSaidItem[] = dbContent && dbContent.length > 0 ? dbContent : allWhoSaidItems;
+    const t1 = getFreshPool<WhoSaidItem>(base.filter((i) => i.tier === 1), 'who-said-t1');
+    const t2 = getFreshPool<WhoSaidItem>(base.filter((i) => i.tier === 2), 'who-said-t2');
+    const t3 = getFreshPool<WhoSaidItem>(base.filter((i) => i.tier === 3), 'who-said-t3');
+    const t4 = getFreshPool<WhoSaidItem>(base.filter((i) => i.tier === 4), 'who-said-t4');
     return [...t1, ...t2, ...t3, ...t4];
   };
 
-  const [pool, setPool] = useState(buildPool);
+  const [pool, setPool] = useState<WhoSaidItem[]>(buildPool);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedSpeaker, setSelectedSpeaker] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
@@ -340,17 +344,17 @@ const WhoSaidSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
 const TestamentSortSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => void }> = ({ onBack, onDirectExit }) => {
   const { triggerHaptic } = useTheme();
 
-  const buildPool = () => {
-    const dbContent = gameRegistry.get('testament-sort')?.content as any[];
-    const base = dbContent && dbContent.length > 0 ? dbContent : allTestamentSortItems;
-    const t1 = getFreshPool(base.filter((i) => i.tier === 1), 'testament-sort-t1');
-    const t2 = getFreshPool(base.filter((i) => i.tier === 2), 'testament-sort-t2');
-    const t3 = getFreshPool(base.filter((i) => i.tier === 3), 'testament-sort-t3');
-    const t4 = getFreshPool(base.filter((i) => i.tier === 4), 'testament-sort-t4');
+  const buildPool = (): TestamentSortItem[] => {
+    const dbContent = gameRegistry.get('testament-sort')?.content as TestamentSortItem[] | undefined;
+    const base: TestamentSortItem[] = dbContent && dbContent.length > 0 ? dbContent : allTestamentSortItems;
+    const t1 = getFreshPool<TestamentSortItem>(base.filter((i) => i.tier === 1), 'testament-sort-t1');
+    const t2 = getFreshPool<TestamentSortItem>(base.filter((i) => i.tier === 2), 'testament-sort-t2');
+    const t3 = getFreshPool<TestamentSortItem>(base.filter((i) => i.tier === 3), 'testament-sort-t3');
+    const t4 = getFreshPool<TestamentSortItem>(base.filter((i) => i.tier === 4), 'testament-sort-t4');
     return [...t1, ...t2, ...t3, ...t4];
   };
 
-  const [pool, setPool] = useState(buildPool);
+  const [pool, setPool] = useState<TestamentSortItem[]>(buildPool);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedChoice, setSelectedChoice] = useState<TestamentChoice | '__timeout__' | null>(null);
   const [hintUsed, setHintUsed] = useState(false);
@@ -630,16 +634,16 @@ const TestamentSortSoloPractice: React.FC<{ onBack: () => void; onDirectExit: ()
 const FakeAProverbSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => void }> = ({ onBack, onDirectExit }) => {
   const { triggerHaptic } = useTheme();
 
-  const buildPool = () => {
-    const dbContent = (gameRegistry.get('fake-a-proverb')?.content as any)?.proverbs;
-    const proverbs = dbContent && dbContent.length > 0 ? dbContent : proverbsData.proverbs;
-    const easy = getFreshPool(proverbs.filter((p: any) => p.difficulty === 'easy'), 'proverb-easy');
-    const medium = getFreshPool(proverbs.filter((p: any) => p.difficulty === 'medium'), 'proverb-medium');
-    const hard = getFreshPool(proverbs.filter((p: any) => p.difficulty === 'hard'), 'proverb-hard');
+  const buildPool = (): ProverbItem[] => {
+    const dbContent = (gameRegistry.get('fake-a-proverb')?.content as any)?.proverbs as ProverbItem[] | undefined;
+    const proverbs: ProverbItem[] = dbContent && dbContent.length > 0 ? dbContent : (proverbsData.proverbs as ProverbItem[]);
+    const easy = getFreshPool<ProverbItem>(proverbs.filter((p: ProverbItem) => p.difficulty === 'easy'), 'proverb-easy');
+    const medium = getFreshPool<ProverbItem>(proverbs.filter((p: ProverbItem) => p.difficulty === 'medium'), 'proverb-medium');
+    const hard = getFreshPool<ProverbItem>(proverbs.filter((p: ProverbItem) => p.difficulty === 'hard'), 'proverb-hard');
     return [...easy, ...medium, ...hard];
   };
 
-  const [pool, setPool] = useState(buildPool);
+  const [pool, setPool] = useState<ProverbItem[]>(buildPool);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedEnding, setSelectedEnding] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
@@ -655,8 +659,8 @@ const FakeAProverbSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () 
 
   const options = useMemo(() => {
     const others = pool
-      .filter((p) => p.id !== currentItem.id)
-      .map((p) => p.realEnding);
+      .filter((p: ProverbItem) => p.id !== currentItem.id)
+      .map((p: ProverbItem) => p.realEnding);
     const shuffledOthers = shuffle(others).slice(0, 3);
     return shuffle([currentItem.realEnding, ...shuffledOthers]);
   }, [currentItem, pool]);
@@ -865,16 +869,16 @@ const FakeAProverbSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () 
 const TaresSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => void }> = ({ onBack, onDirectExit }) => {
   const { triggerHaptic } = useTheme();
 
-  const buildPool = () => {
-    const dbContent = (gameRegistry.get('tares-among-the-wheat')?.content as any)?.passages;
-    const passages = dbContent && dbContent.length > 0 ? dbContent : taresData.passages;
-    const easy = getFreshPool(passages.filter((p: any) => getPassageDifficulty(p as any) === 'easy'), 'tares-easy');
-    const medium = getFreshPool(passages.filter((p: any) => getPassageDifficulty(p as any) === 'medium'), 'tares-medium');
-    const hard = getFreshPool(passages.filter((p: any) => getPassageDifficulty(p as any) === 'hard'), 'tares-hard');
+  const buildPool = (): PassageItem[] => {
+    const dbContent = (gameRegistry.get('tares-among-the-wheat')?.content as any)?.passages as PassageItem[] | undefined;
+    const passages: PassageItem[] = dbContent && dbContent.length > 0 ? dbContent : (taresData.passages as PassageItem[]);
+    const easy = getFreshPool<PassageItem>(passages.filter((p: PassageItem) => getPassageDifficulty(p as any) === 'easy'), 'tares-easy');
+    const medium = getFreshPool<PassageItem>(passages.filter((p: PassageItem) => getPassageDifficulty(p as any) === 'medium'), 'tares-medium');
+    const hard = getFreshPool<PassageItem>(passages.filter((p: PassageItem) => getPassageDifficulty(p as any) === 'hard'), 'tares-hard');
     return [...easy, ...medium, ...hard];
   };
 
-  const [pool, setPool] = useState(buildPool);
+  const [pool, setPool] = useState<PassageItem[]>(buildPool);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedTitle, setSelectedTitle] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
@@ -1039,7 +1043,7 @@ const TaresSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => void
         </div>
 
         <div className="flex flex-wrap gap-2 justify-center my-2">
-          {currentPassage.keywords.map((kw, i) => (
+          {currentPassage.keywords.map((kw: string, i: number) => (
             <span key={i} className="px-3 py-1 rounded-full bg-[var(--surface-container)] text-[var(--on-container)] font-bold text-sm border border-[var(--border-tint)]">
               🌾 {kw}
             </span>
@@ -1103,16 +1107,16 @@ const TaresSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => void
 const HotCoalSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => void }> = ({ onBack, onDirectExit }) => {
   const { triggerHaptic } = useTheme();
 
-  const buildPool = () => {
-    const dbContent = (gameRegistry.get('hot-coal')?.content as any)?.categories;
-    const categories = dbContent && dbContent.length > 0 ? dbContent : hotCoalData.categories;
-    const easy = getFreshPool(categories.filter((c: any) => c.difficulty === 'easy'), 'hot-coal-easy');
-    const medium = getFreshPool(categories.filter((c: any) => c.difficulty === 'medium'), 'hot-coal-medium');
-    const hard = getFreshPool(categories.filter((c: any) => c.difficulty === 'hard'), 'hot-coal-hard');
+  const buildPool = (): HotCoalCategory[] => {
+    const dbContent = (gameRegistry.get('hot-coal')?.content as any)?.categories as HotCoalCategory[] | undefined;
+    const categories: HotCoalCategory[] = dbContent && dbContent.length > 0 ? dbContent : (hotCoalData.categories as HotCoalCategory[]);
+    const easy = getFreshPool<HotCoalCategory>(categories.filter((c: HotCoalCategory) => c.difficulty === 'easy'), 'hot-coal-easy');
+    const medium = getFreshPool<HotCoalCategory>(categories.filter((c: HotCoalCategory) => c.difficulty === 'medium'), 'hot-coal-medium');
+    const hard = getFreshPool<HotCoalCategory>(categories.filter((c: HotCoalCategory) => c.difficulty === 'hard'), 'hot-coal-hard');
     return [...easy, ...medium, ...hard];
   };
 
-  const [pool, setPool] = useState(buildPool);
+  const [pool, setPool] = useState<HotCoalCategory[]>(buildPool);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [streak, setStreak] = useState(0);
@@ -1128,7 +1132,7 @@ const HotCoalSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
 
   const options = useMemo(() => {
     const genuine = currentCategory.items[Math.floor(Math.random() * currentCategory.items.length)].name;
-    const otherCategories = pool.filter((c) => c.id !== currentCategory.id);
+    const otherCategories = pool.filter((c: HotCoalCategory) => c.id !== currentCategory.id);
     const distractors: string[] = [];
     for (const cat of otherCategories) {
       if (distractors.length >= 3) break;
@@ -1181,7 +1185,7 @@ const HotCoalSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
     if (selectedItem || isGameOver) return;
     setSelectedItem(name);
 
-    const isCorrect = currentCategory.items.some((it) => it.name === name);
+    const isCorrect = currentCategory.items.some((it: { name: string }) => it.name === name);
     if (isCorrect) {
       soundManager.playCorrect();
       triggerHaptic('medium');
@@ -1300,7 +1304,7 @@ const HotCoalSoloPractice: React.FC<{ onBack: () => void; onDirectExit: () => vo
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
           {options.map((name, idx) => {
             const isSelected = selectedItem === name;
-            const isReal = currentCategory.items.some((it) => it.name === name);
+            const isReal = currentCategory.items.some((it: { name: string }) => it.name === name);
 
             let btnClass = 'bg-[var(--surface-card)] text-[var(--on-container)] border-[var(--border-tint)] hover:border-[var(--primary-action)]/50';
             if (selectedItem) {
