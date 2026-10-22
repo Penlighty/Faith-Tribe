@@ -17,9 +17,12 @@ export const FinalLeaderboardScreen: React.FC<FinalLeaderboardScreenProps> = ({
 }) => {
   const { snapshot, players, teams, isHost, rematch } = useSession();
 
+  const safePlayers = Array.isArray(players) ? players : [];
+  const safeTeams = Array.isArray(teams) ? teams : [];
+
   const game = snapshot ? gameRegistry.get(snapshot.gameId) : null;
   const entries: LeaderboardEntry[] =
-    game && snapshot ? game.scoring(snapshot.gameState, players, teams) : [];
+    game && snapshot ? game.scoring(snapshot.gameState, safePlayers, safeTeams) : [];
 
   const firstPlace = entries[0];
   const secondPlace = entries[1];

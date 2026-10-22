@@ -300,15 +300,37 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const unsubMsg = transport.onMessage((msg: TransportMessage<any>) => {
       if (msg.type === 'SNAPSHOT') {
         const remoteSnap = msg.payload as SessionSnapshot;
-        if (!isHostRef.current) {
+        if (remoteSnap && !isHostRef.current) {
+          // Normalize and defensively unpack remote snapshot to handle Firebase RTDB serialization
+          const safePlayers: Player[] = Array.isArray(remoteSnap.players)
+            ? remoteSnap.players
+            : remoteSnap.players && typeof remoteSnap.players === 'object'
+            ? Object.values(remoteSnap.players)
+            : [];
+          const safeTeams: Team[] = Array.isArray(remoteSnap.teams)
+            ? remoteSnap.teams
+            : remoteSnap.teams && typeof remoteSnap.teams === 'object'
+            ? Object.values(remoteSnap.teams)
+            : [];
+          const safeConfig: SessionConfig = remoteSnap.config
+            ? { ...configRef.current, ...remoteSnap.config }
+            : configRef.current;
+
+          const sanitizedSnap: SessionSnapshot = {
+            ...remoteSnap,
+            players: safePlayers,
+            teams: safeTeams,
+            config: safeConfig,
+          };
+
           // Player accepts latest version
           setSnapshot((prev) => {
-            if (!prev || remoteSnap.version >= prev.version) {
+            if (!prev || (remoteSnap.version ?? 0) >= (prev.version ?? 0)) {
               // Sync players and config from snapshot
-              setPlayers(remoteSnap.players);
-              setTeams(remoteSnap.teams);
-              setConfig(remoteSnap.config);
-              return remoteSnap;
+              setPlayers(safePlayers);
+              setTeams(safeTeams);
+              setConfig(safeConfig);
+              return sanitizedSnap;
             }
             return prev;
           });
@@ -322,16 +344,18 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           const joiningPlayer = msg.payload?.player as Player;
           if (joiningPlayer) {
             setPlayers((prev) => {
-              const exists = prev.some((p) => p.id === joiningPlayer.id);
+              const safePrev = Array.isArray(prev) ? prev : [];
+              const exists = safePrev.some((p) => p.id === joiningPlayer.id);
               const next = exists
-                ? prev.map((p) => (p.id === joiningPlayer.id ? { ...p, ...joiningPlayer } : p))
-                : [...prev, joiningPlayer];
+                ? safePrev.map((p) => (p.id === joiningPlayer.id ? { ...p, ...joiningPlayer } : p))
+                : [...safePrev, joiningPlayer];
 
               if (snapshotRef.current) {
                 const nextSnapshot: SessionSnapshot = {
                   ...snapshotRef.current,
                   version: snapshotRef.current.version + 1,
                   players: next,
+                  teams: Array.isArray(snapshotRef.current.teams) ? snapshotRef.current.teams : [],
                 };
                 setSnapshot(nextSnapshot);
                 transport.send('SNAPSHOT', nextSnapshot, nextSnapshot.version);
@@ -349,8 +373,15 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
 
     const unsubPresence = transport.onPresenceSync((presences: PresenceUser[]) => {
+      // Safely normalize presences
+      const safePresences: PresenceUser[] = Array.isArray(presences)
+        ? presences
+        : presences && typeof presences === 'object'
+        ? Object.values(presences)
+        : [];
+
       // Map presences to players
-      const mappedPlayers: Player[] = presences.map((p) => ({
+      const mappedPlayers: Player[] = safePresences.map((p) => ({
         id: p.id,
         name: p.name,
         isHost: p.isHost,
@@ -362,9 +393,10 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }));
 
       setPlayers((currentPlayers) => {
+        const safeCurrent = Array.isArray(currentPlayers) ? currentPlayers : [];
         // Retain existing scores if present
         const merged = mappedPlayers.map((p) => {
-          const existing = currentPlayers.find((cp) => cp.id === p.id);
+          const existing = safeCurrent.find((cp) => cp.id === p.id);
           return existing ? { ...p, score: existing.score } : p;
         });
 
@@ -379,6 +411,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             ...snapshotRef.current,
             version: snapshotRef.current.version + 1,
             players: merged,
+            teams: Array.isArray(snapshotRef.current.teams) ? snapshotRef.current.teams : [],
           };
           setSnapshot(updatedSnapshot);
           transport.send('SNAPSHOT', updatedSnapshot, updatedSnapshot.version);
@@ -502,6 +535,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setCurrentUser(playerUser);
     setRoomCode(cleanCode);
     setIsHost(false);
+    setPlayers([playerUser]);
+    setTeams([]);
 
     const transport = initOrSwitchTransport(connectionMode === 'onsite' ? 'webrtc' : 'auto');
     await transport.connect(cleanCode, {

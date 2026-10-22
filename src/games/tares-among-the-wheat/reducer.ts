@@ -52,7 +52,7 @@ export function setupTares(
 
   // Assign tares: 1 tare per team if team mode, or 1-2 tares for individuals
   const tareIds: string[] = [];
-  if (config.playMode === 'teams' && teams.length > 0) {
+  if (config.playMode === 'teams' && teams && teams.length > 0) {
     teams.forEach((team) => {
       if (team.playerIds.length > 0) {
         const randomPlayerId = team.playerIds[Math.floor(Math.random() * team.playerIds.length)];
@@ -233,7 +233,7 @@ export function scoreTares(
   players: Player[],
   teams: Team[]
 ): LeaderboardEntry[] {
-  if (teams.length > 0) {
+  if (teams && teams.length > 0) {
     // Team scoring: aggregate player scores
     const teamEntries: LeaderboardEntry[] = teams.map((team) => {
       const totalScore = team.playerIds.reduce((sum, id) => sum + (state.scores[id] || 0), 0);

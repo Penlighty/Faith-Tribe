@@ -13,6 +13,7 @@ import { JoinScreen } from './screens/JoinScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { SoloPracticeScreen } from './screens/SoloPracticeScreen';
 import { DevIconGalleryScreen } from './screens/DevIconGalleryScreen';
+import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { PlayMode, ConnectionMode, HotspotInfo } from './engine/types';
 import { syncAllGamesContent } from './engine/services/gameDataService';
 
@@ -132,84 +133,86 @@ const AppContent: React.FC = () => {
           />
         )}
 
-        {/* Screen Content */}
+        {/* Screen Content with ErrorBoundary protection */}
         <main className="flex-1 flex flex-col">
-          {currentView === 'home' && (
-            <HomeScreen
-              onSelectGame={handleSelectGame}
-              onQuickJoin={() => setCurrentView('join')}
-              onHostGame={(id) => handleHostSession(id, 'individuals')}
-              onHostSession={handleHostSession}
-            />
-          )}
+          <ErrorBoundary onReset={() => setCurrentView('home')}>
+            {currentView === 'home' && (
+              <HomeScreen
+                onSelectGame={handleSelectGame}
+                onQuickJoin={() => setCurrentView('join')}
+                onHostGame={(id) => handleHostSession(id, 'individuals')}
+                onHostSession={handleHostSession}
+              />
+            )}
 
-          {currentView === 'game_detail' && (
-            <GameDetailScreen
-              gameId={selectedGameId}
-              onBack={() => {
-                setCurrentView('home');
-                setPaletteKey('lavender');
-              }}
-              onHostSession={handleHostSession}
-              onSoloPractice={handleSoloPractice}
-            />
-          )}
+            {currentView === 'game_detail' && (
+              <GameDetailScreen
+                gameId={selectedGameId}
+                onBack={() => {
+                  setCurrentView('home');
+                  setPaletteKey('lavender');
+                }}
+                onHostSession={handleHostSession}
+                onSoloPractice={handleSoloPractice}
+              />
+            )}
 
-          {currentView === 'lobby' && (
-            <LobbyScreen
-              onLeave={() => {
-                setCurrentView('home');
-                setPaletteKey('lavender');
-              }}
-            />
-          )}
+            {currentView === 'lobby' && (
+              <LobbyScreen
+                onLeave={() => {
+                  setCurrentView('home');
+                  setPaletteKey('lavender');
+                }}
+              />
+            )}
 
-          {currentView === 'in_game' && (
-            <InGameScreen
-              onExitGame={() => {
-                setCurrentView('home');
-                setPaletteKey('lavender');
-              }}
-            />
-          )}
+            {currentView === 'in_game' && (
+              <InGameScreen
+                onExitGame={() => {
+                  setCurrentView('home');
+                  setPaletteKey('lavender');
+                }}
+              />
+            )}
 
-          {currentView === 'final_leaderboard' && (
-            <FinalLeaderboardScreen
-              onPickAnotherGame={() => {
-                setCurrentView('home');
-                setPaletteKey('lavender');
-              }}
-            />
-          )}
+            {currentView === 'final_leaderboard' && (
+              <FinalLeaderboardScreen
+                onPickAnotherGame={() => {
+                  setCurrentView('home');
+                  setPaletteKey('lavender');
+                }}
+              />
+            )}
 
-          {currentView === 'join' && (
-            <JoinScreen
-              onBack={() => setCurrentView('home')}
-              onJoined={() => setCurrentView('lobby')}
-            />
-          )}
+            {currentView === 'join' && (
+              <JoinScreen
+                onBack={() => setCurrentView('home')}
+                onJoined={() => setCurrentView('lobby')}
+              />
+            )}
 
-          {currentView === 'solo_practice' && (
-            <SoloPracticeScreen
-              gameId={selectedGameId}
-              onBack={() => {
-                setCurrentView('home');
-                setPaletteKey('lavender');
-              }}
-            />
-          )}
+            {currentView === 'solo_practice' && (
+              <SoloPracticeScreen
+                gameId={selectedGameId}
+                onBack={() => {
+                  setCurrentView('home');
+                  setPaletteKey('lavender');
+                }}
+              />
+            )}
 
-          {currentView === 'settings' && <SettingsScreen />}
+            {currentView === 'settings' && <SettingsScreen />}
 
-          {currentView === 'dev_icons' && (
-            <DevIconGalleryScreen
-              onBack={() => {
-                window.history.pushState({}, '', '/');
-                setCurrentView('home');
-                setPaletteKey('lavender');
-              }}
-            />
-          )}
+            {currentView === 'dev_icons' && (
+              <DevIconGalleryScreen
+                onBack={() => {
+                  window.history.pushState({}, '', '/');
+                  setCurrentView('home');
+                  setPaletteKey('lavender');
+                }}
+              />
+            )}
+          </ErrorBoundary>
         </main>
 
         {/* Floating pill bottom nav (hidden during active in-game phase or dev gallery) */}

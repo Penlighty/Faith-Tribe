@@ -163,9 +163,12 @@ export async function recordGameResult(
     const db = getDatabaseInstance();
     if (!db) return null;
 
+    const safePlayers = Array.isArray(players) ? players : [];
+    const safeTeams = Array.isArray(teams) ? teams : [];
+
     // Find highest score
-    const highestPlayerScore = Math.max(...players.map((p) => p.score || 0), 0);
-    const highestTeamScore = Math.max(...teams.map((t) => t.score || 0), 0);
+    const highestPlayerScore = Math.max(...safePlayers.map((p) => p.score || 0), 0);
+    const highestTeamScore = Math.max(...safeTeams.map((t) => t.score || 0), 0);
 
     const record: Omit<GameResultRecord, 'id'> = {
       gameId,
@@ -174,7 +177,7 @@ export async function recordGameResult(
       connectionMode,
       finishedAt: Date.now(),
       totalRounds,
-      players: players.map((p) => ({
+      players: safePlayers.map((p) => ({
         id: p.id,
         name: p.name,
         score: p.score || 0,
@@ -182,8 +185,8 @@ export async function recordGameResult(
         isWinner: p.score === highestPlayerScore && highestPlayerScore > 0,
       })),
       teams:
-        teams.length > 0
-          ? teams.map((t) => ({
+        safeTeams.length > 0
+          ? safeTeams.map((t) => ({
               id: t.id,
               name: t.name,
               color: t.color,

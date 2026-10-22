@@ -190,8 +190,8 @@ export class FirebaseRealtimeTransport implements Transport {
       const msg = snapshot.val() as TransportMessage<any> & { _serverTimestamp?: number };
       if (!msg) return;
 
-      // Ignore messages that arrived before we joined (old history)
-      if (msg.timestamp < joinedAt - 2000) return;
+      // Ignore old messages from previous sessions, but always accept SNAPSHOT for synchronization
+      if (msg.type !== 'SNAPSHOT' && typeof msg.timestamp === 'number' && msg.timestamp < joinedAt - 60000) return;
 
       // Dedup: skip messages we sent ourselves
       const key = `${msg.senderId}_${msg.type}_${msg.timestamp}_${msg.version ?? 0}`;

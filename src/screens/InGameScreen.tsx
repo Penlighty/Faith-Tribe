@@ -34,7 +34,9 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
   } | null>(null);
 
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
-  const isMultiplayer = players.length > 1;
+  const safePlayers = Array.isArray(players) ? players : [];
+  const safeTeams = Array.isArray(teams) ? teams : [];
+  const isMultiplayer = safePlayers.length > 1;
 
   // Intercept hardware/browser back button while game is in progress
   useEffect(() => {
@@ -102,7 +104,7 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
 
   const openScoreboardSheet = () => {
     triggerHaptic('selection');
-    const leaderboard: LeaderboardEntry[] = game.scoring(snapshot.gameState, players, teams);
+    const leaderboard: LeaderboardEntry[] = game.scoring(snapshot.gameState, safePlayers, safeTeams);
 
     setActiveSheet({
       title: `Scoreboard • Round ${snapshot.gameState.roundNumber}/${snapshot.gameState.totalRounds}`,
@@ -200,8 +202,8 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
           playerId={currentUser.id}
           isHost={isHost}
           player={currentUser}
-          players={players}
-          teams={teams}
+          players={safePlayers}
+          teams={safeTeams}
           dispatchIntent={dispatchIntent}
           openBottomSheet={openCustomBottomSheet}
         />

@@ -36,12 +36,17 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
   const [qrTab, setQrTab] = useState<'join' | 'wifi'>('join');
   const { triggerHaptic } = useTheme();
 
-  const game = gameRegistry.get(config.selectedGameId);
-  const minPlayers = game?.meta?.minPlayers || 4;
-  const canStart = players.length >= 1; // Allows testing with 1+
+  const safePlayers = Array.isArray(players) ? players : [];
+  const safeTeams = Array.isArray(teams) ? teams : [];
+  const safeConfig = config || { selectedGameId: 'fake-a-proverb', playMode: 'individuals', connectionMode: 'online' };
 
-  const isOnsite = config.connectionMode === 'onsite';
-  const hotspotInfo = config.hotspotInfo;
+  const selectedGameId = safeConfig.selectedGameId || 'fake-a-proverb';
+  const game = gameRegistry.get(selectedGameId) || gameRegistry.get('fake-a-proverb');
+  const minPlayers = game?.meta?.minPlayers || 4;
+  const canStart = safePlayers.length >= 1; // Allows testing with 1+
+
+  const isOnsite = safeConfig.connectionMode === 'onsite';
+  const hotspotInfo = safeConfig.hotspotInfo;
 
   const isLocalhost =
     typeof window !== 'undefined' &&
@@ -96,7 +101,7 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
       {/* Top Bar with room code, connection badge, game badge, and leave */}
       <div className="flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
         <div className="flex items-center gap-2.5">
-          <GameBadge game={config.selectedGameId} size={36} variant="tonal" />
+          <GameBadge game={selectedGameId} size={36} variant="tonal" />
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
@@ -314,7 +319,7 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
                 {(['individuals', 'pairs', 'teams'] as const).map((mode) => (
                   <Chip
                     key={mode}
-                    selected={config.playMode === mode}
+                    selected={safeConfig.playMode === mode}
                     onClick={() => updateConfig({ playMode: mode })}
                     className="justify-center capitalize py-2 font-bold"
                   >
@@ -355,7 +360,7 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
                 <span className="text-sm font-bold uppercase tracking-wider text-[var(--on-container)] flex items-center gap-1.5">
-                  <Icon name="team" size={16} className="text-[var(--primary-action)]" /> Disciples Gathered ({players.length})
+                  <Icon name="team" size={16} className="text-[var(--primary-action)]" /> Disciples Gathered ({safePlayers.length})
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -368,25 +373,25 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
               </div>
             </div>
 
-            {players.length === 0 ? (
+            {safePlayers.length === 0 ? (
               <div className="py-12 text-center text-sm font-semibold text-[var(--on-container-variant)]">
                 Waiting for disciples to enter the room code...
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {players.map((p) => {
-                  const team = teams.find((t) => t.id === p.teamId);
-                  const isPlayerOnsite = p.connectionMode === 'onsite' || (isOnsite && !p.connectionMode);
+                {safePlayers.map((p) => {
+                  const team = safeTeams.find((t) => t?.id === p?.teamId);
+                  const isPlayerOnsite = p?.connectionMode === 'onsite' || (isOnsite && !p?.connectionMode);
 
                   return (
                     <div
-                      key={p.id}
+                      key={p.id || Math.random().toString()}
                       className="p-3.5 rounded-2xl bg-[var(--surface-card)] text-[var(--on-container)] border border-[var(--border-tint)] flex items-center gap-3 shadow-sm hover:border-[var(--primary-action)]/40 transition-all animate-scaleUp"
                     >
-                      <Avatar name={p.name} isHost={p.isHost} teamColor={team?.color} size="md" />
+                      <Avatar name={p.name || 'Disciple'} isHost={p.isHost} teamColor={team?.color} size="md" />
                       <div className="flex flex-col min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-sm font-bold truncate leading-tight">{p.name}</span>
+                          <span className="text-sm font-bold truncate leading-tight">{p.name || 'Disciple'}</span>
                           {p.isHost && (
                             <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-[var(--primary-action)] text-[var(--primary-action-text)]">
                               Host
