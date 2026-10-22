@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Icon, GameBadge } from '../../design/icons';
 import { gameRegistry } from '../../engine/registry';
 import { useTheme } from '../../theme/ThemeContext';
+import { matchesGameSearch, AUTO_POPULATE_PILLS } from '../../screens/HomeScreen';
 
 export interface SelectGameModalProps {
   isOpen: boolean;
@@ -23,7 +24,12 @@ export const SelectGameModal: React.FC<SelectGameModalProps> = ({
   onCancel,
 }) => {
   const { triggerHaptic } = useTheme();
-  const games = gameRegistry.getAllMeta();
+  const [searchQuery, setSearchQuery] = useState('');
+  const allGames = gameRegistry.getAllMeta();
+
+  const filteredGames = useMemo(() => {
+    return allGames.filter((g) => matchesGameSearch(g, searchQuery));
+  }, [allGames, searchQuery]);
 
   if (!isOpen) return null;
 
@@ -32,7 +38,7 @@ export const SelectGameModal: React.FC<SelectGameModalProps> = ({
       <Card
         variant="elevated"
         padding="lg"
-        className="w-full max-w-2xl bg-[var(--surface-card)] border-2 border-[var(--border-tint)] shadow-2xl rounded-3xl flex flex-col gap-4 relative overflow-hidden animate-scaleUp max-h-[90vh]"
+        className="w-full max-w-2xl bg-[var(--surface-card)] border-2 border-[var(--border-tint)] shadow-2xl rounded-3xl flex flex-col gap-3.5 relative overflow-hidden animate-scaleUp max-h-[90vh]"
       >
         {/* Close Button */}
         <button
@@ -59,66 +65,149 @@ export const SelectGameModal: React.FC<SelectGameModalProps> = ({
           </p>
         </div>
 
-        {/* Games List (Scrollable) */}
-        <div className="flex flex-col gap-2.5 overflow-y-auto pr-1 py-1 max-h-[60vh]">
-          {games.map((g) => {
-            const isSelected = selectedGameId === g.id;
-
-            return (
+        {/* Auto-Populate Search Bar & Quick Pills */}
+        <div className="flex flex-col gap-2">
+          <div className="relative w-full flex items-center">
+            <div className="absolute left-3.5 pointer-events-none text-[var(--on-container-variant)] flex items-center justify-center">
+              <Icon name="search" size={16} />
+            </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search games by title, quotes, bluff, speed..."
+              aria-label="Search games to host"
+              autoComplete="off"
+              spellCheck="false"
+              className="w-full pl-9 pr-9 py-2 rounded-xl bg-[var(--surface-container)] text-[var(--on-container)] placeholder:text-[var(--on-container-variant)]/60 text-xs font-medium border border-[var(--border-tint)] focus:border-[var(--primary-action)] focus:outline-hidden focus:bg-[var(--surface-card)] transition-all"
+            />
+            {searchQuery && (
               <button
-                key={g.id}
                 type="button"
                 onClick={() => {
-                  triggerHaptic('medium');
-                  onSelectGame(g.id);
+                  triggerHaptic('light');
+                  setSearchQuery('');
                 }}
-                className={`p-3.5 sm:p-4 rounded-2xl border-2 text-left flex items-center justify-between gap-3.5 transition-all cursor-pointer group ${
-                  isSelected
-                    ? 'border-[var(--primary-action)] bg-[var(--primary-action)]/10 shadow-sm'
-                    : 'border-[var(--border-tint)] bg-[var(--surface-container)] hover:border-[var(--primary-action)]/50 hover:bg-[var(--surface-container-high)]'
-                }`}
+                className="absolute right-2.5 w-5 h-5 rounded-full bg-[var(--surface-card)] hover:bg-[var(--surface-container-high)] text-[var(--on-container-variant)] flex items-center justify-center transition-colors cursor-pointer"
+                aria-label="Clear search"
               >
-                <div className="flex items-center gap-3.5 min-w-0">
-                  <div className="shrink-0 transition-transform group-hover:scale-105">
-                    <GameBadge game={g.id} size={44} variant="tonal" />
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-extrabold text-sm sm:text-base text-[var(--on-container)] tracking-tight">
-                        {g.name}
-                      </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--surface-card)] text-[var(--on-container-variant)] border border-[var(--border-tint)]">
-                        {g.categoryTag}
-                      </span>
-                      {isSelected && (
-                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                          Active Selection
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-[var(--on-container-variant)] line-clamp-1 mt-0.5">
-                      {g.tagline}
-                    </p>
-                    <div className="flex items-center gap-3 text-[11px] text-[var(--on-container-variant)]/80 mt-1 font-mono">
-                      <span>👥 {g.minPlayers}–{g.maxPlayers} players</span>
-                      <span>⏱️ ~{g.estimatedMinutes} mins</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="shrink-0">
-                  <span className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 ${
-                    isSelected
-                      ? 'bg-[var(--primary-action)] text-white shadow-xs'
-                      : 'bg-[var(--surface-card)] text-[var(--on-container)] border border-[var(--border-tint)] group-hover:border-[var(--primary-action)]'
-                  }`}>
-                    {isSelected ? 'Selected' : 'Choose'}
-                    <Icon name="arrow-right" size={12} />
-                  </span>
-                </div>
+                <Icon name="close" size={11} />
               </button>
-            );
-          })}
+            )}
+          </div>
+
+          {/* Quick Auto-Populate Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none text-xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--on-container-variant)] shrink-0 flex items-center gap-1">
+              Quick:
+            </span>
+            {AUTO_POPULATE_PILLS.slice(0, 5).map((pill) => {
+              const isSelected = searchQuery.toLowerCase() === pill.query.toLowerCase();
+              return (
+                <button
+                  key={pill.label}
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    if (isSelected) {
+                      setSearchQuery('');
+                    } else {
+                      setSearchQuery(pill.query);
+                    }
+                  }}
+                  className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold transition-all shrink-0 cursor-pointer border flex items-center gap-1 ${
+                    isSelected
+                      ? 'bg-[var(--primary-action)] text-white border-[var(--primary-action)]'
+                      : 'bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[var(--on-container)] border-[var(--border-tint)]'
+                  }`}
+                >
+                  <Icon name={pill.icon} size={11} />
+                  <span>{pill.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Games List (Scrollable) */}
+        <div className="flex flex-col gap-2.5 overflow-y-auto pr-1 py-1 max-h-[50vh]">
+          {filteredGames.length > 0 ? (
+            filteredGames.map((g) => {
+              const isSelected = selectedGameId === g.id;
+
+              return (
+                <button
+                  key={g.id}
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('medium');
+                    onSelectGame(g.id);
+                  }}
+                  className={`p-3.5 sm:p-4 rounded-2xl border-2 text-left flex items-center justify-between gap-3.5 transition-all cursor-pointer group ${
+                    isSelected
+                      ? 'border-[var(--primary-action)] bg-[var(--primary-action)]/10 shadow-sm'
+                      : 'border-[var(--border-tint)] bg-[var(--surface-container)] hover:border-[var(--primary-action)]/50 hover:bg-[var(--surface-container-high)]'
+                  }`}
+                >
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <div className="shrink-0 transition-transform group-hover:scale-105">
+                      <GameBadge game={g.id} size={44} variant="tonal" />
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-extrabold text-sm sm:text-base text-[var(--on-container)] tracking-tight">
+                          {g.name}
+                        </span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--surface-card)] text-[var(--on-container-variant)] border border-[var(--border-tint)]">
+                          {g.categoryTag}
+                        </span>
+                        {isSelected && (
+                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                            Active Selection
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-[var(--on-container-variant)] line-clamp-1 mt-0.5">
+                        {g.tagline}
+                      </p>
+                      <div className="flex items-center gap-3 text-[11px] text-[var(--on-container-variant)]/80 mt-1 font-mono">
+                        <span>👥 {g.minPlayers}–{g.maxPlayers} players</span>
+                        <span>⏱️ ~{g.estimatedMinutes} mins</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0">
+                    <span className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 ${
+                      isSelected
+                        ? 'bg-[var(--primary-action)] text-white shadow-xs'
+                        : 'bg-[var(--surface-card)] text-[var(--on-container)] border border-[var(--border-tint)] group-hover:border-[var(--primary-action)]'
+                    }`}>
+                      {isSelected ? 'Selected' : 'Choose'}
+                      <Icon name="arrow-right" size={12} />
+                    </span>
+                  </div>
+                </button>
+              );
+            })
+          ) : (
+            <div className="py-8 px-4 flex flex-col items-center justify-center text-center gap-2.5 rounded-2xl border-2 border-dashed border-[var(--border-tint)] bg-[var(--surface-container)]">
+              <Icon name="search" size={24} className="text-[var(--on-container-variant)]" />
+              <p className="text-xs font-bold text-[var(--on-container)]">
+                No games match "{searchQuery}"
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('light');
+                  setSearchQuery('');
+                }}
+                className="text-xs text-[var(--primary-action)] font-bold hover:underline"
+              >
+                Clear search
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Footer */}

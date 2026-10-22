@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '../components/ui/Card';
 import { Chip } from '../components/ui/Chip';
@@ -7,7 +7,7 @@ import { Avatar } from '../components/ui/Avatar';
 import { gameRegistry } from '../engine/registry';
 import { GameMeta, ConnectionMode, HotspotInfo, PlayMode } from '../engine/types';
 import { useTheme } from '../theme/ThemeContext';
-import { Icon, GameBadge, GameShape, toVisualGameId, GAME_VISUALS, type GameId } from '../design/icons';
+import { Icon, GameBadge, GameShape, toVisualGameId, GAME_VISUALS, type GameId, type IconName } from '../design/icons';
 import { SelectGameModal } from '../components/session/SelectGameModal';
 import { HostSessionModal } from '../components/session/HostSessionModal';
 import { fetchFellowshipStats, getCachedFellowshipStats, FellowshipStats } from '../engine/services/gameDataService';
@@ -68,6 +68,43 @@ const PLANNED_GAMES: PlannedGameMeta[] = [
   },
 ];
 
+export const GAME_SEARCH_KEYWORDS: Record<string, string[]> = {
+  'fake-a-proverb': ['proverb', 'proverbs', 'solomon', 'bluff', 'bluffing', 'wisdom', 'vote', 'scripture', 'lie', 'truth', 'proverbial'],
+  'hot-coal': ['coal', 'hot coal', 'isaiah', 'speed', 'reflex', 'fast', 'hot potato', 'timer', 'burn', 'action', 'quick', 'hot'],
+  'tares-among-wheat': ['tare', 'tares', 'wheat', 'impostor', 'traitor', 'deduction', 'parable', 'harvest', 'social', 'secret', 'suspect'],
+  'who-said-it': ['who said', 'quote', 'quotes', 'prophet', 'apostle', 'trivia', 'knowledge', 'king', 'disciple', 'speaker', 'said', 'said it'],
+  'testament-sort': ['testament', 'sort', 'old', 'new', 'canon', 'books', 'speed', 'order', 'bible books', 'timeline', 'sorting'],
+  'blueprint-from-the-mountain': ['blueprint', 'mountain', 'tabernacle', 'architecture', 'dimensions', 'exodus', 'ark'],
+  'one-accord': ['accord', 'unity', 'harmony', 'acts', 'scripture', 'co-op', 'team'],
+  'six-degrees-of-abraham': ['abraham', 'genealogy', 'degrees', 'covenant', 'generations', 'lineage', 'family tree'],
+};
+
+export const AUTO_POPULATE_PILLS: Array<{ label: string; query: string; icon: IconName }> = [
+  { label: 'Proverb', query: 'Proverb', icon: 'scroll' },
+  { label: 'Hot Coal', query: 'Hot Coal', icon: 'flame' },
+  { label: 'Wheat & Tares', query: 'Wheat & Tares', icon: 'wheat' },
+  { label: 'Who Said It', query: 'Who Said', icon: 'person' },
+  { label: 'Testament', query: 'Testament', icon: 'bible' },
+  { label: 'Reflex & Speed', query: 'Speed', icon: 'bolt' },
+  { label: 'Bluffing', query: 'Bluff', icon: 'eye' },
+  { label: 'Trivia', query: 'Trivia', icon: 'book-open' },
+];
+
+export function matchesGameSearch(
+  game: { id: string; name: string; tagline: string; description?: string; categoryTag: string },
+  query: string
+): boolean {
+  if (!query || !query.trim()) return true;
+  const q = query.toLowerCase().trim();
+  if (game.name.toLowerCase().includes(q)) return true;
+  if (game.tagline.toLowerCase().includes(q)) return true;
+  if (game.description && game.description.toLowerCase().includes(q)) return true;
+  if (game.categoryTag.toLowerCase().includes(q)) return true;
+  const keywords = GAME_SEARCH_KEYWORDS[game.id] || [];
+  if (keywords.some((k) => k.toLowerCase().includes(q) || q.includes(k.toLowerCase()))) return true;
+  return false;
+}
+
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   onSelectGame,
   onQuickJoin,
@@ -75,10 +112,26 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onHostSession,
 }) => {
   const [filter, setFilter] = useState<'All' | 'Party' | 'Team' | 'Solo'>('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+
   const [showGamePicker, setShowGamePicker] = useState(false);
   const [pendingHostGame, setPendingHostGame] = useState<GameMeta | null>(null);
   const [showHostModal, setShowHostModal] = useState(false);
   const { triggerHaptic } = useTheme();
+
+  // Close search suggestions on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
+        setIsSearchFocused(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Real database fellowship stats
   const [stats, setStats] = useState<FellowshipStats>(() => {
@@ -130,16 +183,27 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const launchGames = gameRegistry.getAllMeta();
 
-  const filteredLaunchGames = launchGames.filter((g) => {
-    if (filter === 'All') return true;
-    if (filter === 'Solo') return g.supportsSoloPractice;
-    return g.categoryTag === filter;
-  });
+  const filteredLaunchGames = useMemo(() => {
+    return launchGames.filter((g) => {
+      const matchesCategory =
+        filter === 'All' ? true : filter === 'Solo' ? g.supportsSoloPractice : g.categoryTag === filter;
+      return matchesCategory && matchesGameSearch(g, searchQuery);
+    });
+  }, [launchGames, filter, searchQuery]);
 
-  const filteredPlannedGames = PLANNED_GAMES.filter((g) => {
-    if (filter === 'All') return true;
-    return g.categoryTag === filter;
-  });
+  const filteredPlannedGames = useMemo(() => {
+    return PLANNED_GAMES.filter((g) => {
+      const matchesCategory = filter === 'All' ? true : g.categoryTag === filter;
+      return matchesCategory && matchesGameSearch(g, searchQuery);
+    });
+  }, [filter, searchQuery]);
+
+  // Direct autocomplete suggestions dropdown items
+  const autocompleteSuggestions = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    const allGames = [...launchGames, ...PLANNED_GAMES];
+    return allGames.filter((g) => matchesGameSearch(g, searchQuery)).slice(0, 5);
+  }, [launchGames, searchQuery]);
 
   const handleShuffle = () => {
     triggerHaptic('medium');
@@ -301,37 +365,210 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       </div>
 
       {/* Section Header + Segmented Filter Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
-        <div>
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--on-container)]">
-            Game Library
-          </h2>
-          <p className="text-xs text-[var(--on-container-variant)] hidden sm:block">
-            Choose a fellowship game to host or practice solo
-          </p>
+      <div className="flex flex-col gap-3.5 pt-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--on-container)]">
+                Game Library
+              </h2>
+              <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-[var(--surface-container)] text-[var(--on-container-variant)] border border-[var(--border-tint)]">
+                {filteredLaunchGames.length + filteredPlannedGames.length} {filteredLaunchGames.length + filteredPlannedGames.length === 1 ? 'game' : 'games'}
+              </span>
+            </div>
+            <p className="text-xs text-[var(--on-container-variant)] mt-0.5">
+              Choose a fellowship game to host or practice solo
+            </p>
+          </div>
+
+          {/* Segmented Filter Pills + Shuffle */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            {(['All', 'Party', 'Team', 'Solo'] as const).map((tab) => (
+              <Chip
+                key={tab}
+                selected={filter === tab}
+                onClick={() => {
+                  triggerHaptic('light');
+                  setFilter(tab);
+                }}
+                size="md"
+              >
+                {tab}
+              </Chip>
+            ))}
+            <Chip
+              selected={false}
+              onClick={handleShuffle}
+              leftIcon={<Icon name="shuffle" size={16} variant="line" />}
+              size="md"
+              className="ml-auto sm:ml-0"
+            >
+              Surprise Me
+            </Chip>
+          </div>
         </div>
 
-        {/* Segmented Filter Pills + Shuffle */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1">
-          {(['All', 'Party', 'Team', 'Solo'] as const).map((tab) => (
-            <Chip
-              key={tab}
-              selected={filter === tab}
-              onClick={() => setFilter(tab)}
-              size="md"
-            >
-              {tab}
-            </Chip>
-          ))}
-          <Chip
-            selected={false}
-            onClick={handleShuffle}
-            leftIcon={<Icon name="shuffle" size={16} variant="line" />}
-            size="md"
-            className="ml-auto sm:ml-0"
-          >
-            Surprise Me
-          </Chip>
+        {/* Auto-Populate Search Bar & Suggestions Container */}
+        <div ref={searchContainerRef} className="relative flex flex-col gap-2 z-20">
+          <div className="relative flex items-center">
+            {/* Search Input Box */}
+            <div className="relative w-full flex items-center">
+              <div className="absolute left-3.5 pointer-events-none text-[var(--on-container-variant)] flex items-center justify-center">
+                <Icon name="search" size={18} />
+              </div>
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') {
+                    setSearchQuery('');
+                    setIsSearchFocused(false);
+                    searchInputRef.current?.blur();
+                  } else if (e.key === 'Enter' && autocompleteSuggestions.length > 0) {
+                    const topMatch = autocompleteSuggestions[0];
+                    if ('status' in topMatch && topMatch.status === 'planned') {
+                      setSearchQuery(topMatch.name);
+                    } else {
+                      onSelectGame(topMatch.id);
+                    }
+                    setIsSearchFocused(false);
+                  }
+                }}
+                placeholder="Search games by title, quotes, bluff, speed, trivia..."
+                aria-label="Search games"
+                autoComplete="off"
+                spellCheck="false"
+                className="w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-2xl bg-[var(--surface-card)] text-[var(--on-container)] placeholder:text-[var(--on-container-variant)]/60 text-sm font-medium border-2 border-[var(--border-tint)] focus:border-[var(--primary-action)] focus:outline-hidden focus:shadow-md transition-all"
+              />
+              {/* Clear button */}
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    setSearchQuery('');
+                    searchInputRef.current?.focus();
+                  }}
+                  className="absolute right-3 w-6 h-6 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[var(--on-container-variant)] flex items-center justify-center transition-colors cursor-pointer"
+                  aria-label="Clear search"
+                >
+                  <Icon name="close" size={13} />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Live Autocomplete Dropdown */}
+          {isSearchFocused && autocompleteSuggestions.length > 0 && (
+            <div className="absolute top-[calc(100%-8px)] left-0 right-0 mt-2 bg-[var(--surface-card)] border-2 border-[var(--border-tint)] rounded-2xl shadow-2xl p-2 z-50 flex flex-col gap-1 backdrop-blur-md animate-fadeIn">
+              <div className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[var(--on-container-variant)] flex items-center justify-between border-b border-[var(--border-tint)] pb-1.5">
+                <span>Matching Games ({autocompleteSuggestions.length})</span>
+                <span className="text-[10px] lowercase opacity-70">press enter or tap to select</span>
+              </div>
+              {autocompleteSuggestions.map((item) => (
+                <div
+                  key={item.id}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    triggerHaptic('medium');
+                    if ('status' in item && item.status === 'planned') {
+                      setSearchQuery(item.name);
+                    } else {
+                      onSelectGame(item.id);
+                    }
+                    setIsSearchFocused(false);
+                  }}
+                  className="p-2 sm:p-2.5 rounded-xl hover:bg-[var(--surface-container-high)] flex items-center justify-between gap-3 cursor-pointer transition-colors group"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="shrink-0 group-hover:scale-105 transition-transform">
+                      <GameBadge game={item.id} size={36} variant="tonal" />
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="font-extrabold text-sm text-[var(--on-container)] group-hover:text-[var(--primary-action)] transition-colors truncate">
+                          {item.name}
+                        </span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-[var(--surface-container)] text-[var(--on-container-variant)] border border-[var(--border-tint)]">
+                          {item.categoryTag}
+                        </span>
+                      </div>
+                      <span className="text-xs text-[var(--on-container-variant)] truncate">
+                        {item.tagline}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="shrink-0 flex items-center gap-1">
+                    <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-[var(--primary-action)]/10 text-[var(--primary-action)] group-hover:bg-[var(--primary-action)] group-hover:text-white transition-colors flex items-center gap-1">
+                      {'status' in item && item.status === 'planned' ? 'Planned' : 'Play'}
+                      <Icon name="arrow-right" size={12} />
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Quick Auto-Populate Search Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--on-container-variant)] shrink-0 flex items-center gap-1 mr-0.5">
+              <Icon name="target" size={12} /> Quick Find:
+            </span>
+            {AUTO_POPULATE_PILLS.map((pill) => {
+              const isSelected = searchQuery.toLowerCase() === pill.query.toLowerCase();
+              return (
+                <button
+                  key={pill.label}
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    if (isSelected) {
+                      setSearchQuery('');
+                    } else {
+                      setSearchQuery(pill.query);
+                      searchInputRef.current?.focus();
+                    }
+                  }}
+                  className={`px-3 py-1 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer border flex items-center gap-1.5 ${
+                    isSelected
+                      ? 'bg-[var(--primary-action)] text-white border-[var(--primary-action)] shadow-xs scale-105'
+                      : 'bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[var(--on-container)] border-[var(--border-tint)] hover:border-[var(--primary-action)]/50'
+                  }`}
+                >
+                  <Icon name={pill.icon} size={12} />
+                  <span>{pill.label}</span>
+                  {isSelected && <Icon name="close" size={10} />}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Active Search / Filter Status Banner */}
+          {(searchQuery || filter !== 'All') && (
+            <div className="flex items-center justify-between text-xs text-[var(--on-container-variant)] px-1">
+              <div className="flex items-center gap-1.5">
+                <span>
+                  Filtering by {searchQuery ? <strong>"{searchQuery}"</strong> : ''}{' '}
+                  {filter !== 'All' ? <span className="font-semibold">({filter} category)</span> : ''}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('light');
+                  setSearchQuery('');
+                  setFilter('All');
+                }}
+                className="text-[var(--primary-action)] hover:underline font-bold cursor-pointer flex items-center gap-1"
+              >
+                <Icon name="refresh" size={12} />
+                <span>Reset all</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -348,6 +585,41 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {filteredPlannedGames.map((game) => (
           <PlannedGameCard key={game.id} game={game} />
         ))}
+
+        {/* Empty state when no games match search query */}
+        {filteredLaunchGames.length === 0 && filteredPlannedGames.length === 0 && (
+          <Card
+            variant="surface"
+            padding="lg"
+            className="col-span-full py-12 px-4 flex flex-col items-center justify-center text-center gap-3.5 rounded-3xl border-2 border-dashed border-[var(--border-tint)] bg-[var(--surface-card)]"
+          >
+            <div className="w-14 h-14 rounded-full bg-[var(--surface-container-high)] text-[var(--primary-action)] flex items-center justify-center shadow-xs">
+              <Icon name="search" size={26} />
+            </div>
+            <div className="flex flex-col gap-1 max-w-sm">
+              <h3 className="text-base sm:text-lg font-black text-[var(--on-container)]">
+                No fellowship games found
+              </h3>
+              <p className="text-xs text-[var(--on-container-variant)] leading-relaxed">
+                We couldn't find any games matching <strong className="text-[var(--on-container)]">"{searchQuery}"</strong>. Try tapping one of the quick find pills above or reset your filters.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => {
+                  triggerHaptic('medium');
+                  setSearchQuery('');
+                  setFilter('All');
+                }}
+                leftIcon={<Icon name="refresh" size={14} />}
+              >
+                Reset Search & Filters
+              </Button>
+            </div>
+          </Card>
+        )}
       </div>
 
       {/* Game Selector Modal for Hosting */}
