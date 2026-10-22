@@ -176,11 +176,12 @@ export function reduceFakeAProverb(
     }
 
     case 'START_ROUND': {
-      const { nextProverb } = intent.payload || {};
-      const nextPlanned = state.plannedProverbs && state.plannedProverbs[state.roundNumber];
+      const { nextProverb, roundNumber } = intent.payload || {};
+      const targetRound = typeof roundNumber === 'number' ? roundNumber : state.roundNumber + 1;
+      const nextPlanned = state.plannedProverbs && state.plannedProverbs[targetRound - 1];
       return {
         ...state,
-        roundNumber: state.roundNumber + 1,
+        roundNumber: targetRound,
         submissions: {},
         votes: {},
         shuffledEndings: [],

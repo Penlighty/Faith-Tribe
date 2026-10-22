@@ -20,6 +20,8 @@ import {
   onChildAdded,
   remove,
   off,
+  query,
+  limitToLast,
   serverTimestamp,
   onDisconnect,
   Database,
@@ -213,11 +215,12 @@ export class FirebaseRealtimeTransport implements Transport {
     if (!this.db) return;
 
     const messagesRef = ref(this.db, `rooms/${this.roomCode}/messages`);
+    const messagesQuery = query(messagesRef, limitToLast(50));
 
     // Only listen to messages added *after* we connect — use a timestamp sentinel
     const joinedAt = Date.now();
 
-    const handler = onChildAdded(messagesRef, (snapshot) => {
+    const handler = onChildAdded(messagesQuery, (snapshot) => {
       const msg = snapshot.val() as TransportMessage<any> & { _serverTimestamp?: number };
       if (!msg) return;
 
@@ -239,7 +242,7 @@ export class FirebaseRealtimeTransport implements Transport {
       this.notifyMessage(msg);
     });
 
-    this.unsubMessages = () => off(messagesRef, 'child_added', handler as any);
+    this.unsubMessages = () => off(messagesQuery, 'child_added', handler as any);
   }
 
   // -------------------------------------------------------------------------

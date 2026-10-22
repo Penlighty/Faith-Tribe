@@ -121,8 +121,11 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [config.selectedGameId, setPaletteKey]);
 
+  const isAdvancingPhaseRef = useRef<boolean>(false);
+
   // Host state broadcast
   const broadcastSnapshot = useCallback((newSnapshot: SessionSnapshot) => {
+    snapshotRef.current = newSnapshot;
     setSnapshot(newSnapshot);
     if (transportRef.current && transportRef.current.isConnected()) {
       transportRef.current.send('SNAPSHOT', newSnapshot, newSnapshot.version);
@@ -144,7 +147,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     timerIntervalRef.current = setInterval(() => {
       const current = snapshotRef.current;
-      if (!current || current.status !== 'in_game') return;
+      if (!current || current.status !== 'in_game' || !isHostRef.current) return;
+      if (isAdvancingPhaseRef.current) return;
 
       const currentPhase = game.phases[current.gameState.phaseIndex];
       if (!currentPhase || !currentPhase.hasTimer) return;
@@ -168,7 +172,17 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             phaseTimeRemaining: remaining,
           },
         };
-        broadcastSnapshot(nextSnapshot);
+
+        // Always update host local state immediately so host UI ticks smoothly
+        snapshotRef.current = nextSnapshot;
+        setSnapshot(nextSnapshot);
+
+        // Network sync: send snapshot over network periodically (every 5s, or final 3s)
+        // to prevent WebSocket queue congestion while keeping participant clocks synchronized.
+        const shouldSyncNetwork = remaining % 5 === 0 || remaining <= 3;
+        if (shouldSyncNetwork && transportRef.current && transportRef.current.isConnected()) {
+          transportRef.current.send('SNAPSHOT', nextSnapshot, nextSnapshot.version);
+        }
       }
     }, 1000);
 
@@ -178,194 +192,252 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         timerIntervalRef.current = null;
       }
     };
-  }, [isHost, snapshot?.status, snapshot?.gameId, soundEnabled]);
+  }, [
+    isHost,
+    snapshot?.status,
+    snapshot?.gameId,
+    snapshot?.gameState?.phaseIndex,
+    snapshot?.gameState?.roundNumber,
+    soundEnabled,
+  ]);
+
+  // Participant local timer ticker: smoothly counts down remaining seconds between network pulses
+  useEffect(() => {
+    if (isHost || !snapshot || snapshot.status !== 'in_game') return;
+
+    const game = gameRegistry.get(snapshot.gameId);
+    if (!game) return;
+
+    const currentPhase = game.phases[snapshot.gameState?.phaseIndex ?? 0];
+    if (!currentPhase || !currentPhase.hasTimer) return;
+
+    const participantTicker = setInterval(() => {
+      setSnapshot((prev) => {
+        if (!prev || prev.status !== 'in_game') return prev;
+        const currentSec = prev.gameState?.phaseTimeRemaining;
+        if (typeof currentSec !== 'number' || currentSec <= 0) return prev;
+        const updated = {
+          ...prev,
+          gameState: {
+            ...prev.gameState,
+            phaseTimeRemaining: currentSec - 1,
+          },
+        };
+        snapshotRef.current = updated;
+        return updated;
+      });
+    }, 1000);
+
+    return () => clearInterval(participantTicker);
+  }, [
+    isHost,
+    snapshot?.status,
+    snapshot?.gameId,
+    snapshot?.gameState?.phaseIndex,
+    snapshot?.gameState?.roundNumber,
+  ]);
 
   // Advance host phase
   const advanceHostPhase = useCallback(() => {
+    if (isAdvancingPhaseRef.current) return;
     const current = snapshotRef.current;
     if (!current || !isHostRef.current) return;
 
     const game = gameRegistry.get(current.gameId);
     if (!game) return;
 
-    const nextPhaseIndex = current.gameState.phaseIndex + 1;
+    isAdvancingPhaseRef.current = true;
 
-    if (nextPhaseIndex < game.phases.length) {
-      const nextPhase = game.phases[nextPhaseIndex];
-      let nextGameState = {
-        ...current.gameState,
-        phaseIndex: nextPhaseIndex,
-        currentPhaseId: nextPhase.id,
-        phaseTimeRemaining: nextPhase.durationSeconds,
-        phaseDuration: nextPhase.durationSeconds,
-      };
+    // Reset ticker interval so the new phase gets a fresh 1-second cadence
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null;
+    }
 
-      // Synchronously execute phase hooks so participants receive fully populated phase state immediately
-      if (current.gameId === 'fake-a-proverb') {
-        if (nextPhase.id === 'vote') {
-          nextGameState = game.reduce(
-            nextGameState,
-            {
-              type: 'PREPARE_VOTING',
-              playerId: 'HOST',
-              timestamp: Date.now(),
-            },
-            'HOST'
-          );
-        } else if (nextPhase.id === 'reveal') {
-          nextGameState = game.reduce(
-            nextGameState,
-            {
-              type: 'CALCULATE_ROUND_SCORES',
-              playerId: 'HOST',
-              timestamp: Date.now(),
-            },
-            'HOST'
-          );
-        }
-      } else if (current.gameId === 'who-said') {
-        if (nextPhase.id === 'question') {
-          nextGameState = game.reduce(
-            nextGameState,
-            {
-              type: 'START_QUESTION',
-              playerId: 'HOST',
-              timestamp: Date.now(),
-            },
-            'HOST'
-          );
-        } else if (nextPhase.id === 'reveal') {
-          nextGameState = game.reduce(
-            nextGameState,
-            {
-              type: 'TRIGGER_REVEAL',
-              playerId: 'HOST',
-              timestamp: Date.now(),
-            },
-            'HOST'
-          );
-        }
-      } else if (current.gameId === 'testament-sort') {
-        if (nextPhase.id === 'card') {
-          nextGameState = game.reduce(
-            nextGameState,
-            {
-              type: 'START_CARD',
-              playerId: 'HOST',
-              timestamp: Date.now(),
-            },
-            'HOST'
-          );
-        } else if (nextPhase.id === 'reveal') {
-          nextGameState = game.reduce(
-            nextGameState,
-            {
-              type: 'TRIGGER_REVEAL',
-              playerId: 'HOST',
-              timestamp: Date.now(),
-            },
-            'HOST'
-          );
-        }
-      }
+    try {
+      const nextPhaseIndex = current.gameState.phaseIndex + 1;
 
-      // Re-verify phaseIndex and duration alignment
-      nextGameState.phaseIndex = nextPhaseIndex;
-      nextGameState.currentPhaseId = nextPhase.id;
-      nextGameState.phaseDuration = nextGameState.phaseDuration || nextPhase.durationSeconds;
-      nextGameState.phaseTimeRemaining = nextGameState.phaseTimeRemaining ?? nextPhase.durationSeconds;
-
-      const nextSnapshot: SessionSnapshot = {
-        ...current,
-        version: current.version + 1,
-        gameState: nextGameState,
-      };
-      broadcastSnapshot(nextSnapshot);
-    } else {
-      // End of round: check if game over
-      const nextRound = current.gameState.roundNumber + 1;
-      const totalRounds = current.gameState.totalRounds || current.config.roundsCount || 4;
-
-      if (nextRound > totalRounds) {
-        // Game Over!
-        soundManager.playChime(soundEnabled);
-        const finalSnapshot: SessionSnapshot = {
-          ...current,
-          status: 'final_leaderboard',
-          version: current.version + 1,
-          gameState: {
-            ...current.gameState,
-            isGameOver: true,
-          },
+      if (nextPhaseIndex < game.phases.length) {
+        const nextPhase = game.phases[nextPhaseIndex];
+        let nextGameState = {
+          ...current.gameState,
+          phaseIndex: nextPhaseIndex,
+          currentPhaseId: nextPhase.id,
+          phaseTimeRemaining: nextPhase.durationSeconds,
+          phaseDuration: nextPhase.durationSeconds,
         };
-        broadcastSnapshot(finalSnapshot);
 
-        // Record completed session to database
-        recordGameResult(
-          current.gameId,
-          game?.meta?.name || 'Fellowship Game',
-          current.roomCode,
-          current.config.connectionMode || 'online',
-          totalRounds,
-          current.players,
-          current.teams
-        );
-      } else {
-        // Next round
-        const firstPhase = game.phases[0];
-        let nextRoundState = game.reduce(
-          {
-            ...current.gameState,
-            roundNumber: nextRound,
-            phaseIndex: 0,
-            currentPhaseId: firstPhase.id,
-            phaseTimeRemaining: firstPhase.durationSeconds,
-            phaseDuration: firstPhase.durationSeconds,
-          },
-          {
-            type: 'START_ROUND',
-            playerId: 'HOST',
-            payload: { roundNumber: nextRound },
-            timestamp: Date.now(),
-          },
-          'HOST'
-        );
-
-        if (current.gameId === 'who-said') {
-          nextRoundState = game.reduce(
-            nextRoundState,
-            {
-              type: 'NEXT_QUESTION',
-              playerId: 'HOST',
-              timestamp: Date.now(),
-            },
-            'HOST'
-          );
+        // Synchronously execute phase hooks so participants receive fully populated phase state immediately
+        if (current.gameId === 'fake-a-proverb') {
+          if (nextPhase.id === 'vote') {
+            nextGameState = game.reduce(
+              nextGameState,
+              {
+                type: 'PREPARE_VOTING',
+                playerId: 'HOST',
+                timestamp: Date.now(),
+              },
+              'HOST'
+            );
+          } else if (nextPhase.id === 'reveal') {
+            nextGameState = game.reduce(
+              nextGameState,
+              {
+                type: 'CALCULATE_ROUND_SCORES',
+                playerId: 'HOST',
+                timestamp: Date.now(),
+              },
+              'HOST'
+            );
+          }
+        } else if (current.gameId === 'who-said') {
+          if (nextPhase.id === 'question') {
+            nextGameState = game.reduce(
+              nextGameState,
+              {
+                type: 'START_QUESTION',
+                playerId: 'HOST',
+                timestamp: Date.now(),
+              },
+              'HOST'
+            );
+          } else if (nextPhase.id === 'reveal') {
+            nextGameState = game.reduce(
+              nextGameState,
+              {
+                type: 'TRIGGER_REVEAL',
+                playerId: 'HOST',
+                timestamp: Date.now(),
+              },
+              'HOST'
+            );
+          }
         } else if (current.gameId === 'testament-sort') {
-          nextRoundState = game.reduce(
-            nextRoundState,
-            {
-              type: 'NEXT_CARD',
-              playerId: 'HOST',
-              timestamp: Date.now(),
-            },
-            'HOST'
-          );
+          if (nextPhase.id === 'card') {
+            nextGameState = game.reduce(
+              nextGameState,
+              {
+                type: 'START_CARD',
+                playerId: 'HOST',
+                timestamp: Date.now(),
+              },
+              'HOST'
+            );
+          } else if (nextPhase.id === 'reveal') {
+            nextGameState = game.reduce(
+              nextGameState,
+              {
+                type: 'TRIGGER_REVEAL',
+                playerId: 'HOST',
+                timestamp: Date.now(),
+              },
+              'HOST'
+            );
+          }
         }
 
-        nextRoundState.phaseIndex = 0;
-        nextRoundState.currentPhaseId = firstPhase.id;
-        nextRoundState.phaseDuration = firstPhase.durationSeconds;
-        nextRoundState.phaseTimeRemaining = firstPhase.durationSeconds;
+        // Re-verify phaseIndex and duration alignment
+        nextGameState.phaseIndex = nextPhaseIndex;
+        nextGameState.currentPhaseId = nextPhase.id;
+        nextGameState.phaseDuration = nextGameState.phaseDuration || nextPhase.durationSeconds;
+        nextGameState.phaseTimeRemaining = nextGameState.phaseTimeRemaining ?? nextPhase.durationSeconds;
 
         const nextSnapshot: SessionSnapshot = {
           ...current,
           version: current.version + 1,
-          status: 'in_game',
-          gameState: nextRoundState,
+          gameState: nextGameState,
         };
         broadcastSnapshot(nextSnapshot);
+      } else {
+        // End of round: check if game over
+        const nextRound = current.gameState.roundNumber + 1;
+        const totalRounds = current.gameState.totalRounds || current.config.roundsCount || 4;
+
+        if (nextRound > totalRounds) {
+          // Game Over!
+          soundManager.playChime(soundEnabled);
+          const finalSnapshot: SessionSnapshot = {
+            ...current,
+            status: 'final_leaderboard',
+            version: current.version + 1,
+            gameState: {
+              ...current.gameState,
+              isGameOver: true,
+            },
+          };
+          broadcastSnapshot(finalSnapshot);
+
+          // Record completed session to database
+          recordGameResult(
+            current.gameId,
+            game?.meta?.name || 'Fellowship Game',
+            current.roomCode,
+            current.config.connectionMode || 'online',
+            totalRounds,
+            current.players,
+            current.teams
+          );
+        } else {
+          // Next round
+          const firstPhase = game.phases[0];
+          let nextRoundState = game.reduce(
+            {
+              ...current.gameState,
+              roundNumber: nextRound,
+              phaseIndex: 0,
+              currentPhaseId: firstPhase.id,
+              phaseTimeRemaining: firstPhase.durationSeconds,
+              phaseDuration: firstPhase.durationSeconds,
+            },
+            {
+              type: 'START_ROUND',
+              playerId: 'HOST',
+              payload: { roundNumber: nextRound },
+              timestamp: Date.now(),
+            },
+            'HOST'
+          );
+
+          if (current.gameId === 'who-said') {
+            nextRoundState = game.reduce(
+              nextRoundState,
+              {
+                type: 'NEXT_QUESTION',
+                playerId: 'HOST',
+                timestamp: Date.now(),
+              },
+              'HOST'
+            );
+          } else if (current.gameId === 'testament-sort') {
+            nextRoundState = game.reduce(
+              nextRoundState,
+              {
+                type: 'NEXT_CARD',
+                playerId: 'HOST',
+                timestamp: Date.now(),
+              },
+              'HOST'
+            );
+          }
+
+          nextRoundState.phaseIndex = 0;
+          nextRoundState.currentPhaseId = firstPhase.id;
+          nextRoundState.phaseDuration = firstPhase.durationSeconds;
+          nextRoundState.phaseTimeRemaining = firstPhase.durationSeconds;
+
+          const nextSnapshot: SessionSnapshot = {
+            ...current,
+            version: current.version + 1,
+            status: 'in_game',
+            gameState: nextRoundState,
+          };
+          broadcastSnapshot(nextSnapshot);
+        }
       }
+    } finally {
+      setTimeout(() => {
+        isAdvancingPhaseRef.current = false;
+      }, 500);
     }
   }, [broadcastSnapshot, soundEnabled]);
 
