@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GameViewProps } from '../../engine/types';
 import { TestamentSortState, TestamentChoice } from './types';
 import { Card } from '../../components/ui/Card';
@@ -41,6 +41,17 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
   const tierKey = (currentCard?.tier || 1) as 1 | 2 | 3 | 4;
   const tierInfo = TIER_THEMES[tierKey] || TIER_THEMES[1];
 
+  const [optimisticChoice, setOptimisticChoice] = useState<TestamentChoice | null>(null);
+  const [optimisticLocked, setOptimisticLocked] = useState(false);
+
+  useEffect(() => {
+    setOptimisticChoice(null);
+    setOptimisticLocked(false);
+  }, [state.roundNumber, currentPhaseId]);
+
+  const activeChoice = pState.selectedChoice || optimisticChoice;
+  const isLocked = pState.locked || optimisticLocked;
+
   // Haptic on reveal
   useEffect(() => {
     if (isReveal) {
@@ -49,19 +60,21 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
   }, [isReveal, pState.isCorrect, triggerHaptic]);
 
   const handleSelectChoice = (choice: TestamentChoice) => {
-    if (pState.locked || isReveal) return;
+    if (isLocked || isReveal) return;
+    setOptimisticChoice(choice);
     triggerHaptic('selection');
     dispatchIntent('PICK', { choice });
   };
 
   const handleLockChoice = () => {
-    if (!pState.selectedChoice || pState.locked || isReveal) return;
+    if (!activeChoice || isLocked || isReveal) return;
+    setOptimisticLocked(true);
     triggerHaptic('medium');
     dispatchIntent('LOCK');
   };
 
   const handleUseHint = () => {
-    if (pState.hintUsed || pState.locked || isReveal) return;
+    if (pState.hintUsed || isLocked || isReveal) return;
     triggerHaptic('light');
     dispatchIntent('USE_HINT');
   };
@@ -158,7 +171,6 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
           {/* Three Choice Pill Buttons: Old on Left, Both in Middle, New on Right */}
           <div className="grid grid-cols-3 gap-2 sm:gap-3.5">
             {(['OT', 'BOTH', 'NT'] as TestamentChoice[]).map((choice) => {
-              const isSelected = pState.selectedChoice === choice;
               let label = 'Old';
               let sub = 'Testament';
               let iconName: 'ot' | 'both' | 'nt' = 'ot';
@@ -172,17 +184,19 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
                 iconName = 'both';
               }
 
+              const isSelected = activeChoice === choice;
+
               return (
                 <button
                   key={choice}
                   type="button"
-                  disabled={pState.locked}
+                  disabled={isLocked}
                   onClick={() => handleSelectChoice(choice)}
                   className={`w-full p-3 sm:p-5 rounded-2xl sm:rounded-3xl border-2 flex flex-col items-center justify-center text-center transition-all ${
                     isSelected
                       ? 'border-[var(--primary-action)] bg-[var(--primary-action)]/15 shadow-md scale-[1.02] ring-2 ring-[var(--primary-action)]/30'
                       : 'border-[var(--border-tint)] bg-[var(--surface-card)] hover:bg-[var(--surface-container)]'
-                  } ${pState.locked ? 'opacity-80 cursor-not-allowed' : 'active:scale-95 cursor-pointer'}`}
+                  } ${isLocked ? 'opacity-80 cursor-not-allowed' : 'active:scale-95 cursor-pointer'}`}
                 >
                   <Icon name={iconName} size={28} className="mb-1" />
                   <span className="text-base sm:text-xl font-black text-[var(--on-container)]">{label}</span>
@@ -198,7 +212,7 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
           </div>
 
           {/* Lock Button or Locked Confirmation */}
-          {pState.locked ? (
+          {isLocked ? (
             <div className="p-4 rounded-3xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 text-center flex items-center justify-center gap-2 text-emerald-800 dark:text-emerald-200 font-bold">
               <Icon name="lock" size={18} />
               <span>Locked in! Waiting for round reveal...</span>
@@ -207,7 +221,7 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
             <Button
               variant="primary"
               size="lg"
-              disabled={!pState.selectedChoice}
+              disabled={!activeChoice}
               onClick={handleLockChoice}
               className="w-full gap-2 text-base font-bold"
             >

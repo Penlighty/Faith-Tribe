@@ -67,6 +67,16 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
   const tierInfo = TIER_THEMES[tierKey] || TIER_THEMES[1];
   const isFirstCorrect = playerId === firstCorrectPlayerId;
 
+  // Optimistic local locking so button locks instantly with zero network delay
+  const [optimisticSelection, setOptimisticSelection] = useState<string | null>(null);
+
+  useEffect(() => {
+    setOptimisticSelection(null);
+  }, [state.roundNumber, currentPhaseId]);
+
+  const activeSelected = pState.selectedOption || optimisticSelection;
+  const isLocked = pState.locked || Boolean(optimisticSelection);
+
   // Sound and Haptic on reveal
   useEffect(() => {
     if (isReveal) {
@@ -87,7 +97,8 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
   }, [isReveal, pState.isCorrect, pState.streakCount, triggerHaptic]);
 
   const handleSelectSpeaker = (speaker: string) => {
-    if (pState.locked || isReveal) return;
+    if (isLocked || isReveal) return;
+    setOptimisticSelection(speaker);
     triggerHaptic('medium');
     dispatchIntent('ANSWER', {
       optionSpeaker: speaker,
@@ -96,7 +107,7 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
   };
 
   const handleUsePowerUp = (type: WhoSaidPowerUp) => {
-    if (pState.locked || pState.powerUpsUsed[type] || isReveal) return;
+    if (isLocked || pState.powerUpsUsed[type] || isReveal) return;
     triggerHaptic('selection');
     dispatchIntent('USE_POWERUP', { type });
   };
@@ -170,7 +181,7 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
             </div>
 
             {/* Power-up Chips */}
-            {!pState.locked && (
+            {!isLocked && (
               <div className="flex items-center gap-2 mt-2">
                 {/* 50:50 */}
                 <button
@@ -230,7 +241,7 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {(pState.shuffledOptions || []).map((speaker) => {
               const isHidden = (pState.hiddenOptions || []).includes(speaker);
-              const isSelected = pState.selectedOption === speaker;
+              const isSelected = activeSelected === speaker;
 
               if (isHidden) {
                 return (
@@ -247,13 +258,13 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
                 <button
                   key={speaker}
                   type="button"
-                  disabled={pState.locked}
+                  disabled={isLocked}
                   onClick={() => handleSelectSpeaker(speaker)}
                   className={`w-full p-4 rounded-3xl border-2 flex items-center justify-between transition-all ${
                     isSelected
                       ? 'border-[var(--primary-action)] bg-[var(--primary-action)]/10 font-bold shadow-md scale-[1.01]'
                       : 'border-[var(--border-tint)] bg-[var(--surface-card)] hover:bg-[var(--surface-container)] font-semibold'
-                  } ${pState.locked ? 'opacity-80 cursor-not-allowed' : 'active:scale-98'}`}
+                  } ${isLocked ? 'opacity-80 cursor-not-allowed' : 'active:scale-98'}`}
                 >
                   <span className="text-base sm:text-lg text-[var(--on-container)] text-left">{speaker}</span>
                   {isSelected && (
@@ -266,7 +277,7 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
             })}
           </div>
 
-          {pState.locked && (
+          {isLocked && (
             <div className="p-4 rounded-3xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 text-center flex items-center justify-center gap-2 text-emerald-800 dark:text-emerald-200 font-bold">
               <Icon name="lock" size={18} />
               <span>Locked in! Waiting for time up...</span>

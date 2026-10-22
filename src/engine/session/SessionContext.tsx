@@ -122,13 +122,32 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [config.selectedGameId, setPaletteKey]);
 
   const isAdvancingPhaseRef = useRef<boolean>(false);
+  const pendingBroadcastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Host state broadcast
-  const broadcastSnapshot = useCallback((newSnapshot: SessionSnapshot) => {
+  // Host state broadcast: immediate for phase/round transitions; debounced (60ms) for rapid multi-player intents
+  const broadcastSnapshot = useCallback((newSnapshot: SessionSnapshot, immediate = true) => {
     snapshotRef.current = newSnapshot;
     setSnapshot(newSnapshot);
-    if (transportRef.current && transportRef.current.isConnected()) {
-      transportRef.current.send('SNAPSHOT', newSnapshot, newSnapshot.version);
+
+    const flush = () => {
+      if (pendingBroadcastTimerRef.current) {
+        clearTimeout(pendingBroadcastTimerRef.current);
+        pendingBroadcastTimerRef.current = null;
+      }
+      if (transportRef.current && transportRef.current.isConnected()) {
+        const latest = snapshotRef.current;
+        if (latest) {
+          transportRef.current.send('SNAPSHOT', latest, latest.version);
+        }
+      }
+    };
+
+    if (immediate) {
+      flush();
+    } else {
+      if (!pendingBroadcastTimerRef.current) {
+        pendingBroadcastTimerRef.current = setTimeout(flush, 60);
+      }
     }
   }, []);
 
@@ -153,7 +172,10 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       const currentPhase = game.phases[current.gameState.phaseIndex];
       if (!currentPhase || !currentPhase.hasTimer) return;
 
-      const remaining = (current.gameState.phaseTimeRemaining ?? 1) - 1;
+      const endTs = current.gameState.phaseEndTimestamp;
+      const remaining = typeof endTs === 'number'
+        ? Math.max(0, Math.ceil((endTs - Date.now()) / 1000))
+        : (current.gameState.phaseTimeRemaining ?? 1) - 1;
 
       if (remaining <= 0) {
         // Timer expired -> advance phase or trigger end-of-round
@@ -214,13 +236,22 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const participantTicker = setInterval(() => {
       setSnapshot((prev) => {
         if (!prev || prev.status !== 'in_game') return prev;
+        const endTs = prev.gameState?.phaseEndTimestamp;
         const currentSec = prev.gameState?.phaseTimeRemaining;
-        if (typeof currentSec !== 'number' || currentSec <= 0) return prev;
+
+        const remaining = typeof endTs === 'number'
+          ? Math.max(0, Math.ceil((endTs - Date.now()) / 1000))
+          : typeof currentSec === 'number'
+          ? Math.max(0, currentSec - 1)
+          : 0;
+
+        if (typeof currentSec === 'number' && currentSec === remaining) return prev;
+
         const updated = {
           ...prev,
           gameState: {
             ...prev.gameState,
-            phaseTimeRemaining: currentSec - 1,
+            phaseTimeRemaining: remaining,
           },
         };
         snapshotRef.current = updated;
@@ -259,12 +290,15 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       if (nextPhaseIndex < game.phases.length) {
         const nextPhase = game.phases[nextPhaseIndex];
+        const durationSec = nextPhase.durationSeconds;
+        const endTimestamp = nextPhase.hasTimer && durationSec ? Date.now() + durationSec * 1000 : undefined;
         let nextGameState = {
           ...current.gameState,
           phaseIndex: nextPhaseIndex,
           currentPhaseId: nextPhase.id,
-          phaseTimeRemaining: nextPhase.durationSeconds,
-          phaseDuration: nextPhase.durationSeconds,
+          phaseTimeRemaining: durationSec,
+          phaseDuration: durationSec,
+          phaseEndTimestamp: endTimestamp,
         };
 
         // Synchronously execute phase hooks so participants receive fully populated phase state immediately
@@ -339,15 +373,16 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         // Re-verify phaseIndex and duration alignment
         nextGameState.phaseIndex = nextPhaseIndex;
         nextGameState.currentPhaseId = nextPhase.id;
-        nextGameState.phaseDuration = nextGameState.phaseDuration || nextPhase.durationSeconds;
-        nextGameState.phaseTimeRemaining = nextGameState.phaseTimeRemaining ?? nextPhase.durationSeconds;
+        nextGameState.phaseDuration = nextGameState.phaseDuration || durationSec;
+        nextGameState.phaseTimeRemaining = nextGameState.phaseTimeRemaining ?? durationSec;
+        nextGameState.phaseEndTimestamp = endTimestamp;
 
         const nextSnapshot: SessionSnapshot = {
           ...current,
           version: current.version + 1,
           gameState: nextGameState,
         };
-        broadcastSnapshot(nextSnapshot);
+        broadcastSnapshot(nextSnapshot, true);
       } else {
         // End of round: check if game over
         const nextRound = current.gameState.roundNumber + 1;
@@ -381,14 +416,17 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         } else {
           // Next round
           const firstPhase = game.phases[0];
+          const durationSec = firstPhase.durationSeconds;
+          const endTimestamp = firstPhase.hasTimer && durationSec ? Date.now() + durationSec * 1000 : undefined;
           let nextRoundState = game.reduce(
             {
               ...current.gameState,
               roundNumber: nextRound,
               phaseIndex: 0,
               currentPhaseId: firstPhase.id,
-              phaseTimeRemaining: firstPhase.durationSeconds,
-              phaseDuration: firstPhase.durationSeconds,
+              phaseTimeRemaining: durationSec,
+              phaseDuration: durationSec,
+              phaseEndTimestamp: endTimestamp,
             },
             {
               type: 'START_ROUND',
@@ -423,8 +461,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
           nextRoundState.phaseIndex = 0;
           nextRoundState.currentPhaseId = firstPhase.id;
-          nextRoundState.phaseDuration = firstPhase.durationSeconds;
-          nextRoundState.phaseTimeRemaining = firstPhase.durationSeconds;
+          nextRoundState.phaseDuration = durationSec;
+          nextRoundState.phaseTimeRemaining = durationSec;
+          nextRoundState.phaseEndTimestamp = endTimestamp;
 
           const nextSnapshot: SessionSnapshot = {
             ...current,
@@ -432,7 +471,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             status: 'in_game',
             gameState: nextRoundState,
           };
-          broadcastSnapshot(nextSnapshot);
+          broadcastSnapshot(nextSnapshot, true);
         }
       }
     } finally {
@@ -536,7 +575,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           gameState: nextState,
         };
 
-        broadcastSnapshot(nextSnapshot);
+        // Intermediate intent: coalesce with micro-debounce (60ms) so rapid multiple locks
+        // update the host UI instantly without flooding the network with full snapshots
+        broadcastSnapshot(nextSnapshot, false);
       } catch (err) {
         console.error('Error reducing intent', err);
       }
@@ -931,6 +972,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const participating = getParticipatingPlayers(players, game.meta);
     const initialGameState = game.setup(config, participating, teams, game.content);
     const firstPhase = game.phases[0];
+    const durationSec = firstPhase.durationSeconds;
+    const endTimestamp = firstPhase.hasTimer && durationSec ? Date.now() + durationSec * 1000 : undefined;
 
     const newSnapshot: SessionSnapshot = {
       version: (snapshot?.version || 1) + 1,
@@ -944,8 +987,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         ...initialGameState,
         phaseIndex: 0,
         currentPhaseId: firstPhase.id,
-        phaseTimeRemaining: firstPhase.durationSeconds,
-        phaseDuration: firstPhase.durationSeconds,
+        phaseTimeRemaining: durationSec,
+        phaseDuration: durationSec,
+        phaseEndTimestamp: endTimestamp,
         roundNumber: 1,
         totalRounds: config.roundsCount || 4,
         isGameOver: false,
@@ -953,7 +997,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
 
     soundManager.playChime(soundEnabled);
-    broadcastSnapshot(newSnapshot);
+    broadcastSnapshot(newSnapshot, true);
   };
 
   const hostEndGame = () => {

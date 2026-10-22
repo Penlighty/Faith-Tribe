@@ -28,6 +28,7 @@
         },
 
         "messages": {
+          ".indexOn": ["timestamp"],
           "$messageId": {
             ".write": true,
             ".validate": "!newData.exists() || newData.hasChildren(['type', 'senderId', 'payload', 'timestamp'])"

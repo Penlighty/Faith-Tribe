@@ -123,8 +123,18 @@ export class FirebaseRealtimeTransport implements Transport {
       this.db = getDatabase(this.app);
 
       await this.initPresence(user);
-      this.initMessageListener();
-      this.initSnapshotListener();
+      if (user.isHost) {
+        // Reset old messages from any previous session using this 4-letter room code
+        try {
+          await remove(ref(this.db, `rooms/${this.roomCode}/messages`));
+        } catch {
+          // ignore
+        }
+        this.initMessageListener();
+      } else {
+        // Participants only need the authoritative snapshot stream and presence
+        this.initSnapshotListener();
+      }
       this.connected = true;
     } catch (err) {
       console.warn('[FirebaseTransport] Connect failed, falling back to WebRTC:', err);
@@ -162,6 +172,10 @@ export class FirebaseRealtimeTransport implements Transport {
 
     // Auto-remove on disconnect (Firebase server-side hook)
     onDisconnect(presenceRef).remove();
+    if (user.isHost) {
+      onDisconnect(ref(this.db, `rooms/${this.roomCode}/messages`)).remove();
+      onDisconnect(ref(this.db, `rooms/${this.roomCode}/snapshot`)).remove();
+    }
 
     // Listen to the whole presence subtree
     const presenceRootRef = ref(this.db, `rooms/${this.roomCode}/presence`);
@@ -238,6 +252,10 @@ export class FirebaseRealtimeTransport implements Transport {
         const first = this.seenMessageKeys.values().next().value;
         if (first) this.seenMessageKeys.delete(first);
       }
+
+      // Once host receives and digests the message, remove it from Firebase
+      // to keep the messages queue virtually empty and prevent backlog accumulation
+      remove(snapshot.ref).catch(() => {});
 
       this.notifyMessage(msg);
     });

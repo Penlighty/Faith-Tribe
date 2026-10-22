@@ -27,23 +27,31 @@ export const FakeAProverbPlayerView: React.FC<GameViewProps<FakeAProverbState>> 
   const safeVotes = votes && typeof votes === 'object' ? votes : {};
   const safeRoundScores = roundScores && typeof roundScores === 'object' ? roundScores : {};
 
+  const [optimisticSubmission, setOptimisticSubmission] = useState<string | null>(null);
+  const [optimisticVote, setOptimisticVote] = useState<string | null>(null);
+
   React.useEffect(() => {
     setFakeInput('');
-  }, [state.roundNumber]);
+    setOptimisticSubmission(null);
+    setOptimisticVote(null);
+  }, [state.roundNumber, currentPhaseId]);
 
-  const mySubmission = safeSubmissions[playerId];
-  const myVote = safeVotes[playerId];
+  const activeSubmission = safeSubmissions[playerId] || optimisticSubmission;
+  const activeVote = safeVotes[playerId] || optimisticVote;
   const myRoundScore = safeRoundScores[playerId] || 0;
 
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!fakeInput.trim() || mySubmission) return;
+    if (!fakeInput.trim() || activeSubmission) return;
+    const text = fakeInput.trim();
+    setOptimisticSubmission(text);
     triggerHaptic('medium');
-    dispatchIntent('SUBMIT_ENDING', { ending: fakeInput.trim() });
+    dispatchIntent('SUBMIT_ENDING', { ending: text });
   };
 
   const handleVote = (choiceEnding: string) => {
-    if (myVote) return;
+    if (activeVote) return;
+    setOptimisticVote(choiceEnding);
     triggerHaptic('medium');
     dispatchIntent('SUBMIT_VOTE', { choiceEnding });
   };
@@ -86,13 +94,13 @@ export const FakeAProverbPlayerView: React.FC<GameViewProps<FakeAProverbState>> 
       {/* Phase 2: Write */}
       {currentPhaseId === 'write' && (
         <div className="flex flex-col gap-3">
-          {mySubmission ? (
+          {activeSubmission ? (
             <Card variant="tonal" padding="md" className="text-center flex flex-col items-center gap-2">
               <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 flex items-center justify-center">
                 <Icon name="check" size={24} />
               </div>
               <h3 className="font-bold text-base">Ending Submitted!</h3>
-              <p className="text-sm italic opacity-85">&ldquo;&hellip;{mySubmission}&rdquo;</p>
+              <p className="text-sm italic opacity-85">&ldquo;&hellip;{activeSubmission}&rdquo;</p>
               <span className="text-xs text-[var(--on-container-variant)]">
                 Waiting for the remaining disciples to finish writing...
               </span>
@@ -152,7 +160,7 @@ export const FakeAProverbPlayerView: React.FC<GameViewProps<FakeAProverbState>> 
             <span className="text-xs font-bold uppercase tracking-wider opacity-75">
               Which ending is Scripture?
             </span>
-            {myVote && (
+            {activeVote && (
               <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                 <Icon name="check" size={14} /> Vote Cast
               </span>
@@ -162,7 +170,7 @@ export const FakeAProverbPlayerView: React.FC<GameViewProps<FakeAProverbState>> 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {safeShuffledEndings.map((entry, idx) => {
               const isMyOwn = entry.authorId === playerId;
-              const isSelected = myVote === entry.ending;
+              const isSelected = activeVote === entry.ending;
 
               if (isMyOwn) {
                 return (
@@ -180,7 +188,7 @@ export const FakeAProverbPlayerView: React.FC<GameViewProps<FakeAProverbState>> 
                 <button
                   key={idx}
                   type="button"
-                  disabled={!!myVote}
+                  disabled={!!activeVote}
                   onClick={() => handleVote(entry.ending)}
                   className={`p-4 rounded-2xl text-left text-sm sm:text-base font-semibold border-2 transition-all outline-none cursor-pointer flex items-center justify-between select-none ${
                     isSelected
@@ -208,7 +216,7 @@ export const FakeAProverbPlayerView: React.FC<GameViewProps<FakeAProverbState>> 
               {myRoundScore > 0 ? `+${myRoundScore} Points!` : 'No Points This Round'}
             </h3>
             <p className="text-xs text-[var(--on-container-variant)] mt-1">
-              {myVote === currentProverb.realEnding
+              {activeVote === currentProverb.realEnding
                 ? 'You spotted the true proverb! (+1)'
                 : 'You were fooled by a fake ending.'}
             </p>

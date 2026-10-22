@@ -77,6 +77,7 @@ export interface BaseGameState {
   totalRounds: number;
   phaseTimeRemaining?: number;
   phaseDuration?: number;
+  phaseEndTimestamp?: number;
   isGameOver: boolean;
   scores: Record<string, number>; // playerId -> score
   scoresBreakdown?: Record<string, Record<string, number>>;
