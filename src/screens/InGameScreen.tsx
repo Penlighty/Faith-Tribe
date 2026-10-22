@@ -6,7 +6,7 @@ import { LeaveConfirmationModal } from '../components/ui/LeaveConfirmationModal'
 import { useSession } from '../engine/session/SessionContext';
 import { gameRegistry } from '../engine/registry';
 import { useTheme } from '../theme/ThemeContext';
-import { LeaderboardEntry } from '../engine/types';
+import { LeaderboardEntry, getParticipatingPlayers } from '../engine/types';
 import { Icon, GameBadge } from '../design/icons';
 
 export interface InGameScreenProps {
@@ -102,9 +102,11 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
     });
   };
 
+  const participatingPlayers = getParticipatingPlayers(safePlayers, game?.meta);
+
   const openScoreboardSheet = () => {
     triggerHaptic('selection');
-    const leaderboard: LeaderboardEntry[] = game.scoring(snapshot.gameState, safePlayers, safeTeams);
+    const leaderboard: LeaderboardEntry[] = game.scoring(snapshot.gameState, participatingPlayers, safeTeams);
 
     setActiveSheet({
       title: `Scoreboard • Round ${snapshot.gameState.roundNumber}/${snapshot.gameState.totalRounds}`,
@@ -202,7 +204,7 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
           playerId={currentUser.id}
           isHost={isHost}
           player={currentUser}
-          players={safePlayers}
+          players={participatingPlayers}
           teams={safeTeams}
           dispatchIntent={dispatchIntent}
           openBottomSheet={openCustomBottomSheet}

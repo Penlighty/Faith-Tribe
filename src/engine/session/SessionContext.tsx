@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
-import { Player, Team, SessionConfig, SessionSnapshot, BaseGameState, GameIntent, ConnectionMode, HotspotInfo } from '../types';
+import { Player, Team, SessionConfig, SessionSnapshot, BaseGameState, GameIntent, ConnectionMode, HotspotInfo, getParticipatingPlayers } from '../types';
 import { Transport, PresenceUser, TransportMessage, createTransport } from '../transport';
 import { gameRegistry } from '../registry';
 import { balanceTeams } from '../services/teamBalancer';
@@ -368,13 +368,14 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           broadcastSnapshot(finalSnapshot);
 
           // Record completed session to database
+          const participating = getParticipatingPlayers(current.players, game?.meta);
           recordGameResult(
             current.gameId,
             game?.meta?.name || 'Fellowship Game',
             current.roomCode,
             current.config.connectionMode || 'online',
             totalRounds,
-            current.players,
+            participating,
             current.teams
           );
         } else {
@@ -464,8 +465,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           }
         }
 
-        // Active non-host players (or all players if host is also playing solo)
-        const currentPlayers = current.players.filter((p) => !p.isHost || current.players.length === 1);
+        // Active participating players (non-host if game doesn't allow host to play, or all players if hostCanPlay/solo)
+        const currentPlayers = getParticipatingPlayers(current.players, game.meta);
         const activeCount = Math.max(1, currentPlayers.length);
 
         // Instant auto-advance checks when all active players completed the phase goal
@@ -927,7 +928,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return;
     }
 
-    const initialGameState = game.setup(config, players, teams, game.content);
+    const participating = getParticipatingPlayers(players, game.meta);
+    const initialGameState = game.setup(config, participating, teams, game.content);
     const firstPhase = game.phases[0];
 
     const newSnapshot: SessionSnapshot = {
@@ -967,13 +969,14 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       },
     });
 
+    const participating = getParticipatingPlayers(snapshot.players, game?.meta);
     recordGameResult(
       snapshot.gameId,
       game?.meta?.name || 'Fellowship Game',
       snapshot.roomCode,
       snapshot.config.connectionMode || 'online',
       snapshot.gameState.totalRounds || snapshot.config.roundsCount || 4,
-      snapshot.players,
+      participating,
       snapshot.teams
     );
   };

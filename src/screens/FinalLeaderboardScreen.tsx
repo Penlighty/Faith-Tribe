@@ -5,7 +5,7 @@ import { Button } from '../components/ui/Button';
 import { Avatar } from '../components/ui/Avatar';
 import { useSession } from '../engine/session/SessionContext';
 import { gameRegistry } from '../engine/registry';
-import { LeaderboardEntry } from '../engine/types';
+import { LeaderboardEntry, getParticipatingPlayers } from '../engine/types';
 import { Icon, GameBadge } from '../design/icons';
 
 export interface FinalLeaderboardScreenProps {
@@ -21,8 +21,9 @@ export const FinalLeaderboardScreen: React.FC<FinalLeaderboardScreenProps> = ({
   const safeTeams = Array.isArray(teams) ? teams : [];
 
   const game = snapshot ? gameRegistry.get(snapshot.gameId) : null;
+  const participatingPlayers = getParticipatingPlayers(safePlayers, game?.meta);
   const entries: LeaderboardEntry[] =
-    game && snapshot ? game.scoring(snapshot.gameState, safePlayers, safeTeams) : [];
+    game && snapshot ? game.scoring(snapshot.gameState, participatingPlayers, safeTeams) : [];
 
   const firstPlace = entries[0];
   const secondPlace = entries[1];

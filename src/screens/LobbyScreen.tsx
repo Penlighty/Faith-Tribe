@@ -7,6 +7,7 @@ import { Chip } from '../components/ui/Chip';
 import { useSession } from '../engine/session/SessionContext';
 import { gameRegistry } from '../engine/registry';
 import { useTheme } from '../theme/ThemeContext';
+import { getParticipatingPlayers } from '../engine/types';
 import { Icon, GameBadge } from '../design/icons';
 import { generateWifiQrString, openMobileHotspotSettings } from '../engine/services/mobileNetwork';
 import { SelectGameModal } from '../components/session/SelectGameModal';
@@ -42,8 +43,10 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
 
   const selectedGameId = safeConfig.selectedGameId || 'fake-a-proverb';
   const game = gameRegistry.get(selectedGameId) || gameRegistry.get('fake-a-proverb');
+  const hostCanPlay = Boolean(game?.meta?.hostCanPlay);
+  const participatingPlayers = getParticipatingPlayers(safePlayers, game?.meta);
   const minPlayers = game?.meta?.minPlayers || 4;
-  const canStart = safePlayers.length >= 1; // Allows testing with 1+
+  const canStart = participatingPlayers.length >= 1; // Allows testing with 1+
 
   const isOnsite = safeConfig.connectionMode === 'onsite';
   const hotspotInfo = safeConfig.hotspotInfo;
@@ -360,7 +363,10 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
                 <span className="text-sm font-bold uppercase tracking-wider text-[var(--on-container)] flex items-center gap-1.5">
-                  <Icon name="team" size={16} className="text-[var(--primary-action)]" /> Disciples Gathered ({safePlayers.length})
+                  <Icon name="team" size={16} className="text-[var(--primary-action)]" />{' '}
+                  {hostCanPlay
+                    ? `Disciples Gathered (${safePlayers.length})`
+                    : `Disciples Competing (${participatingPlayers.length})`}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -368,7 +374,7 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
                   {isOnsite ? '📶 Local P2P Active' : '🌐 Cloud Active'}
                 </span>
                 <span className="text-xs font-mono font-bold text-[var(--on-container-variant)] px-2.5 py-1 rounded-full bg-[var(--surface-card)]">
-                  Min {minPlayers} Players
+                  Min {minPlayers} {hostCanPlay ? 'Players' : 'Disciples'}
                 </span>
               </div>
             </div>
@@ -393,11 +399,22 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
                         <div className="flex items-center gap-1.5">
                           <span className="text-sm font-bold truncate leading-tight">{p.name || 'Disciple'}</span>
                           {p.isHost && (
-                            <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-[var(--primary-action)] text-[var(--primary-action-text)]">
-                              Host
+                            <span
+                              className={`px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ${
+                                hostCanPlay
+                                  ? 'bg-[var(--primary-action)] text-[var(--primary-action-text)]'
+                                  : 'bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30'
+                              }`}
+                            >
+                              {hostCanPlay ? 'Host • Player' : 'Host • Facilitator'}
                             </span>
                           )}
                         </div>
+                        {p.isHost && !hostCanPlay && (
+                          <span className="text-[10px] text-[var(--on-container-variant)] font-medium italic">
+                            Room Facilitator • TV Screen
+                          </span>
+                        )}
                         <div className="flex items-center gap-1.5 mt-0.5">
                           {team && (
                             <span className="text-[11px] font-semibold text-[var(--on-container-variant)] truncate">

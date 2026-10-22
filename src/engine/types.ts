@@ -97,6 +97,14 @@ export interface GameMeta {
   iconName: string;
   categoryTag: 'Party' | 'Team' | 'Solo' | 'Classic';
   supportsSoloPractice?: boolean;
+  hostCanPlay?: boolean;
+}
+
+export function getParticipatingPlayers(players: Player[], gameMeta?: GameMeta | null): Player[] {
+  const safePlayers = Array.isArray(players) ? players : [];
+  if (gameMeta?.hostCanPlay) return safePlayers;
+  const nonHost = safePlayers.filter((p) => !p.isHost);
+  return nonHost.length > 0 ? nonHost : safePlayers;
 }
 
 export interface GameViewProps<S extends BaseGameState = BaseGameState> {
