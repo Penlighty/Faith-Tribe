@@ -20,15 +20,17 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
 }) => {
   const { triggerHaptic } = useTheme();
   const { currentCard, currentPhaseId, playerCardStates, roundTally } = state;
-  const pState = playerCardStates[playerId] || {
+  const rawPState = playerCardStates && typeof playerCardStates === 'object' ? playerCardStates[playerId] : null;
+
+  const pState = {
     playerId,
-    selectedChoice: null,
-    locked: false,
-    lockedAtTime: 0,
-    hintUsed: false,
-    scoreEarned: 0,
-    isCorrect: false,
-    streakCount: 0,
+    selectedChoice: rawPState?.selectedChoice || null,
+    locked: !!rawPState?.locked,
+    lockedAtTime: rawPState?.lockedAtTime || 0,
+    hintUsed: !!rawPState?.hintUsed,
+    scoreEarned: rawPState?.scoreEarned || 0,
+    isCorrect: !!rawPState?.isCorrect,
+    streakCount: rawPState?.streakCount || 0,
   };
 
   const isCountdown = currentPhaseId === 'countdown';
@@ -36,7 +38,8 @@ export const TestamentSortPlayerView: React.FC<GameViewProps<TestamentSortState>
   const isHuddle = currentPhaseId === 'huddle';
   const isReveal = currentPhaseId === 'reveal';
 
-  const tierInfo = TIER_THEMES[currentCard.tier];
+  const tierKey = (currentCard?.tier || 1) as 1 | 2 | 3 | 4;
+  const tierInfo = TIER_THEMES[tierKey] || TIER_THEMES[1];
 
   // Haptic on reveal
   useEffect(() => {

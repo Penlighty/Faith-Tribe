@@ -30,10 +30,21 @@ export const TaresPlayerView: React.FC<GameViewProps<TaresState>> = ({
   } = state;
   const { triggerHaptic } = useTheme();
 
-  const isTare = tarePlayerIds.includes(playerId);
-  const activeCluePlayerId = cluePlayerOrder[activeCluePlayerIndex];
+  const safeTarePlayerIds: string[] = Array.isArray(tarePlayerIds)
+    ? tarePlayerIds
+    : tarePlayerIds && typeof tarePlayerIds === 'object'
+    ? Object.values(tarePlayerIds)
+    : [];
+  const safeCluePlayerOrder: string[] = Array.isArray(cluePlayerOrder)
+    ? cluePlayerOrder
+    : cluePlayerOrder && typeof cluePlayerOrder === 'object'
+    ? Object.values(cluePlayerOrder)
+    : [];
+
+  const isTare = safeTarePlayerIds.includes(playerId);
+  const activeCluePlayerId = safeCluePlayerOrder[activeCluePlayerIndex] || '';
   const isMyClueTurn = activeCluePlayerId === playerId;
-  const myVote = votes[playerId];
+  const myVote = (votes && typeof votes === 'object' ? votes[playerId] : undefined);
 
   // 6 options for the caught tare to pick from
   const stealOptions = React.useMemo(() => {

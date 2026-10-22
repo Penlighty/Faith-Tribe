@@ -24,25 +24,47 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
   const { triggerHaptic } = useTheme();
   const [activeMilestone, setActiveMilestone] = useState<StreakMilestone | null>(null);
   const { currentQuestion, currentPhaseId, playerStates, isCloseCall, firstCorrectPlayerId } = state;
-  const pState = playerStates[playerId] || {
+
+  const rawPState = playerStates && typeof playerStates === 'object' ? playerStates[playerId] : null;
+
+  const safeHiddenOptions: string[] = Array.isArray(rawPState?.hiddenOptions)
+    ? rawPState.hiddenOptions
+    : rawPState?.hiddenOptions && typeof rawPState.hiddenOptions === 'object'
+    ? Object.values(rawPState.hiddenOptions)
+    : [];
+
+  const safeShuffledOptions: string[] = Array.isArray(rawPState?.shuffledOptions)
+    ? rawPState.shuffledOptions
+    : rawPState?.shuffledOptions && typeof rawPState.shuffledOptions === 'object'
+    ? Object.values(rawPState.shuffledOptions)
+    : Array.isArray(currentQuestion?.options)
+    ? currentQuestion.options
+    : [];
+
+  const pState = {
     playerId,
-    selectedOption: null,
-    locked: false,
-    lockedAtTime: 0,
-    isCorrect: false,
-    scoreEarned: 0,
-    powerUpActive: null,
-    powerUpsUsed: { fifty: false, double: false, shield: false },
-    hiddenOptions: [],
-    shuffledOptions: currentQuestion.options,
-    streakCount: 0,
+    selectedOption: rawPState?.selectedOption || null,
+    locked: !!rawPState?.locked,
+    lockedAtTime: rawPState?.lockedAtTime || 0,
+    isCorrect: !!rawPState?.isCorrect,
+    scoreEarned: rawPState?.scoreEarned || 0,
+    powerUpActive: rawPState?.powerUpActive || null,
+    powerUpsUsed: {
+      fifty: !!rawPState?.powerUpsUsed?.fifty,
+      double: !!rawPState?.powerUpsUsed?.double,
+      shield: !!rawPState?.powerUpsUsed?.shield,
+    },
+    hiddenOptions: safeHiddenOptions,
+    shuffledOptions: safeShuffledOptions,
+    streakCount: rawPState?.streakCount || 0,
   };
 
   const isCountdown = currentPhaseId === 'countdown';
   const isQuestion = currentPhaseId === 'question';
   const isReveal = currentPhaseId === 'reveal';
 
-  const tierInfo = TIER_THEMES[currentQuestion.tier];
+  const tierKey = (currentQuestion?.tier || 1) as 1 | 2 | 3 | 4;
+  const tierInfo = TIER_THEMES[tierKey] || TIER_THEMES[1];
   const isFirstCorrect = playerId === firstCorrectPlayerId;
 
   // Sound and Haptic on reveal
@@ -206,8 +228,8 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
 
           {/* 4 Speaker Answer Buttons */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {pState.shuffledOptions.map((speaker) => {
-              const isHidden = pState.hiddenOptions.includes(speaker);
+            {(pState.shuffledOptions || []).map((speaker) => {
+              const isHidden = (pState.hiddenOptions || []).includes(speaker);
               const isSelected = pState.selectedOption === speaker;
 
               if (isHidden) {

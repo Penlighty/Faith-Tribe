@@ -49,23 +49,32 @@ export const HotCoalPlayerView: React.FC<GameViewProps<HotCoalState>> = ({
   };
 
   const openVerifiedSheet = () => {
+    const items = Array.isArray(currentCategory?.items)
+      ? currentCategory.items
+      : currentCategory?.items && typeof currentCategory.items === 'object'
+      ? Object.values(currentCategory.items)
+      : [];
+    const references = Array.isArray(currentCategory?.references)
+      ? currentCategory.references
+      : [];
+
     openBottomSheet({
-      title: `Category: ${currentCategory.title}`,
+      title: `Category: ${currentCategory?.title || 'Scripture Category'}`,
       component: (
         <div className="flex flex-col gap-3">
           <p className="text-xs text-[var(--on-container-variant)]">Verified Scripture Items:</p>
           <div className="grid grid-cols-2 gap-2">
-            {currentCategory.items.map((item, idx) => (
+            {items.map((item: any, idx) => (
               <div
                 key={idx}
                 className="p-2.5 rounded-xl bg-[var(--surface-container)] text-xs font-semibold"
               >
-                {item.name}
+                {item?.name}
               </div>
             ))}
           </div>
           <div className="text-xs opacity-75 mt-1 font-mono">
-            {currentCategory.references.join(', ')}
+            {references.join(', ')}
           </div>
         </div>
       ),

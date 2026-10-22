@@ -17,13 +17,23 @@ export const FakeAProverbPlayerView: React.FC<GameViewProps<FakeAProverbState>> 
   const [fakeInput, setFakeInput] = useState('');
   const { triggerHaptic } = useTheme();
 
+  const safeShuffledEndings: { ending: string; isReal: boolean; authorId?: string }[] = Array.isArray(shuffledEndings)
+    ? shuffledEndings
+    : shuffledEndings && typeof shuffledEndings === 'object'
+    ? Object.values(shuffledEndings) as any
+    : [];
+
+  const safeSubmissions = submissions && typeof submissions === 'object' ? submissions : {};
+  const safeVotes = votes && typeof votes === 'object' ? votes : {};
+  const safeRoundScores = roundScores && typeof roundScores === 'object' ? roundScores : {};
+
   React.useEffect(() => {
     setFakeInput('');
   }, [state.roundNumber]);
 
-  const mySubmission = submissions[playerId];
-  const myVote = votes[playerId];
-  const myRoundScore = roundScores[playerId] || 0;
+  const mySubmission = safeSubmissions[playerId];
+  const myVote = safeVotes[playerId];
+  const myRoundScore = safeRoundScores[playerId] || 0;
 
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -150,7 +160,7 @@ export const FakeAProverbPlayerView: React.FC<GameViewProps<FakeAProverbState>> 
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {shuffledEndings.map((entry, idx) => {
+            {safeShuffledEndings.map((entry, idx) => {
               const isMyOwn = entry.authorId === playerId;
               const isSelected = myVote === entry.ending;
 
