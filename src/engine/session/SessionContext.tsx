@@ -560,13 +560,40 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Leave session
   const leaveSession = async () => {
-    if (transportRef.current) {
-      await transportRef.current.disconnect();
+    // 1. Clear host phase ticker timer
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null;
     }
+
+    // 2. Disconnect transport cleanly
+    if (transportRef.current) {
+      try {
+        await transportRef.current.disconnect();
+      } catch (err) {
+        console.warn('[SessionContext] Error disconnecting transport during leave:', err);
+      }
+    }
+
+    // 3. Clear all session and player states
     setRoomCode('');
     setIsHost(false);
     setSnapshot(null);
     setIsConnected(false);
+    setPlayers([]);
+    setTeams([]);
+    snapshotRef.current = null;
+    isHostRef.current = false;
+    playersRef.current = [];
+    teamsRef.current = [];
+
+    // 4. Remove join / mode query parameters from URL so refreshes don't auto-rejoin
+    if (typeof window !== 'undefined' && window.location.search) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    // 5. Fresh transport instance for future sessions
+    initOrSwitchTransport('auto');
   };
 
   // Dispatch player intent

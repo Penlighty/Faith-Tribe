@@ -37,7 +37,7 @@ const AppContent: React.FC = () => {
   const [selectedGameId, setSelectedGameId] = useState<string>('fake-a-proverb');
   const [activeNavTab, setActiveNavTab] = useState<NavTabId>('home');
 
-  const { snapshot, roomCode, createSession, currentUser } = useSession();
+  const { snapshot, roomCode, createSession, currentUser, leaveSession } = useSession();
   const { setPaletteKey } = useTheme();
 
   // Watch snapshot status to transition in-game and leaderboard automatically
@@ -50,6 +50,15 @@ const AppContent: React.FC = () => {
       } else if (snapshot.status === 'lobby') {
         setCurrentView('lobby');
       }
+    } else {
+      // When snapshot is cleared (user left session), return to home
+      setCurrentView((prev) => {
+        if (prev === 'in_game' || prev === 'lobby' || prev === 'final_leaderboard') {
+          return 'home';
+        }
+        return prev;
+      });
+      setPaletteKey('lavender');
     }
   }, [snapshot]);
 
@@ -168,7 +177,8 @@ const AppContent: React.FC = () => {
 
             {currentView === 'in_game' && (
               <InGameScreen
-                onExitGame={() => {
+                onExitGame={async () => {
+                  await leaveSession();
                   setCurrentView('home');
                   setPaletteKey('lavender');
                 }}
@@ -177,7 +187,8 @@ const AppContent: React.FC = () => {
 
             {currentView === 'final_leaderboard' && (
               <FinalLeaderboardScreen
-                onPickAnotherGame={() => {
+                onPickAnotherGame={async () => {
+                  await leaveSession();
                   setCurrentView('home');
                   setPaletteKey('lavender');
                 }}
@@ -186,7 +197,12 @@ const AppContent: React.FC = () => {
 
             {currentView === 'join' && (
               <JoinScreen
-                onBack={() => setCurrentView('home')}
+                onBack={() => {
+                  if (typeof window !== 'undefined' && window.location.search) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                  }
+                  setCurrentView('home');
+                }}
                 onJoined={() => setCurrentView('lobby')}
               />
             )}
