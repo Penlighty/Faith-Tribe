@@ -39,6 +39,9 @@ export class WebRTCTransport implements Transport {
     this.presenceUsers.set(user.id, user);
 
     // 1. In-memory bus registration (for vitest/fast local sync)
+    if (user.isHost) {
+      memoryBus.delete(this.roomCode);
+    }
     if (!memoryBus.has(this.roomCode)) {
       memoryBus.set(this.roomCode, {
         transports: new Set(),

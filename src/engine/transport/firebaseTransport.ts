@@ -122,16 +122,17 @@ export class FirebaseRealtimeTransport implements Transport {
       }
       this.db = getDatabase(this.app);
 
-      await this.initPresence(user);
       if (user.isHost) {
-        // Reset old messages from any previous session using this 4-letter room code
+        // Authoritatively wipe stale room data (previous session's messages, old snapshot, and old presences)
         try {
-          await remove(ref(this.db, `rooms/${this.roomCode}/messages`));
+          await remove(ref(this.db, `rooms/${this.roomCode}`));
         } catch {
           // ignore
         }
+        await this.initPresence(user);
         this.initMessageListener();
       } else {
+        await this.initPresence(user);
         // Participants only need the authoritative snapshot stream and presence
         this.initSnapshotListener();
       }

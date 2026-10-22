@@ -272,7 +272,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const advanceHostPhase = useCallback(() => {
     if (isAdvancingPhaseRef.current) return;
     const current = snapshotRef.current;
-    if (!current || !isHostRef.current) return;
+    if (!current || !isHostRef.current || current.status !== 'in_game') return;
 
     const game = gameRegistry.get(current.gameId);
     if (!game) return;
@@ -512,7 +512,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         if (current.gameId === 'fake-a-proverb') {
           if (nextState.currentPhaseId === 'write') {
             const submittedCount = Object.keys(nextState.submissions || {}).length;
-            if (submittedCount >= activeCount) {
+            if (submittedCount > 0 && submittedCount >= activeCount) {
               const updatedSnapshot: SessionSnapshot = {
                 ...current,
                 version: current.version + 1,
@@ -525,7 +525,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             }
           } else if (nextState.currentPhaseId === 'vote') {
             const votedCount = Object.keys(nextState.votes || {}).length;
-            if (votedCount >= activeCount) {
+            if (votedCount > 0 && votedCount >= activeCount) {
               const updatedSnapshot: SessionSnapshot = {
                 ...current,
                 version: current.version + 1,
@@ -539,8 +539,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           }
         } else if (current.gameId === 'who-said') {
           if (nextState.currentPhaseId === 'question') {
-            const allLocked = Object.values(nextState.playerStates || {}).every((p: any) => p.locked);
-            if (allLocked && Object.keys(nextState.playerStates || {}).length >= activeCount) {
+            const playerStatesList = Object.values(nextState.playerStates || {});
+            const allLocked = playerStatesList.length > 0 && playerStatesList.every((p: any) => p.locked);
+            if (allLocked && playerStatesList.length >= activeCount) {
               const updatedSnapshot: SessionSnapshot = {
                 ...current,
                 version: current.version + 1,
@@ -554,8 +555,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           }
         } else if (current.gameId === 'testament-sort') {
           if (nextState.currentPhaseId === 'card') {
-            const allLocked = Object.values(nextState.playerCardStates || {}).every((p: any) => p.locked);
-            if (allLocked && Object.keys(nextState.playerCardStates || {}).length >= activeCount) {
+            const cardStatesList = Object.values(nextState.playerCardStates || {});
+            const allLocked = cardStatesList.length > 0 && cardStatesList.every((p: any) => p.locked);
+            if (allLocked && cardStatesList.length >= activeCount) {
               const updatedSnapshot: SessionSnapshot = {
                 ...current,
                 version: current.version + 1,
@@ -757,7 +759,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setCurrentUser(hostUser);
     setRoomCode(code);
     setIsHost(true);
+    isHostRef.current = true;
     setPlayers([hostUser]);
+    playersRef.current = [hostUser];
 
     const initialConfig: SessionConfig = {
       roomCode: code,
@@ -770,6 +774,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       hotspotInfo,
     };
     setConfig(initialConfig);
+    configRef.current = initialConfig;
 
     const initialSnapshot: SessionSnapshot = {
       version: 1,
@@ -789,6 +794,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       status: 'lobby',
     };
     setSnapshot(initialSnapshot);
+    snapshotRef.current = initialSnapshot;
 
     const transport = initOrSwitchTransport(connectionMode === 'onsite' ? 'webrtc' : 'auto');
     await transport.connect(code, {
@@ -799,6 +805,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       joinedAt: Date.now(),
       connectionMode,
     });
+
+    // Authoritatively write initial lobby snapshot to transport so remote DB and connecting clients see clean lobby
+    await transport.send('SNAPSHOT', initialSnapshot, initialSnapshot.version);
 
     setIsConnected(true);
     return code;
@@ -834,8 +843,13 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setCurrentUser(playerUser);
     setRoomCode(cleanCode);
     setIsHost(false);
+    isHostRef.current = false;
+    setSnapshot(null);
+    snapshotRef.current = null;
     setPlayers([playerUser]);
+    playersRef.current = [playerUser];
     setTeams([]);
+    teamsRef.current = [];
 
     const transport = initOrSwitchTransport(connectionMode === 'onsite' ? 'webrtc' : 'auto');
     await transport.connect(cleanCode, {
