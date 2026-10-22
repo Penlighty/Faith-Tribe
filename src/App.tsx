@@ -139,6 +139,7 @@ const AppContent: React.FC = () => {
               onSelectGame={handleSelectGame}
               onQuickJoin={() => setCurrentView('join')}
               onHostGame={(id) => handleHostSession(id, 'individuals')}
+              onHostSession={handleHostSession}
             />
           )}
 

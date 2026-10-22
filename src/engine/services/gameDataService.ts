@@ -13,6 +13,7 @@ import proverbsData from '../../games/fake-a-proverb/content.json';
 import taresData from '../../games/tares-among-the-wheat/content.json';
 import hotCoalData from '../../games/hot-coal/content.json';
 import { allWhoSaidItems, allTestamentSortItems } from '../content/loader';
+import { deepCleanForFirebase } from '../transport/firebaseTransport';
 
 export interface GameResultRecord {
   id?: string;
@@ -136,8 +137,9 @@ export async function saveGameContentToDatabase(gameId: string, content: any): P
       throw new Error('Firebase Database is not configured');
     }
     const contentRef = ref(db, `content/${gameId}`);
-    await set(contentRef, content);
-    gameRegistry.updateContent(gameId, content);
+    const cleanContent = deepCleanForFirebase(content);
+    await set(contentRef, cleanContent);
+    gameRegistry.updateContent(gameId, cleanContent);
     return true;
   } catch (err) {
     console.error(`[GameDataService] Failed to save content for ${gameId}:`, err);
@@ -193,7 +195,7 @@ export async function recordGameResult(
 
     const resultsRef = ref(db, 'game_results');
     const newRecordRef = push(resultsRef);
-    await set(newRecordRef, record);
+    await set(newRecordRef, deepCleanForFirebase(record));
     return newRecordRef.key;
   } catch (err) {
     console.warn('[GameDataService] Could not record game result to database:', err);
@@ -257,8 +259,9 @@ export async function seedAllGamesToDatabase(): Promise<{
 
     for (const [gameId, content] of Object.entries(payload)) {
       const contentRef = ref(db, `content/${gameId}`);
-      await set(contentRef, content);
-      gameRegistry.updateContent(gameId, content);
+      const cleanContent = deepCleanForFirebase(content);
+      await set(contentRef, cleanContent);
+      gameRegistry.updateContent(gameId, cleanContent);
     }
 
     return {

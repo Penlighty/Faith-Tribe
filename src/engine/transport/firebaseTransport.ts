@@ -48,6 +48,26 @@ function hasFirebaseConfig(): boolean {
   return Boolean(cfg.apiKey && cfg.databaseURL && cfg.projectId);
 }
 
+/**
+ * Recursively strips `undefined` values from an object,
+ * ensuring Firebase Realtime Database set() / update() never throws
+ * "value argument contains undefined in property ...".
+ */
+export function deepCleanForFirebase<T>(val: T): T {
+  if (val === undefined) return null as any;
+  if (val === null || typeof val !== 'object') return val;
+  if (Array.isArray(val)) {
+    return val.map((item) => deepCleanForFirebase(item)) as any;
+  }
+  const result: Record<string, any> = {};
+  for (const [k, v] of Object.entries(val)) {
+    if (v !== undefined) {
+      result[k] = deepCleanForFirebase(v);
+    }
+  }
+  return result as T;
+}
+
 // ---------------------------------------------------------------------------
 // Transport implementation
 // ---------------------------------------------------------------------------
@@ -129,10 +149,10 @@ export class FirebaseRealtimeTransport implements Transport {
     if (!this.db) return;
 
     const presenceRef = ref(this.db, `rooms/${this.roomCode}/presence/${user.id}`);
-    const presenceData: PresenceUser & { lastSeen: object } = {
+    const presenceData = deepCleanForFirebase({
       ...user,
       lastSeen: serverTimestamp() as any,
-    };
+    });
 
     await set(presenceRef, presenceData);
 
@@ -228,21 +248,26 @@ export class FirebaseRealtimeTransport implements Transport {
       throw new Error('[FirebaseTransport] Not connected');
     }
 
-    const msg: TransportMessage<T> = {
+    const cleanPayload = deepCleanForFirebase(payload);
+    const rawMsg: Record<string, any> = {
       type,
       senderId: this.user.id,
-      payload,
+      payload: cleanPayload,
       timestamp: Date.now(),
-      version,
     };
+    if (typeof version === 'number') {
+      rawMsg.version = version;
+    }
+
+    const cleanMsg = deepCleanForFirebase(rawMsg) as TransportMessage<T>;
 
     // Track sent key so we don't echo it back to ourselves
-    const key = `${msg.senderId}_${msg.type}_${msg.timestamp}_${msg.version ?? 0}`;
+    const key = `${cleanMsg.senderId}_${cleanMsg.type}_${cleanMsg.timestamp}_${cleanMsg.version ?? 0}`;
     this.seenMessageKeys.add(key);
 
     const messagesRef = ref(this.db, `rooms/${this.roomCode}/messages`);
     const newMsgRef = push(messagesRef);
-    await set(newMsgRef, msg);
+    await set(newMsgRef, cleanMsg);
   }
 
   // -------------------------------------------------------------------------

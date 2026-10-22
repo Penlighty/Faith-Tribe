@@ -5,14 +5,22 @@ import { Chip } from '../components/ui/Chip';
 import { Button } from '../components/ui/Button';
 import { Avatar } from '../components/ui/Avatar';
 import { gameRegistry } from '../engine/registry';
-import { GameMeta } from '../engine/types';
+import { GameMeta, ConnectionMode, HotspotInfo, PlayMode } from '../engine/types';
 import { useTheme } from '../theme/ThemeContext';
 import { Icon, GameBadge, GameShape, toVisualGameId, GAME_VISUALS, type GameId } from '../design/icons';
+import { SelectGameModal } from '../components/session/SelectGameModal';
+import { HostSessionModal } from '../components/session/HostSessionModal';
 
 export interface HomeScreenProps {
   onSelectGame: (gameId: string) => void;
   onQuickJoin: () => void;
-  onHostGame: (gameId: string) => void;
+  onHostGame?: (gameId: string) => void;
+  onHostSession?: (
+    gameId: string,
+    playMode: PlayMode,
+    connectionMode?: ConnectionMode,
+    hotspotInfo?: HotspotInfo
+  ) => void;
 }
 
 interface PlannedGameMeta {
@@ -63,8 +71,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onSelectGame,
   onQuickJoin,
   onHostGame,
+  onHostSession,
 }) => {
   const [filter, setFilter] = useState<'All' | 'Party' | 'Team' | 'Solo'>('All');
+  const [showGamePicker, setShowGamePicker] = useState(false);
+  const [pendingHostGame, setPendingHostGame] = useState<GameMeta | null>(null);
+  const [showHostModal, setShowHostModal] = useState(false);
   const { triggerHaptic } = useTheme();
 
   const launchGames = gameRegistry.getAllMeta();
@@ -176,7 +188,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               size="lg"
               pill
               className="w-full shadow-md text-sm sm:text-base font-bold py-3 flex items-center justify-center gap-2"
-              onClick={() => onSelectGame('fake-a-proverb')}
+              onClick={() => {
+                triggerHaptic('medium');
+                setShowGamePicker(true);
+              }}
             >
               <Icon name="host" size={18} />
               <span>Host a Game</span>
@@ -266,6 +281,42 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <PlannedGameCard key={game.id} game={game} />
         ))}
       </div>
+
+      {/* Game Selector Modal for Hosting */}
+      <SelectGameModal
+        isOpen={showGamePicker}
+        title="Select Game to Host"
+        subtitle="Choose which sacred challenge your fellowship will play."
+        onSelectGame={(gId) => {
+          const g = gameRegistry.get(gId);
+          if (g) {
+            setPendingHostGame(g.meta);
+            setShowGamePicker(false);
+            setShowHostModal(true);
+          }
+        }}
+        onCancel={() => setShowGamePicker(false)}
+      />
+
+      {/* Host Session Architecture Modal */}
+      {pendingHostGame && (
+        <HostSessionModal
+          isOpen={showHostModal}
+          gameName={pendingHostGame.name}
+          onConfirm={(connMode, hotspot) => {
+            setShowHostModal(false);
+            if (onHostSession) {
+              onHostSession(pendingHostGame.id, 'individuals', connMode, hotspot);
+            } else if (onHostGame) {
+              onHostGame(pendingHostGame.id);
+            }
+          }}
+          onCancel={() => {
+            setShowHostModal(false);
+            setPendingHostGame(null);
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -9,6 +9,7 @@ import { gameRegistry } from '../engine/registry';
 import { useTheme } from '../theme/ThemeContext';
 import { Icon, GameBadge } from '../design/icons';
 import { generateWifiQrString, openMobileHotspotSettings } from '../engine/services/mobileNetwork';
+import { SelectGameModal } from '../components/session/SelectGameModal';
 
 export interface LobbyScreenProps {
   onLeave: () => void;
@@ -31,6 +32,7 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
   const [copied, setCopied] = useState(false);
   const [copiedPass, setCopiedPass] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [showGamePicker, setShowGamePicker] = useState(false);
   const [qrTab, setQrTab] = useState<'join' | 'wifi'>('join');
   const { triggerHaptic } = useTheme();
 
@@ -110,9 +112,25 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
                 <span>{isOnsite ? '📶 Onsite Hotspot P2P' : '🌐 Online Cloud'}</span>
               </span>
             </div>
-            <span className="text-sm font-extrabold text-[var(--on-container)]">
-              {game?.meta?.name || 'Fellowship Game'}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-extrabold text-[var(--on-container)]">
+                {game?.meta?.name || 'Fellowship Game'}
+              </span>
+              {isHost && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    setShowGamePicker(true);
+                  }}
+                  className="px-2.5 py-0.5 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[10px] font-bold text-[var(--primary-action)] border border-[var(--border-tint)] flex items-center gap-1 transition-colors cursor-pointer"
+                  title="Switch to another game"
+                >
+                  <Icon name="refresh" size={11} />
+                  <span>Change Game</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -416,6 +434,21 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
       <div className="text-center text-[11px] text-[var(--on-container-variant)] font-mono opacity-60">
         Transport: {transportName} • Mode: {isOnsite ? 'Onsite Hotspot' : 'Online'} • Room: {roomCode}
       </div>
+
+      {/* Switch Game Modal (Host Only) */}
+      {isHost && (
+        <SelectGameModal
+          isOpen={showGamePicker}
+          title="Switch Lobby Game"
+          subtitle="Change the game for all connected disciples before starting the round."
+          selectedGameId={config.selectedGameId}
+          onSelectGame={(newGameId) => {
+            updateConfig({ selectedGameId: newGameId });
+            setShowGamePicker(false);
+          }}
+          onCancel={() => setShowGamePicker(false)}
+        />
+      )}
     </div>
   );
 };
