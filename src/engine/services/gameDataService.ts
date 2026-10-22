@@ -281,3 +281,240 @@ export async function seedAllGamesToDatabase(): Promise<{
     return { success: false, seededCount: 0, message };
   }
 }
+
+export interface FellowshipStats {
+  gamesPlayedThisMonth: number;
+  totalGamesPlayed: number;
+  winsCount: number;
+  victoryRate: number;
+  favoritePick: string;
+  weeklyActivity: { day: string; height: number; count: number }[];
+  recentlyGathered: { id: string; name: string; avatarSeed?: string }[];
+  activeCount: number;
+  hasRealData: boolean;
+  isLoading: boolean;
+}
+
+const STATS_STORAGE_KEY = 'faith_tribe_fellowship_stats';
+
+export function getCachedFellowshipStats(): FellowshipStats | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(STATS_STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {
+    // Ignore parse error
+  }
+  return null;
+}
+
+/**
+ * Calculates fellowship activity stats from real Firebase game results and active rooms presence.
+ */
+export async function fetchFellowshipStats(
+  currentUserId?: string,
+  currentUserName?: string
+): Promise<FellowshipStats> {
+  const now = new Date();
+  const dayOfWeek = now.getDay(); // 0 is Sun, 1 is Mon...
+  const distanceToMonday = (dayOfWeek + 6) % 7;
+  const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - distanceToMonday, 0, 0, 0, 0);
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0).getTime();
+
+  const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  const dayCounts = [0, 0, 0, 0, 0, 0, 0];
+
+  const db = getDatabaseInstance();
+  let results: GameResultRecord[] = [];
+  const activeUsersMap = new Map<string, { id: string; name: string; avatarSeed?: string }>();
+
+  if (db && typeof window !== 'undefined' && navigator.onLine) {
+    try {
+      // 1. Fetch real match records
+      const resultsQuery = query(ref(db, 'game_results'), orderByKey(), limitToLast(60));
+      const snapshot = await get(resultsQuery);
+      if (snapshot.exists()) {
+        snapshot.forEach((child) => {
+          results.unshift({
+            id: child.key || '',
+            ...child.val(),
+          });
+        });
+      }
+    } catch (err) {
+      console.warn('[GameDataService] Error fetching game_results for fellowship stats:', err);
+    }
+
+    try {
+      // 2. Fetch live presence across active rooms
+      const roomsRef = ref(db, 'rooms');
+      const roomsSnap = await get(roomsRef);
+      if (roomsSnap.exists()) {
+        const roomsData = roomsSnap.val() as Record<string, any>;
+        for (const room of Object.values(roomsData)) {
+          if (room && room.presence && typeof room.presence === 'object') {
+            for (const u of Object.values(room.presence) as any[]) {
+              if (u && u.name) {
+                const key = String(u.name).trim().toLowerCase();
+                activeUsersMap.set(key, {
+                  id: u.id || u.name,
+                  name: String(u.name).trim(),
+                  avatarSeed: u.avatarSeed || u.name,
+                });
+              }
+            }
+          }
+        }
+      }
+    } catch {
+      // Optional: ignore if rooms list restricted
+    }
+  }
+
+  const hasRealData = results.length > 0 || activeUsersMap.size > 0;
+
+  // Games this month
+  const gamesThisMonth = results.filter((r) => r.finishedAt >= startOfMonth);
+  const gamesPlayedThisMonth = gamesThisMonth.length;
+
+  // Day distribution
+  for (const record of results) {
+    if (record.finishedAt >= monday.getTime()) {
+      const gDate = new Date(record.finishedAt);
+      const gDay = (gDate.getDay() + 6) % 7;
+      if (gDay >= 0 && gDay < 7) {
+        dayCounts[gDay] += 1;
+      }
+    }
+  }
+
+  const maxDayCount = Math.max(...dayCounts, 0);
+  const weeklyActivity = dayLabels.map((day, idx) => {
+    const count = dayCounts[idx];
+    let height = 8;
+    if (maxDayCount > 0 && count > 0) {
+      height = Math.max(25, Math.round((count / maxDayCount) * 100));
+    }
+    return { day, height, count };
+  });
+
+  // Wins and victory rate
+  let winsCount = 0;
+  let userGamesCount = 0;
+  const lowerUserName = currentUserName?.trim().toLowerCase();
+
+  for (const record of results) {
+    if (Array.isArray(record.players)) {
+      const matched = record.players.find(
+        (p) =>
+          (currentUserId && p.id === currentUserId) ||
+          (lowerUserName && p.name && p.name.trim().toLowerCase() === lowerUserName)
+      );
+      if (matched) {
+        userGamesCount++;
+        if (matched.isWinner) winsCount++;
+      }
+    }
+  }
+
+  let victoryRate = 0;
+  if (userGamesCount > 0) {
+    victoryRate = Math.round((winsCount / userGamesCount) * 100);
+  } else if (results.length > 0) {
+    const totalWinners = results.reduce(
+      (acc, r) => acc + (r.players?.filter((p) => p.isWinner).length || 0),
+      0
+    );
+    winsCount = totalWinners;
+    victoryRate = Math.min(100, Math.round((totalWinners / results.length) * 100));
+  }
+
+  // Favorite game
+  const gameFrequency: Record<string, number> = {};
+  for (const record of results) {
+    const name = record.gameName || record.gameId;
+    gameFrequency[name] = (gameFrequency[name] || 0) + 1;
+  }
+
+  let favoritePick = 'Proverbs';
+  let highestFreq = 0;
+  for (const [name, freq] of Object.entries(gameFrequency)) {
+    if (freq > highestFreq) {
+      highestFreq = freq;
+      if (name.toLowerCase().includes('proverb')) favoritePick = 'Proverbs';
+      else if (name.toLowerCase().includes('said')) favoritePick = 'Who Said';
+      else if (name.toLowerCase().includes('sort')) favoritePick = 'Testament';
+      else if (name.toLowerCase().includes('coal')) favoritePick = 'Hot Coal';
+      else if (name.toLowerCase().includes('tare')) favoritePick = 'Tares';
+      else favoritePick = name;
+    }
+  }
+
+  // Recently Gathered disciples
+  const recentDisciplesMap = new Map<string, { id: string; name: string; avatarSeed?: string; lastSeen: number }>();
+
+  for (const record of results) {
+    if (Array.isArray(record.players)) {
+      for (const p of record.players) {
+        if (p && p.name && p.name.trim()) {
+          const key = p.name.trim().toLowerCase();
+          if (!recentDisciplesMap.has(key)) {
+            recentDisciplesMap.set(key, {
+              id: p.id || p.name,
+              name: p.name.trim(),
+              avatarSeed: p.name.trim(),
+              lastSeen: record.finishedAt || 0,
+            });
+          }
+        }
+      }
+    }
+  }
+
+  for (const [key, activeUser] of activeUsersMap.entries()) {
+    recentDisciplesMap.set(key, {
+      ...activeUser,
+      lastSeen: Date.now(),
+    });
+  }
+
+  if (currentUserName && currentUserName.trim() && currentUserName !== 'Player') {
+    const userKey = currentUserName.trim().toLowerCase();
+    if (!recentDisciplesMap.has(userKey)) {
+      recentDisciplesMap.set(userKey, {
+        id: currentUserId || userKey,
+        name: currentUserName.trim(),
+        avatarSeed: currentUserName.trim(),
+        lastSeen: Date.now(),
+      });
+    }
+  }
+
+  const recentlyGathered = Array.from(recentDisciplesMap.values())
+    .sort((a, b) => b.lastSeen - a.lastSeen)
+    .slice(0, 10)
+    .map(({ id, name, avatarSeed }) => ({ id, name, avatarSeed }));
+
+  const activeCount = Math.max(activeUsersMap.size, recentlyGathered.length);
+
+  const stats: FellowshipStats = {
+    gamesPlayedThisMonth,
+    totalGamesPlayed: results.length,
+    winsCount,
+    victoryRate,
+    favoritePick,
+    weeklyActivity,
+    recentlyGathered,
+    activeCount,
+    hasRealData,
+    isLoading: false,
+  };
+
+  try {
+    localStorage.setItem(STATS_STORAGE_KEY, JSON.stringify(stats));
+  } catch {
+    // Ignore storage quota
+  }
+
+  return stats;
+}

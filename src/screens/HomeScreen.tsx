@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '../components/ui/Card';
 import { Chip } from '../components/ui/Chip';
@@ -10,6 +10,7 @@ import { useTheme } from '../theme/ThemeContext';
 import { Icon, GameBadge, GameShape, toVisualGameId, GAME_VISUALS, type GameId } from '../design/icons';
 import { SelectGameModal } from '../components/session/SelectGameModal';
 import { HostSessionModal } from '../components/session/HostSessionModal';
+import { fetchFellowshipStats, getCachedFellowshipStats, FellowshipStats } from '../engine/services/gameDataService';
 
 export interface HomeScreenProps {
   onSelectGame: (gameId: string) => void;
@@ -79,6 +80,54 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [showHostModal, setShowHostModal] = useState(false);
   const { triggerHaptic } = useTheme();
 
+  // Real database fellowship stats
+  const [stats, setStats] = useState<FellowshipStats>(() => {
+    return (
+      getCachedFellowshipStats() || {
+        gamesPlayedThisMonth: 0,
+        totalGamesPlayed: 0,
+        winsCount: 0,
+        victoryRate: 0,
+        favoritePick: 'Proverbs',
+        weeklyActivity: [
+          { day: 'M', height: 8, count: 0 },
+          { day: 'T', height: 8, count: 0 },
+          { day: 'W', height: 8, count: 0 },
+          { day: 'T', height: 8, count: 0 },
+          { day: 'F', height: 8, count: 0 },
+          { day: 'S', height: 8, count: 0 },
+          { day: 'S', height: 8, count: 0 },
+        ],
+        recentlyGathered: [],
+        activeCount: 0,
+        hasRealData: false,
+        isLoading: true,
+      }
+    );
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+    const currentUserId =
+      typeof window !== 'undefined' ? sessionStorage.getItem('faith_tribe_player_id') || undefined : undefined;
+    const currentUserName =
+      typeof window !== 'undefined'
+        ? localStorage.getItem('faith_tribe_player_name') ||
+          localStorage.getItem('agape_player_name') ||
+          undefined
+        : undefined;
+
+    fetchFellowshipStats(currentUserId, currentUserName).then((liveStats) => {
+      if (isMounted) {
+        setStats(liveStats);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const launchGames = gameRegistry.getAllMeta();
 
   const filteredLaunchGames = launchGames.filter((g) => {
@@ -97,17 +146,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     const randomGame = launchGames[Math.floor(Math.random() * launchGames.length)];
     if (randomGame) onSelectGame(randomGame.id);
   };
-
-  // Weekly stats mock data for the rounded bar chart
-  const weeklyActivity = [
-    { day: 'M', height: 40 },
-    { day: 'T', height: 65 },
-    { day: 'W', height: 85 },
-    { day: 'T', height: 30 },
-    { day: 'F', height: 100 },
-    { day: 'S', height: 95 },
-    { day: 'S', height: 50 },
-  ];
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-28 pt-2 sm:pt-6 flex flex-col gap-6 sm:gap-8">
@@ -128,46 +166,68 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 Fellowship Activity
               </h2>
             </div>
-            <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-full border border-emerald-300/30 flex items-center gap-1">
-              <Icon name="bolt" size={14} /> Active
+            <span
+              className={`text-xs font-mono font-bold px-2.5 py-1 rounded-full border flex items-center gap-1 ${
+                stats.activeCount > 0 || stats.hasRealData
+                  ? 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300/30'
+                  : 'text-[var(--on-container-variant)] bg-[var(--surface-container)] border-[var(--border-tint)]'
+              }`}
+            >
+              <Icon name="bolt" size={14} /> {stats.activeCount > 0 ? `${stats.activeCount} Live` : 'Active'}
             </span>
           </div>
 
           <div className="flex items-end justify-between gap-4">
             <div>
               <div className="text-4xl sm:text-5xl font-black font-mono tracking-tight text-[var(--on-container)]">
-                12
+                {stats.gamesPlayedThisMonth}
               </div>
-              <div className="text-xs sm:text-sm font-bold text-[var(--on-container-variant)]">Games Played This Month</div>
+              <div className="text-xs sm:text-sm font-bold text-[var(--on-container-variant)]">
+                Games Played This Month
+              </div>
             </div>
             <div className="flex items-center gap-3 sm:gap-5 text-right">
               <div>
-                <div className="text-sm sm:text-base font-black font-mono">8 Wins</div>
-                <div className="text-[11px] sm:text-xs text-[var(--on-container-variant)]">67% Victory Rate</div>
+                <div className="text-sm sm:text-base font-black font-mono">
+                  {stats.winsCount} {stats.winsCount === 1 ? 'Win' : 'Wins'}
+                </div>
+                <div className="text-[11px] sm:text-xs text-[var(--on-container-variant)]">
+                  {stats.victoryRate}% Victory Rate
+                </div>
               </div>
               <div className="w-px h-8 sm:h-10 bg-[var(--border-tint)]" />
               <div>
-                <div className="text-sm sm:text-base font-black text-[var(--primary-action)]">Proverbs</div>
-                <div className="text-[11px] sm:text-xs text-[var(--on-container-variant)]">Favorite Pick</div>
+                <div className="text-sm sm:text-base font-black text-[var(--primary-action)]">
+                  {stats.favoritePick}
+                </div>
+                <div className="text-[11px] sm:text-xs text-[var(--on-container-variant)]">
+                  Favorite Pick
+                </div>
               </div>
             </div>
           </div>
 
           {/* Rounded Bar Chart of the Week */}
           <div className="pt-3 border-t border-[var(--border-tint)] flex items-end justify-between gap-2 sm:gap-4 h-20 sm:h-24">
-            {weeklyActivity.map((bar, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
+            {stats.weeklyActivity.map((bar, i) => (
+              <div
+                key={i}
+                className="flex-1 flex flex-col items-center gap-2 h-full justify-end"
+                title={`${bar.count} ${bar.count === 1 ? 'game' : 'games'} on this day`}
+              >
                 <motion.div
                   initial={{ height: 0 }}
                   animate={{ height: `${bar.height}%` }}
                   transition={{ duration: 0.5, delay: i * 0.05 }}
                   className={`w-full max-w-[20px] sm:max-w-[28px] rounded-full transition-all ${
-                    bar.height >= 90
+                    bar.count > 0
                       ? 'bg-[var(--primary-action)] shadow-sm'
-                      : 'bg-[var(--on-container)]/20 hover:bg-[var(--on-container)]/30'
+                      : 'bg-[var(--on-container)]/15 hover:bg-[var(--on-container)]/25'
                   }`}
                 />
-                <span className="text-[10px] sm:text-xs font-bold text-[var(--on-container-variant)]">{bar.day}</span>
+                <span className="text-[10px] sm:text-xs font-bold text-[var(--on-container-variant)]">
+                  {bar.day}
+                </span>
               </div>
             ))}
           </div>
@@ -215,18 +275,26 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <h2 className="text-sm font-bold tracking-tight text-[var(--on-container)]">
                 Recently Gathered
               </h2>
-              <span className="text-[11px] font-mono text-[var(--on-container-variant)]">5 Active</span>
+              <span className="text-[11px] font-mono text-[var(--on-container-variant)]">
+                {stats.activeCount} {stats.activeCount === 1 ? 'Active' : 'Active'}
+              </span>
             </div>
             <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-              {['Peter', 'Mary', 'Barnabas', 'Priscilla', 'Timothy'].map((disciple, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--surface-container)] text-xs font-semibold shrink-0 border border-[var(--border-tint)] shadow-sm"
-                >
-                  <Avatar name={disciple} size="sm" />
-                  <span>{disciple}</span>
+              {stats.recentlyGathered.length > 0 ? (
+                stats.recentlyGathered.map((disciple, i) => (
+                  <div
+                    key={disciple.id || i}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--surface-container)] text-xs font-semibold shrink-0 border border-[var(--border-tint)] shadow-sm"
+                  >
+                    <Avatar name={disciple.name} size="sm" />
+                    <span>{disciple.name}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="text-xs text-[var(--on-container-variant)] py-1 italic">
+                  Host or join a game to gather your disciples!
                 </div>
-              ))}
+              )}
             </div>
           </Card>
         </div>
