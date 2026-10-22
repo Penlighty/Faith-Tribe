@@ -192,16 +192,93 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     if (nextPhaseIndex < game.phases.length) {
       const nextPhase = game.phases[nextPhaseIndex];
+      let nextGameState = {
+        ...current.gameState,
+        phaseIndex: nextPhaseIndex,
+        currentPhaseId: nextPhase.id,
+        phaseTimeRemaining: nextPhase.durationSeconds,
+        phaseDuration: nextPhase.durationSeconds,
+      };
+
+      // Synchronously execute phase hooks so participants receive fully populated phase state immediately
+      if (current.gameId === 'fake-a-proverb') {
+        if (nextPhase.id === 'vote') {
+          nextGameState = game.reduce(
+            nextGameState,
+            {
+              type: 'PREPARE_VOTING',
+              playerId: 'HOST',
+              timestamp: Date.now(),
+            },
+            'HOST'
+          );
+        } else if (nextPhase.id === 'reveal') {
+          nextGameState = game.reduce(
+            nextGameState,
+            {
+              type: 'CALCULATE_ROUND_SCORES',
+              playerId: 'HOST',
+              timestamp: Date.now(),
+            },
+            'HOST'
+          );
+        }
+      } else if (current.gameId === 'who-said') {
+        if (nextPhase.id === 'question') {
+          nextGameState = game.reduce(
+            nextGameState,
+            {
+              type: 'START_QUESTION',
+              playerId: 'HOST',
+              timestamp: Date.now(),
+            },
+            'HOST'
+          );
+        } else if (nextPhase.id === 'reveal') {
+          nextGameState = game.reduce(
+            nextGameState,
+            {
+              type: 'TRIGGER_REVEAL',
+              playerId: 'HOST',
+              timestamp: Date.now(),
+            },
+            'HOST'
+          );
+        }
+      } else if (current.gameId === 'testament-sort') {
+        if (nextPhase.id === 'card') {
+          nextGameState = game.reduce(
+            nextGameState,
+            {
+              type: 'START_CARD',
+              playerId: 'HOST',
+              timestamp: Date.now(),
+            },
+            'HOST'
+          );
+        } else if (nextPhase.id === 'reveal') {
+          nextGameState = game.reduce(
+            nextGameState,
+            {
+              type: 'TRIGGER_REVEAL',
+              playerId: 'HOST',
+              timestamp: Date.now(),
+            },
+            'HOST'
+          );
+        }
+      }
+
+      // Re-verify phaseIndex and duration alignment
+      nextGameState.phaseIndex = nextPhaseIndex;
+      nextGameState.currentPhaseId = nextPhase.id;
+      nextGameState.phaseDuration = nextGameState.phaseDuration || nextPhase.durationSeconds;
+      nextGameState.phaseTimeRemaining = nextGameState.phaseTimeRemaining ?? nextPhase.durationSeconds;
+
       const nextSnapshot: SessionSnapshot = {
         ...current,
         version: current.version + 1,
-        gameState: {
-          ...current.gameState,
-          phaseIndex: nextPhaseIndex,
-          currentPhaseId: nextPhase.id,
-          phaseTimeRemaining: nextPhase.durationSeconds,
-          phaseDuration: nextPhase.durationSeconds,
-        },
+        gameState: nextGameState,
       };
       broadcastSnapshot(nextSnapshot);
     } else {
@@ -236,7 +313,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       } else {
         // Next round
         const firstPhase = game.phases[0];
-        const nextRoundState = game.reduce(
+        let nextRoundState = game.reduce(
           {
             ...current.gameState,
             roundNumber: nextRound,
@@ -253,6 +330,33 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           },
           'HOST'
         );
+
+        if (current.gameId === 'who-said') {
+          nextRoundState = game.reduce(
+            nextRoundState,
+            {
+              type: 'NEXT_QUESTION',
+              playerId: 'HOST',
+              timestamp: Date.now(),
+            },
+            'HOST'
+          );
+        } else if (current.gameId === 'testament-sort') {
+          nextRoundState = game.reduce(
+            nextRoundState,
+            {
+              type: 'NEXT_CARD',
+              playerId: 'HOST',
+              timestamp: Date.now(),
+            },
+            'HOST'
+          );
+        }
+
+        nextRoundState.phaseIndex = 0;
+        nextRoundState.currentPhaseId = firstPhase.id;
+        nextRoundState.phaseDuration = firstPhase.durationSeconds;
+        nextRoundState.phaseTimeRemaining = firstPhase.durationSeconds;
 
         const nextSnapshot: SessionSnapshot = {
           ...current,
@@ -275,9 +379,84 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       if (!game) return;
 
       try {
-        const nextState = game.reduce(current.gameState, intent, intent.playerId);
+        let nextState = game.reduce(current.gameState, intent, intent.playerId);
 
-        // Check if all players have submitted, which might trigger immediate phase advance
+        // Keep phaseIndex in sync with currentPhaseId if the reducer changed phases
+        if (nextState.currentPhaseId && nextState.currentPhaseId !== game.phases[nextState.phaseIndex]?.id) {
+          const matchedIdx = game.phases.findIndex((p) => p.id === nextState.currentPhaseId);
+          if (matchedIdx !== -1) {
+            nextState = {
+              ...nextState,
+              phaseIndex: matchedIdx,
+            };
+          }
+        }
+
+        // Active non-host players (or all players if host is also playing solo)
+        const currentPlayers = current.players.filter((p) => !p.isHost || current.players.length === 1);
+        const activeCount = Math.max(1, currentPlayers.length);
+
+        // Instant auto-advance checks when all active players completed the phase goal
+        if (current.gameId === 'fake-a-proverb') {
+          if (nextState.currentPhaseId === 'write') {
+            const submittedCount = Object.keys(nextState.submissions || {}).length;
+            if (submittedCount >= activeCount) {
+              const updatedSnapshot: SessionSnapshot = {
+                ...current,
+                version: current.version + 1,
+                gameState: nextState,
+              };
+              snapshotRef.current = updatedSnapshot;
+              setSnapshot(updatedSnapshot);
+              advanceHostPhase();
+              return;
+            }
+          } else if (nextState.currentPhaseId === 'vote') {
+            const votedCount = Object.keys(nextState.votes || {}).length;
+            if (votedCount >= activeCount) {
+              const updatedSnapshot: SessionSnapshot = {
+                ...current,
+                version: current.version + 1,
+                gameState: nextState,
+              };
+              snapshotRef.current = updatedSnapshot;
+              setSnapshot(updatedSnapshot);
+              advanceHostPhase();
+              return;
+            }
+          }
+        } else if (current.gameId === 'who-said') {
+          if (nextState.currentPhaseId === 'question') {
+            const allLocked = Object.values(nextState.playerStates || {}).every((p: any) => p.locked);
+            if (allLocked && Object.keys(nextState.playerStates || {}).length >= activeCount) {
+              const updatedSnapshot: SessionSnapshot = {
+                ...current,
+                version: current.version + 1,
+                gameState: nextState,
+              };
+              snapshotRef.current = updatedSnapshot;
+              setSnapshot(updatedSnapshot);
+              advanceHostPhase();
+              return;
+            }
+          }
+        } else if (current.gameId === 'testament-sort') {
+          if (nextState.currentPhaseId === 'card') {
+            const allLocked = Object.values(nextState.playerCardStates || {}).every((p: any) => p.locked);
+            if (allLocked && Object.keys(nextState.playerCardStates || {}).length >= activeCount) {
+              const updatedSnapshot: SessionSnapshot = {
+                ...current,
+                version: current.version + 1,
+                gameState: nextState,
+              };
+              snapshotRef.current = updatedSnapshot;
+              setSnapshot(updatedSnapshot);
+              advanceHostPhase();
+              return;
+            }
+          }
+        }
+
         const nextSnapshot: SessionSnapshot = {
           ...current,
           version: current.version + 1,
@@ -289,7 +468,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         console.error('Error reducing intent', err);
       }
     },
-    [broadcastSnapshot]
+    [broadcastSnapshot, advanceHostPhase]
   );
 
   // Setup transport message listeners
@@ -323,9 +502,15 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             config: safeConfig,
           };
 
-          // Player accepts latest version
+          // Player accepts latest version (or fresh status / round transition)
           setSnapshot((prev) => {
-            if (!prev || (remoteSnap.version ?? 0) >= (prev.version ?? 0)) {
+            const isNewer =
+              !prev ||
+              (remoteSnap.version ?? 0) >= (prev.version ?? 0) ||
+              remoteSnap.status !== prev.status ||
+              remoteSnap.gameState?.roundNumber !== prev.gameState?.roundNumber;
+
+            if (isNewer) {
               // Sync players and config from snapshot
               setPlayers(safePlayers);
               setTeams(safeTeams);

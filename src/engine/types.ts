@@ -66,7 +66,7 @@ export interface PhaseDefinition {
 export interface GameIntent<P = any> {
   type: string;
   playerId: string;
-  payload: P;
+  payload?: P;
   timestamp: number;
 }
 

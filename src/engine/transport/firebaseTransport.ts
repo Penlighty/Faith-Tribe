@@ -83,6 +83,7 @@ export class FirebaseRealtimeTransport implements Transport {
   // Firebase listener refs (for cleanup)
   private unsubMessages: (() => void) | null = null;
   private unsubPresence: (() => void) | null = null;
+  private unsubSnapshot: (() => void) | null = null;
 
   // Dedup: ignore messages we sent ourselves
   private seenMessageKeys = new Set<string>();
@@ -121,6 +122,7 @@ export class FirebaseRealtimeTransport implements Transport {
 
       await this.initPresence(user);
       this.initMessageListener();
+      this.initSnapshotListener();
       this.connected = true;
     } catch (err) {
       console.warn('[FirebaseTransport] Connect failed, falling back to WebRTC:', err);
@@ -176,7 +178,36 @@ export class FirebaseRealtimeTransport implements Transport {
   }
 
   // -------------------------------------------------------------------------
-  // Messages: listen for new children added to the messages list
+  // Dedicated Snapshot Listener: instant sync with zero message backlog
+  // -------------------------------------------------------------------------
+  private initSnapshotListener(): void {
+    if (!this.db) return;
+
+    const snapshotRef = ref(this.db, `rooms/${this.roomCode}/snapshot`);
+    const handler = onValue(snapshotRef, (snapshot) => {
+      const msg = snapshot.val() as TransportMessage<any> | null;
+      if (!msg) return;
+
+      // Ignore snapshots that we sent ourselves
+      if (this.user && msg.senderId === this.user.id) return;
+
+      // Dedup by sender + version
+      const key = `${msg.senderId}_SNAPSHOT_${msg.version ?? 0}`;
+      if (this.seenMessageKeys.has(key)) return;
+      this.seenMessageKeys.add(key);
+      if (this.seenMessageKeys.size > 300) {
+        const first = this.seenMessageKeys.values().next().value;
+        if (first) this.seenMessageKeys.delete(first);
+      }
+
+      this.notifyMessage(msg);
+    });
+
+    this.unsubSnapshot = () => off(snapshotRef, 'value', handler as any);
+  }
+
+  // -------------------------------------------------------------------------
+  // Messages: listen for new events (INTENT, PLAYER_JOIN) added to the messages list
   // -------------------------------------------------------------------------
   private initMessageListener(): void {
     if (!this.db) return;
@@ -190,8 +221,11 @@ export class FirebaseRealtimeTransport implements Transport {
       const msg = snapshot.val() as TransportMessage<any> & { _serverTimestamp?: number };
       if (!msg) return;
 
-      // Ignore old messages from previous sessions, but always accept SNAPSHOT for synchronization
-      if (msg.type !== 'SNAPSHOT' && typeof msg.timestamp === 'number' && msg.timestamp < joinedAt - 60000) return;
+      // Never process SNAPSHOT from messages list (handled by snapshot node)
+      if (msg.type === 'SNAPSHOT') return;
+
+      // Ignore old messages from previous sessions or before we joined
+      if (typeof msg.timestamp === 'number' && msg.timestamp < joinedAt - 30000) return;
 
       // Dedup: skip messages we sent ourselves
       const key = `${msg.senderId}_${msg.type}_${msg.timestamp}_${msg.version ?? 0}`;
@@ -230,8 +264,10 @@ export class FirebaseRealtimeTransport implements Transport {
 
     this.unsubMessages?.();
     this.unsubPresence?.();
+    this.unsubSnapshot?.();
     this.unsubMessages = null;
     this.unsubPresence = null;
+    this.unsubSnapshot = null;
 
     this.messageListeners.clear();
     this.presenceListeners.clear();
@@ -265,9 +301,16 @@ export class FirebaseRealtimeTransport implements Transport {
     const key = `${cleanMsg.senderId}_${cleanMsg.type}_${cleanMsg.timestamp}_${cleanMsg.version ?? 0}`;
     this.seenMessageKeys.add(key);
 
-    const messagesRef = ref(this.db, `rooms/${this.roomCode}/messages`);
-    const newMsgRef = push(messagesRef);
-    await set(newMsgRef, cleanMsg);
+    if (type === 'SNAPSHOT') {
+      // Authoritative state write directly to dedicated snapshot node
+      const snapshotRef = ref(this.db, `rooms/${this.roomCode}/snapshot`);
+      await set(snapshotRef, cleanMsg);
+    } else {
+      // Ephemeral events (INTENT, PLAYER_JOIN) appended to messages
+      const messagesRef = ref(this.db, `rooms/${this.roomCode}/messages`);
+      const newMsgRef = push(messagesRef);
+      await set(newMsgRef, cleanMsg);
+    }
   }
 
   // -------------------------------------------------------------------------

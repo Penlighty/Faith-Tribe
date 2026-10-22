@@ -17,6 +17,10 @@ export const FakeAProverbPlayerView: React.FC<GameViewProps<FakeAProverbState>> 
   const [fakeInput, setFakeInput] = useState('');
   const { triggerHaptic } = useTheme();
 
+  React.useEffect(() => {
+    setFakeInput('');
+  }, [state.roundNumber]);
+
   const mySubmission = submissions[playerId];
   const myVote = votes[playerId];
   const myRoundScore = roundScores[playerId] || 0;
