@@ -10,7 +10,10 @@ import { useTheme } from '../theme/ThemeContext';
 import { Icon, GameBadge, GameShape, toVisualGameId, GAME_VISUALS, type GameId, type IconName } from '../design/icons';
 import { SelectGameModal } from '../components/session/SelectGameModal';
 import { HostSessionModal } from '../components/session/HostSessionModal';
+import { AuthModal } from '../components/auth/AuthModal';
 import { fetchFellowshipStats, getCachedFellowshipStats, FellowshipStats } from '../engine/services/gameDataService';
+import { useAuth } from '../engine/auth/AuthContext';
+import { useTribes } from '../engine/tribes/TribeContext';
 
 export interface HomeScreenProps {
   onSelectGame: (gameId: string) => void;
@@ -20,8 +23,11 @@ export interface HomeScreenProps {
     gameId: string,
     playMode: PlayMode,
     connectionMode?: ConnectionMode,
-    hotspotInfo?: HotspotInfo
+    hotspotInfo?: HotspotInfo,
+    tribeId?: string,
+    tribeName?: string
   ) => void;
+  onDirectJoinSession?: (roomCode: string, mode?: 'online' | 'onsite') => void;
 }
 
 interface PlannedGameMeta {
@@ -110,6 +116,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onQuickJoin,
   onHostGame,
   onHostSession,
+  onDirectJoinSession,
 }) => {
   const [filter, setFilter] = useState<'All' | 'Party' | 'Team' | 'Solo'>('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -120,7 +127,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [showGamePicker, setShowGamePicker] = useState(false);
   const [pendingHostGame, setPendingHostGame] = useState<GameMeta | null>(null);
   const [showHostModal, setShowHostModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const { triggerHaptic } = useTheme();
+  const { user, isAuthenticated } = useAuth();
+  const { liveActiveSession } = useTribes();
 
   // Close search suggestions on click outside
   useEffect(() => {
@@ -213,6 +223,57 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-28 pt-2 sm:pt-6 flex flex-col gap-6 sm:gap-8">
+      {/* 🟢 Live Tribe Game Session Banner (Zero-Friction 1-Click Join) */}
+      {liveActiveSession && (
+        <Card
+          variant="elevated"
+          padding="md"
+          className="border-2 border-emerald-500 bg-gradient-to-r from-emerald-500/15 via-emerald-500/5 to-transparent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-md animate-pulse"
+        >
+          <div className="flex items-center gap-3">
+            <span className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xl shrink-0 shadow-sm">
+              🎮
+            </span>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
+                  {liveActiveSession.tribe.name} • Active Session
+                </span>
+                <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200">
+                  {liveActiveSession.session.connectionMode === 'onsite' ? '📶 Onsite Hotspot' : '🌐 Online Cloud'}
+                </span>
+              </div>
+              <span className="text-sm font-black text-[var(--on-container)]">
+                {liveActiveSession.session.gameName}
+              </span>
+              <span className="text-[11px] text-[var(--on-container-variant)]">
+                Hosted by {liveActiveSession.session.hostName}
+              </span>
+            </div>
+          </div>
+          <Button
+            variant="primary"
+            size="sm"
+            pill
+            onClick={() => {
+              triggerHaptic('heavy');
+              if (onDirectJoinSession) {
+                onDirectJoinSession(
+                  liveActiveSession.session.roomCode,
+                  liveActiveSession.session.connectionMode
+                );
+              } else {
+                onQuickJoin();
+              }
+            }}
+            className="font-black text-xs bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm shrink-0"
+          >
+            Join Fellowship Game
+          </Button>
+        </Card>
+      )}
+
       {/* Top Section: Responsive Grid on Desktop (Stats Card + Quick Play Hub) */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 items-stretch">
         {/* Stats card on Home: "Game night stats" */}
@@ -314,7 +375,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               className="w-full shadow-md text-sm sm:text-base font-bold py-3 flex items-center justify-center gap-2"
               onClick={() => {
                 triggerHaptic('medium');
-                setShowGamePicker(true);
+                if (!isAuthenticated) {
+                  setShowAuthModal(true);
+                } else {
+                  setShowGamePicker(true);
+                }
               }}
             >
               <Icon name="host" size={18} />
@@ -643,10 +708,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <HostSessionModal
           isOpen={showHostModal}
           gameName={pendingHostGame.name}
-          onConfirm={(connMode, hotspot) => {
+          onConfirm={(connMode, hotspot, tribeId, tribeName) => {
             setShowHostModal(false);
             if (onHostSession) {
-              onHostSession(pendingHostGame.id, 'individuals', connMode, hotspot);
+              onHostSession(pendingHostGame.id, 'individuals', connMode, hotspot, tribeId, tribeName);
             } else if (onHostGame) {
               onHostGame(pendingHostGame.id);
             }
@@ -657,6 +722,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           }}
         />
       )}
+
+      {/* Auth Modal for Host Gate */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        requiredForHost
+        onSuccess={() => {
+          setShowGamePicker(true);
+        }}
+      />
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Icon, type IconName } from '../../design/icons';
 import { useTheme } from '../../theme/ThemeContext';
 
-export type NavTabId = 'home' | 'play' | 'games' | 'settings';
+export type NavTabId = 'home' | 'play' | 'games' | 'tribe' | 'settings';
 
 export interface BottomNavProps {
   activeTab: NavTabId;
@@ -15,6 +15,7 @@ const TABS: { id: NavTabId; label: string; icon: IconName }[] = [
   { id: 'home', label: 'Home', icon: 'home' },
   { id: 'play', label: 'Play', icon: 'play' },
   { id: 'games', label: 'Games', icon: 'games' },
+  { id: 'tribe', label: 'Tribe', icon: 'team' },
   { id: 'settings', label: 'Settings', icon: 'settings' },
 ];
 

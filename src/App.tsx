@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { registerLaunchGames } from './games';
 import { ThemeProvider, useTheme } from './theme/ThemeContext';
+import { AuthProvider } from './engine/auth/AuthContext';
+import { TribeProvider } from './engine/tribes/TribeContext';
 import { SessionProvider, useSession } from './engine/session/SessionContext';
 import { TopBar } from './components/ui/TopBar';
 import { BottomNav, NavTabId } from './components/ui/BottomNav';
@@ -10,6 +12,7 @@ import { LobbyScreen } from './screens/LobbyScreen';
 import { InGameScreen } from './screens/InGameScreen';
 import { FinalLeaderboardScreen } from './screens/FinalLeaderboardScreen';
 import { JoinScreen } from './screens/JoinScreen';
+import { TribeScreen } from './screens/TribeScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { SoloPracticeScreen } from './screens/SoloPracticeScreen';
 import { DevIconGalleryScreen } from './screens/DevIconGalleryScreen';
@@ -26,6 +29,7 @@ type AppView =
   | 'games'
   | 'game_detail'
   | 'join'
+  | 'tribe'
   | 'lobby'
   | 'in_game'
   | 'final_leaderboard'
@@ -38,7 +42,18 @@ const AppContent: React.FC = () => {
   const [selectedGameId, setSelectedGameId] = useState<string>('fake-a-proverb');
   const [activeNavTab, setActiveNavTab] = useState<NavTabId>('home');
 
-  const { snapshot, roomCode, createSession, currentUser, leaveSession, connectionStatus, disconnectReason, reconnect, isHost } = useSession();
+  const {
+    snapshot,
+    roomCode,
+    createSession,
+    joinSession,
+    currentUser,
+    leaveSession,
+    connectionStatus,
+    disconnectReason,
+    reconnect,
+    isHost,
+  } = useSession();
   const { setPaletteKey } = useTheme();
 
   // Watch snapshot status to transition in-game and leaderboard automatically
@@ -63,7 +78,7 @@ const AppContent: React.FC = () => {
     }
   }, [snapshot]);
 
-  // Handle URL join link, /dev/icons, and sync database content on mount
+  // Handle URL join link, tribe invite, /dev/icons, and sync database content on mount
   useEffect(() => {
     // Sync latest game content from Firebase Realtime Database
     syncAllGamesContent().catch(() => {});
@@ -75,6 +90,10 @@ const AppContent: React.FC = () => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('join')) {
       setCurrentView('join');
+      setActiveNavTab('play');
+    } else if (params.get('tribeInvite')) {
+      setCurrentView('tribe');
+      setActiveNavTab('tribe');
     } else if (params.get('view') === 'icons') {
       setCurrentView('dev_icons');
     }
@@ -89,6 +108,8 @@ const AppContent: React.FC = () => {
       setCurrentView('join');
     } else if (tab === 'games') {
       setCurrentView('home');
+    } else if (tab === 'tribe') {
+      setCurrentView('tribe');
     } else if (tab === 'settings') {
       setCurrentView('settings');
     }
@@ -103,11 +124,21 @@ const AppContent: React.FC = () => {
     gameId: string,
     playMode: PlayMode,
     connectionMode: ConnectionMode = 'online',
-    hotspotInfo?: HotspotInfo
+    hotspotInfo?: HotspotInfo,
+    tribeId?: string,
+    tribeName?: string
   ) => {
     const hostName = currentUser?.name || 'Host Disciple';
-    await createSession(gameId, hostName, connectionMode, hotspotInfo);
+    await createSession(gameId, hostName, connectionMode, hotspotInfo, tribeId, tribeName);
     setCurrentView('lobby');
+  };
+
+  const handleDirectJoinSession = async (code: string, mode: ConnectionMode = 'online') => {
+    const playerName = currentUser?.name || 'Disciple';
+    const success = await joinSession(code, playerName, mode);
+    if (success) {
+      setCurrentView('lobby');
+    }
   };
 
   const handleSoloPractice = (gameId: string) => {
@@ -149,6 +180,8 @@ const AppContent: React.FC = () => {
                 ? 'Settings'
                 : currentView === 'join'
                 ? 'Join Session'
+                : currentView === 'tribe'
+                ? 'Fellowship Tribe'
                 : 'Faith Tribe'
             }
             badge="Beta"
@@ -166,7 +199,12 @@ const AppContent: React.FC = () => {
                 onQuickJoin={() => setCurrentView('join')}
                 onHostGame={(id) => handleHostSession(id, 'individuals')}
                 onHostSession={handleHostSession}
+                onDirectJoinSession={handleDirectJoinSession}
               />
+            )}
+
+            {currentView === 'tribe' && (
+              <TribeScreen onJoinSession={handleDirectJoinSession} />
             )}
 
             {currentView === 'game_detail' && (
@@ -272,9 +310,13 @@ const AppContent: React.FC = () => {
 export const App: React.FC = () => {
   return (
     <ThemeProvider>
-      <SessionProvider>
-        <AppContent />
-      </SessionProvider>
+      <AuthProvider>
+        <TribeProvider>
+          <SessionProvider>
+            <AppContent />
+          </SessionProvider>
+        </TribeProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 };

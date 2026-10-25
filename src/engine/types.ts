@@ -22,6 +22,10 @@ export interface Player {
   score: number;
   isReady?: boolean;
   connectionMode?: ConnectionMode;
+  authUid?: string;
+  username?: string;
+  tribeId?: string;
+  tribeName?: string;
 }
 
 export interface Team {
@@ -41,6 +45,8 @@ export interface SessionConfig {
   soundEffects: boolean;
   connectionMode?: ConnectionMode; // 'online' (Cloud) | 'onsite' (Local Hotspot P2P)
   hotspotInfo?: HotspotInfo;
+  tribeId?: string;
+  tribeName?: string;
 }
 
 

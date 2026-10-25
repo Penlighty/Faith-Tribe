@@ -28,7 +28,9 @@ export interface SessionContextType {
     gameId: string,
     hostName: string,
     connectionMode?: ConnectionMode,
-    hotspotInfo?: HotspotInfo
+    hotspotInfo?: HotspotInfo,
+    tribeId?: string,
+    tribeName?: string
   ) => Promise<string>;
   joinSession: (
     code: string,
@@ -766,7 +768,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     gameId: string,
     hostName: string,
     connectionMode: ConnectionMode = 'online',
-    hotspotInfo?: HotspotInfo
+    hotspotInfo?: HotspotInfo,
+    tribeId?: string,
+    tribeName?: string
   ): Promise<string> => {
     const code = generateRoomCode();
     const cleanName = sanitizePlayerName(hostName);
@@ -780,6 +784,19 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
     }
 
+    let authUid: string | undefined;
+    let authUsername: string | undefined;
+    try {
+      const pStr = typeof window !== 'undefined' ? localStorage.getItem('faith_tribe_user_profile') : null;
+      if (pStr) {
+        const p = JSON.parse(pStr);
+        authUid = p.uid;
+        authUsername = p.username;
+      }
+    } catch {
+      // ignore
+    }
+
     const hostUser: Player = {
       id: hostId,
       name: cleanName,
@@ -787,6 +804,10 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       score: 0,
       isHost: true,
       connectionMode,
+      authUid,
+      username: authUsername,
+      tribeId,
+      tribeName,
     };
 
     setCurrentUser(hostUser);
@@ -805,6 +826,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       soundEffects: true,
       connectionMode,
       hotspotInfo,
+      tribeId,
+      tribeName,
     };
     setConfig(initialConfig);
     configRef.current = initialConfig;
@@ -842,6 +865,25 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     // Authoritatively write initial lobby snapshot to transport so remote DB and connecting clients see clean lobby
     await transport.send('SNAPSHOT', initialSnapshot, initialSnapshot.version);
 
+    // Broadcast live active session to Tribe if selected
+    if (tribeId) {
+      import('../tribes/tribeService').then(({ broadcastTribeSession }) => {
+        const game = gameRegistry.get(gameId);
+        broadcastTribeSession(tribeId, {
+          roomCode: code,
+          gameId,
+          gameName: game?.meta?.name || 'Fellowship Game',
+          hostName: cleanName,
+          hostUid: hostId,
+          connectionMode,
+          hotspotInfo,
+          startedAt: Date.now(),
+          status: 'lobby',
+          participantsCount: 1,
+        }).catch(() => {});
+      });
+    }
+
     setIsConnected(true);
     setConnectionStatus('connected');
     setDisconnectReason(null);
@@ -866,6 +908,19 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
     }
 
+    let authUid: string | undefined;
+    let authUsername: string | undefined;
+    try {
+      const pStr = typeof window !== 'undefined' ? localStorage.getItem('faith_tribe_user_profile') : null;
+      if (pStr) {
+        const p = JSON.parse(pStr);
+        authUid = p.uid;
+        authUsername = p.username;
+      }
+    } catch {
+      // ignore
+    }
+
     const playerUser: Player = {
       id: playerId,
       name: cleanName,
@@ -873,6 +928,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       score: 0,
       isHost: false,
       connectionMode,
+      authUid,
+      username: authUsername,
     };
 
     setCurrentUser(playerUser);
@@ -914,6 +971,14 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (timerIntervalRef.current) {
       clearInterval(timerIntervalRef.current);
       timerIntervalRef.current = null;
+    }
+
+    // Clear Tribe active session if host
+    if (isHostRef.current && configRef.current?.tribeId) {
+      const tid = configRef.current.tribeId;
+      import('../tribes/tribeService').then(({ endTribeSession }) => {
+        endTribeSession(tid).catch(() => {});
+      });
     }
 
     // 2. Disconnect transport cleanly
