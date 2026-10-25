@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Icon } from '../../design/icons';
@@ -53,6 +54,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [submitting, setSubmitting] = useState(false);
 
   if (!isOpen) return null;
+  if (typeof document === 'undefined') return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,8 +128,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm animate-fadeIn p-4 sm:p-6 flex justify-center items-start sm:items-center">
+  const modalContent = (
+    <div
+      className="fixed inset-0 z-[9999] overflow-y-auto bg-black/60 backdrop-blur-sm animate-fadeIn p-4 sm:p-6 flex justify-center items-start sm:items-center"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          triggerHaptic('light');
+          onClose();
+        }
+      }}
+    >
       <div className="my-auto w-full max-w-md py-4 sm:py-6">
         <Card
           variant="elevated"
@@ -364,4 +374,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
