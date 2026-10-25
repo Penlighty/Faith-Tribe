@@ -1,4 +1,4 @@
-import { pairIndex, pairIndexMap, allSchemes } from './loader';
+import { pairIndex } from './loader';
 import { CardLogEntry } from './types';
 
 export interface PairStat {

@@ -1,6 +1,6 @@
-import { PRNG, createRNG } from './rng';
-import { ShelfRushCard, ShelfRushBook, ShelfRushScheme } from './types';
-import { allBooks, allSchemes, campaignData, getScheme } from './loader';
+import { createRNG } from './rng';
+import { ShelfRushCard } from './types';
+import { campaignData, getScheme } from './loader';
 
 export function getBookFamily(bookId: string): string | null {
   if (bookId.includes('samuel')) return 'samuel';
@@ -288,13 +288,13 @@ export function buildAscentDeck(options: BuildAscentDeckOptions): AscentDeckResu
         }
 
         // d. Weight candidates by ledger freshness w = (1 + 0.75 * missMean) / (1 + seenMean)^1.5
-        const weights = candidates.map((bid) => {
+        const weights = candidates.map(() => {
           let seenSum = 0;
           let missSum = 0;
           const numPlayers = options.playerSummaries?.length || 1;
 
           if (options.playerSummaries && options.playerSummaries.length > 0) {
-            options.playerSummaries.forEach((summary) => {
+            options.playerSummaries.forEach(() => {
               // rough approximation if summaries passed
               seenSum += 0;
               missSum += 0;

@@ -22,7 +22,6 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
     teams,
     dispatchIntent,
     hostNextPhase,
-    hostEndGame,
   } = useSession();
 
   const { soundEnabled, setSoundEnabled, triggerHaptic } = useTheme();

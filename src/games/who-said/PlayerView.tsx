@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { GameViewProps } from '../../engine/types';
 import { WhoSaidState, WhoSaidPowerUp } from './types';
 import { Card } from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
 import { useTheme } from '../../theme/ThemeContext';
 import { Icon } from '@design/icons';
 import { soundManager } from '../../engine/services/audio';
@@ -343,6 +342,13 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
             </p>
           </div>
         </Card>
+      )}
+
+      {activeMilestone && (
+        <StreakMilestoneModal
+          milestone={activeMilestone}
+          onDismiss={() => setActiveMilestone(null)}
+        />
       )}
     </div>
   );

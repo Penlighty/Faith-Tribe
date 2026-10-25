@@ -14,7 +14,6 @@ interface State {
   hasError: boolean;
   error: Error | null;
   errorInfo: ErrorInfo | null;
-  showDetails: boolean;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
@@ -22,7 +21,6 @@ export class ErrorBoundary extends Component<Props, State> {
     hasError: false,
     error: null,
     errorInfo: null,
-    showDetails: false,
   };
 
   public static getDerivedStateFromError(error: Error): Partial<State> {
@@ -83,24 +81,6 @@ export class ErrorBoundary extends Component<Props, State> {
               >
                 Return Home
               </Button>
-            </div>
-
-            {/* Collapsible Technical Details for Debugging */}
-            <div className="w-full mt-4 text-left border-t border-[var(--border-tint)] pt-3">
-              <button
-                type="button"
-                onClick={() => this.setState((prev) => ({ showDetails: !prev.showDetails }))}
-                className="text-[11px] font-bold text-[var(--on-container-variant)] hover:text-[var(--primary-action)] transition-colors flex items-center gap-1 cursor-pointer"
-              >
-                <span>{this.state.showDetails ? '▼ Hide Diagnostic Info' : '▶ Show Diagnostic Info'}</span>
-              </button>
-
-              {this.state.showDetails && (
-                <div className="mt-2 p-3 rounded-xl bg-[var(--surface-container)] text-[10px] font-mono text-[var(--on-container)] overflow-x-auto max-h-48 border border-[var(--border-tint)]/60">
-                  <div className="font-bold text-red-500 mb-1">{this.state.error?.toString()}</div>
-                  <pre className="opacity-75 whitespace-pre-wrap">{this.state.errorInfo?.componentStack}</pre>
-                </div>
-              )}
             </div>
           </Card>
         </div>

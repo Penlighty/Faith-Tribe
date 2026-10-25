@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
-import { Player, Team, SessionConfig, SessionSnapshot, BaseGameState, GameIntent, ConnectionMode, HotspotInfo, getParticipatingPlayers } from '../types';
+import { Player, Team, SessionConfig, SessionSnapshot, GameIntent, ConnectionMode, HotspotInfo, getParticipatingPlayers } from '../types';
 import { Transport, PresenceUser, TransportMessage, createTransport } from '../transport';
 import { gameRegistry } from '../registry';
 import { balanceTeams } from '../services/teamBalancer';

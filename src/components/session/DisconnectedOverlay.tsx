@@ -23,7 +23,6 @@ export const DisconnectedOverlay: React.FC<DisconnectedOverlayProps> = ({
 }) => {
   const [hasTriedReconnect, setHasTriedReconnect] = useState(false);
 
-  const isDropped = reason === 'dropped';
   const isGameStarted = reason === 'game_started';
 
   const handleReconnect = () => {

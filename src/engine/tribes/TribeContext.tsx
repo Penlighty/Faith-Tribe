@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { getApps, FirebaseApp } from 'firebase/app';
+import { getApps } from 'firebase/app';
 import { getDatabase, ref, onValue, off, Database } from 'firebase/database';
 import { useAuth } from '../auth/AuthContext';
 import {
@@ -7,7 +7,6 @@ import {
   TribeContextType,
   ActiveTribeSession,
   InvitePolicy,
-  PendingRequest,
 } from './types';
 import {
   fetchUserTribes,
@@ -147,10 +146,6 @@ export const TribeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     tribeId: string,
     username: string
   ): Promise<{ success: boolean; error?: string }> => {
-    const { searchUserByUsername } = await import('../auth/AuthContext').then((m) => {
-      // Direct call fallback
-      return { searchUserByUsername: null };
-    });
     // In React hook context, we can lookup directly from db or service
     const db = getDb();
     if (!db) {

@@ -84,7 +84,6 @@ export function selectFreshItem<T extends { id: string }>(
     };
   });
 
-  const totalPlayers = Math.max(1, roomSeenData.length);
   // Proportion of pool items that are unseen by ALL players
   const unseenCount = candidatesWithMetrics.filter((c) => c.seenCount === 0).length;
   const unseenRatio = unseenCount / pool.length;

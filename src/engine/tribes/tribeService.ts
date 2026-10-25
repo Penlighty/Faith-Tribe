@@ -1,5 +1,5 @@
 import { getApps, initializeApp, FirebaseApp } from 'firebase/app';
-import { getDatabase, ref, get, set, update, remove, onValue, off, Database } from 'firebase/database';
+import { getDatabase, ref, get, set, update, remove, Database } from 'firebase/database';
 import { Tribe, TribeMember, PendingRequest, ActiveTribeSession, InvitePolicy } from './types';
 import { UserProfile } from '../auth/types';
 

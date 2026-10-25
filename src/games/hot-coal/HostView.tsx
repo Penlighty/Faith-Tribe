@@ -5,7 +5,6 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { WavyTimer } from '../../components/ui/WavyTimer';
 import { Avatar } from '../../components/ui/Avatar';
-import { UserCheck } from 'lucide-react';
 import { Icon } from '@design/icons';
 import { motion } from 'framer-motion';
 

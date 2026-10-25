@@ -15,7 +15,6 @@ import { JoinScreen } from './screens/JoinScreen';
 import { TribeScreen } from './screens/TribeScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { SoloPracticeScreen } from './screens/SoloPracticeScreen';
-import { DevIconGalleryScreen } from './screens/DevIconGalleryScreen';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { DisconnectedOverlay } from './components/session/DisconnectedOverlay';
 import { PlayMode, ConnectionMode, HotspotInfo } from './engine/types';
@@ -34,8 +33,7 @@ type AppView =
   | 'in_game'
   | 'final_leaderboard'
   | 'solo_practice'
-  | 'settings'
-  | 'dev_icons';
+  | 'settings';
 
 const AppContent: React.FC = () => {
   const [currentView, setCurrentView] = useState<AppView>('home');
@@ -83,10 +81,6 @@ const AppContent: React.FC = () => {
     // Sync latest game content from Firebase Realtime Database
     syncAllGamesContent().catch(() => {});
 
-    if (window.location.pathname === '/dev/icons' || window.location.pathname === '/dev/icons/') {
-      setCurrentView('dev_icons');
-      return;
-    }
     const params = new URLSearchParams(window.location.search);
     if (params.get('join')) {
       setCurrentView('join');
@@ -94,8 +88,6 @@ const AppContent: React.FC = () => {
     } else if (params.get('tribeInvite')) {
       setCurrentView('tribe');
       setActiveNavTab('tribe');
-    } else if (params.get('view') === 'icons') {
-      setCurrentView('dev_icons');
     }
   }, []);
 
@@ -271,24 +263,14 @@ const AppContent: React.FC = () => {
             )}
 
             {currentView === 'settings' && <SettingsScreen />}
-
-            {currentView === 'dev_icons' && (
-              <DevIconGalleryScreen
-                onBack={() => {
-                  window.history.pushState({}, '', '/');
-                  setCurrentView('home');
-                  setPaletteKey('lavender');
-                }}
-              />
-            )}
           </ErrorBoundary>
         </main>
 
-        {/* Floating pill bottom nav (hidden during active in-game phase or dev gallery) */}
+        {/* Floating pill bottom nav (hidden during active in-game phase) */}
         <BottomNav
           activeTab={activeNavTab}
           onTabChange={handleNavTabChange}
-          visible={!isInActiveGame && currentView !== 'lobby' && currentView !== 'solo_practice' && currentView !== 'dev_icons'}
+          visible={!isInActiveGame && currentView !== 'lobby' && currentView !== 'solo_practice'}
         />
 
         {/* Disconnected overlay: shown when a participant loses connection */}

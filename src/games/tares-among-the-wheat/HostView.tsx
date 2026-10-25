@@ -22,7 +22,6 @@ export const TaresHostView: React.FC<GameViewProps<TaresState>> = ({
     votes,
     isTareCaught,
     isStealSuccessful,
-    roundScores,
   } = state;
 
   const activeCluePlayerId = cluePlayerOrder[activeCluePlayerIndex];

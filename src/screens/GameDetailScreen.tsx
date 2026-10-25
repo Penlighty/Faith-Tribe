@@ -4,7 +4,6 @@ import { Button } from '../components/ui/Button';
 import { Chip } from '../components/ui/Chip';
 import { gameRegistry } from '../engine/registry';
 import { PlayMode, ConnectionMode, HotspotInfo } from '../engine/types';
-import { useSession } from '../engine/session/SessionContext';
 import { Icon, GameBadge } from '../design/icons';
 import { HostSessionModal } from '../components/session/HostSessionModal';
 
@@ -29,7 +28,6 @@ export const GameDetailScreen: React.FC<GameDetailScreenProps> = ({
   const game = gameRegistry.get(gameId);
   const [selectedMode, setSelectedMode] = useState<PlayMode>('individuals');
   const [showHostModal, setShowHostModal] = useState(false);
-  const { currentUser } = useSession();
 
   React.useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });

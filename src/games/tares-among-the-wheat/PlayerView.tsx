@@ -5,7 +5,7 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { WavyTimer } from '../../components/ui/WavyTimer';
 import { Avatar } from '../../components/ui/Avatar';
-import { UserX, AlertCircle, Sparkles } from 'lucide-react';
+import { UserX, Sparkles } from 'lucide-react';
 import { Icon } from '@design/icons';
 import { useTheme } from '../../theme/ThemeContext';
 
@@ -25,7 +25,6 @@ export const TaresPlayerView: React.FC<GameViewProps<TaresState>> = ({
     cluePlayerOrder,
     votes,
     isTareCaught,
-    isStealSuccessful,
     tareStealGuess,
   } = state;
   const { triggerHaptic } = useTheme();

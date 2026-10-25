@@ -7,7 +7,6 @@ import {
   CardLogEntry,
 } from './engine/types';
 import { buildSchemeDeck, buildAscentDeck } from './engine/deck';
-import { createInitialRunState, reduceRun } from './engine/run';
 import { rankLeaderboard } from './engine/leaderboard';
 
 export function createDefaultConfig(seed?: number): ShelfRushConfig {

@@ -18,7 +18,7 @@ export const Chip: React.FC<ChipProps> = ({
   onClick,
   leftIcon,
   rightIcon,
-  variant = 'tonal',
+  variant: _variant = 'tonal',
   size = 'md',
   children,
   className = '',

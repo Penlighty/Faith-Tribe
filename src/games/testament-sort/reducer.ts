@@ -7,7 +7,6 @@ import {
   TestamentSortMode,
   TestamentChoice,
   PlayerCardState,
-  TeamHuddleVote,
 } from './types';
 import { calculateTestamentSortScore, getTestamentSortTimeLimit } from './scoring';
 
@@ -55,8 +54,6 @@ export function setupTestamentSort(
       teamHintBudgets[t.id] = 3;
     }
   }
-
-  const initialLimit = getTestamentSortTimeLimit(currentCard.tier);
 
   return {
     phaseIndex: 0,
@@ -242,7 +239,6 @@ export function reduceTestamentSort(
       }
 
       const nextCard = state.cardsPool[nextIndex];
-      const nextLimit = getTestamentSortTimeLimit(nextCard.tier);
 
       // Reset card states for next question
       const resetStates: Record<string, PlayerCardState> = {};
@@ -298,7 +294,6 @@ function evaluateRoundCompletion(state: TestamentSortState): TestamentSortState 
     }
 
     const isCorrect = p.selectedChoice === state.currentCard.answer;
-    const streak = isCorrect ? p.streakCount + 1 : 0;
 
     const scoreResult = calculateTestamentSortScore({
       tier: state.currentCard.tier,

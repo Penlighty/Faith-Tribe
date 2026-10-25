@@ -8,7 +8,6 @@ import { Avatar } from '../../components/ui/Avatar';
 import { AlertTriangle } from 'lucide-react';
 import { Icon } from '@design/icons';
 import { useTheme } from '../../theme/ThemeContext';
-import { motion } from 'framer-motion';
 
 export const HotCoalPlayerView: React.FC<GameViewProps<HotCoalState>> = ({
   state,
@@ -17,7 +16,7 @@ export const HotCoalPlayerView: React.FC<GameViewProps<HotCoalState>> = ({
   dispatchIntent,
   openBottomSheet,
 }) => {
-  const { currentPhaseId, currentCategory, coalHolderId, burnCount, activeChallenge, lastBurnedPlayerId } = state;
+  const { currentPhaseId, currentCategory, coalHolderId, burnCount, lastBurnedPlayerId } = state;
   const { triggerHaptic } = useTheme();
 
   const isHoldingCoal = coalHolderId === playerId;

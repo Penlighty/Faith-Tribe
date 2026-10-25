@@ -5,7 +5,6 @@ import { Avatar } from '../components/ui/Avatar';
 import { Icon } from '../design/icons';
 import { useAuth } from '../engine/auth/AuthContext';
 import { useTribes } from '../engine/tribes/TribeContext';
-import { useSession } from '../engine/session/SessionContext';
 import { useTheme } from '../theme/ThemeContext';
 import { TRIBES, TRIBES_BY_ID } from '../design/tribes/tribes';
 import { AuthModal } from '../components/auth/AuthModal';

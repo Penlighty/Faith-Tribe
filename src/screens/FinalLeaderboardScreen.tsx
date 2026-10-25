@@ -19,7 +19,7 @@ export const FinalLeaderboardScreen: React.FC<FinalLeaderboardScreenProps> = ({
   onPickAnotherGame,
 }) => {
   const { snapshot, players, teams, isHost, rematch, currentUser } = useSession();
-  const { user, isAuthenticated, recordGameStats } = useAuth();
+  const { isAuthenticated, recordGameStats } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [statsRecorded, setStatsRecorded] = useState(false);
 

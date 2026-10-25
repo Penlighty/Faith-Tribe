@@ -13,7 +13,6 @@ export const SettingsScreen: React.FC = () => {
   const {
     mode,
     setMode,
-    isDark,
     reducedMotion,
     setReducedMotion,
     hapticsEnabled,

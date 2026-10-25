@@ -6,7 +6,6 @@ import markOnLight from '../../assets/brand/mark-on-light.svg';
 import { TYPOGRAPHY } from '../../theme/tokens';
 import { NavTabId } from './BottomNav';
 import { useTheme } from '../../theme/ThemeContext';
-import { useSession } from '../../engine/session/SessionContext';
 import { useAuth } from '../../engine/auth/AuthContext';
 import { Avatar } from './Avatar';
 import { AuthModal } from '../auth/AuthModal';
@@ -40,8 +39,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   onTabChange,
   className = '',
 }) => {
-  const { mode, setMode, isDark, soundEnabled, setSoundEnabled, triggerHaptic } = useTheme();
-  const { currentUser } = useSession();
+  const { setMode, isDark, soundEnabled, setSoundEnabled, triggerHaptic } = useTheme();
   const { user, isAuthenticated, signOut } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);

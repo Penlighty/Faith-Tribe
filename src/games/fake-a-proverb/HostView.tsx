@@ -11,7 +11,6 @@ export const FakeAProverbHostView: React.FC<GameViewProps<FakeAProverbState>> = 
   state,
   players,
   dispatchIntent,
-  openBottomSheet,
 }) => {
   const { currentPhaseId, currentProverb, submissions, votes, shuffledEndings, roundScores } = state;
 

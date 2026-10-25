@@ -66,7 +66,6 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
 
   // Active display card (use practiceMissedCard when studying a missed card)
   const displayCard = (cardStatus === 'wrong' && practiceMissedCard) ? practiceMissedCard : currentCard;
-  const displayScheme = displayCard ? getScheme(displayCard.schemeId) : currentScheme;
   const displayBook = displayCard ? getBook(displayCard.bookId) : currentBook;
 
   // Initialize or start run
