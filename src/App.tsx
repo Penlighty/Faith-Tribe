@@ -76,7 +76,7 @@ const AppContent: React.FC = () => {
     }
   }, [snapshot]);
 
-  // Handle URL join link, tribe invite, /dev/icons, and sync database content on mount
+  // Handle URL join link, tribe invite, and sync database content on mount
   useEffect(() => {
     // Sync latest game content from Firebase Realtime Database
     syncAllGamesContent().catch(() => {});
