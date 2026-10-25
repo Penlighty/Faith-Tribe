@@ -1,0 +1,1347 @@
+{
+ "version": 1,
+ "canon": "Protestant 66-book English canon, standard order",
+ "books": [
+  {
+   "id": "genesis",
+   "name": "Genesis",
+   "abbr": "Gen",
+   "order": 1,
+   "testament": "OT",
+   "chapters": 50,
+   "blurb": "Creation, the flood, and the patriarchs, ending with Joseph in Egypt."
+  },
+  {
+   "id": "exodus",
+   "name": "Exodus",
+   "abbr": "Exo",
+   "order": 2,
+   "testament": "OT",
+   "chapters": 40,
+   "blurb": "Israel leaves Egypt, receives the Law at Sinai, and builds the tabernacle."
+  },
+  {
+   "id": "leviticus",
+   "name": "Leviticus",
+   "abbr": "Lev",
+   "order": 3,
+   "testament": "OT",
+   "chapters": 27,
+   "blurb": "Laws for worship, sacrifice, and holy living."
+  },
+  {
+   "id": "numbers",
+   "name": "Numbers",
+   "abbr": "Num",
+   "order": 4,
+   "testament": "OT",
+   "chapters": 36,
+   "blurb": "Israel's census and wanderings in the wilderness."
+  },
+  {
+   "id": "deuteronomy",
+   "name": "Deuteronomy",
+   "abbr": "Deu",
+   "order": 5,
+   "testament": "OT",
+   "chapters": 34,
+   "blurb": "Moses' farewell speeches restating the Law."
+  },
+  {
+   "id": "joshua",
+   "name": "Joshua",
+   "abbr": "Jos",
+   "order": 6,
+   "testament": "OT",
+   "chapters": 24,
+   "blurb": "Israel enters and settles Canaan."
+  },
+  {
+   "id": "judges",
+   "name": "Judges",
+   "abbr": "Jdg",
+   "order": 7,
+   "testament": "OT",
+   "chapters": 21,
+   "blurb": "Cycles of failure and rescue before Israel had kings."
+  },
+  {
+   "id": "ruth",
+   "name": "Ruth",
+   "abbr": "Rut",
+   "order": 8,
+   "testament": "OT",
+   "chapters": 4,
+   "blurb": "A Moabite widow's loyalty and Boaz's kindness."
+  },
+  {
+   "id": "1-samuel",
+   "name": "1 Samuel",
+   "abbr": "1Sa",
+   "order": 9,
+   "testament": "OT",
+   "chapters": 31,
+   "blurb": "Samuel, Saul, and the rise of David."
+  },
+  {
+   "id": "2-samuel",
+   "name": "2 Samuel",
+   "abbr": "2Sa",
+   "order": 10,
+   "testament": "OT",
+   "chapters": 24,
+   "blurb": "David's reign as king."
+  },
+  {
+   "id": "1-kings",
+   "name": "1 Kings",
+   "abbr": "1Ki",
+   "order": 11,
+   "testament": "OT",
+   "chapters": 22,
+   "blurb": "Solomon's reign and the divided kingdom."
+  },
+  {
+   "id": "2-kings",
+   "name": "2 Kings",
+   "abbr": "2Ki",
+   "order": 12,
+   "testament": "OT",
+   "chapters": 25,
+   "blurb": "The fall of Israel and then Judah."
+  },
+  {
+   "id": "1-chronicles",
+   "name": "1 Chronicles",
+   "abbr": "1Ch",
+   "order": 13,
+   "testament": "OT",
+   "chapters": 29,
+   "blurb": "Genealogies and David's reign, retold."
+  },
+  {
+   "id": "2-chronicles",
+   "name": "2 Chronicles",
+   "abbr": "2Ch",
+   "order": 14,
+   "testament": "OT",
+   "chapters": 36,
+   "blurb": "Solomon's temple and the kings of Judah."
+  },
+  {
+   "id": "ezra",
+   "name": "Ezra",
+   "abbr": "Ezr",
+   "order": 15,
+   "testament": "OT",
+   "chapters": 10,
+   "blurb": "Exiles return and rebuild the temple."
+  },
+  {
+   "id": "nehemiah",
+   "name": "Nehemiah",
+   "abbr": "Neh",
+   "order": 16,
+   "testament": "OT",
+   "chapters": 13,
+   "blurb": "Rebuilding Jerusalem's walls."
+  },
+  {
+   "id": "esther",
+   "name": "Esther",
+   "abbr": "Est",
+   "order": 17,
+   "testament": "OT",
+   "chapters": 10,
+   "blurb": "A Jewish queen saves her people in Persia."
+  },
+  {
+   "id": "job",
+   "name": "Job",
+   "abbr": "Job",
+   "order": 18,
+   "testament": "OT",
+   "chapters": 42,
+   "blurb": "A righteous man's suffering and God's answer."
+  },
+  {
+   "id": "psalms",
+   "name": "Psalms",
+   "abbr": "Psa",
+   "order": 19,
+   "testament": "OT",
+   "chapters": 150,
+   "blurb": "One hundred and fifty songs and prayers."
+  },
+  {
+   "id": "proverbs",
+   "name": "Proverbs",
+   "abbr": "Pro",
+   "order": 20,
+   "testament": "OT",
+   "chapters": 31,
+   "blurb": "Wise sayings for daily life."
+  },
+  {
+   "id": "ecclesiastes",
+   "name": "Ecclesiastes",
+   "abbr": "Ecc",
+   "order": 21,
+   "testament": "OT",
+   "chapters": 12,
+   "blurb": "The Preacher's search for meaning."
+  },
+  {
+   "id": "song-of-solomon",
+   "name": "Song of Solomon",
+   "abbr": "Sng",
+   "order": 22,
+   "testament": "OT",
+   "chapters": 8,
+   "blurb": "A poetic celebration of love."
+  },
+  {
+   "id": "isaiah",
+   "name": "Isaiah",
+   "abbr": "Isa",
+   "order": 23,
+   "testament": "OT",
+   "chapters": 66,
+   "blurb": "Judgment and hope, including promises of a coming servant."
+  },
+  {
+   "id": "jeremiah",
+   "name": "Jeremiah",
+   "abbr": "Jer",
+   "order": 24,
+   "testament": "OT",
+   "chapters": 52,
+   "blurb": "The weeping prophet warns Judah before exile."
+  },
+  {
+   "id": "lamentations",
+   "name": "Lamentations",
+   "abbr": "Lam",
+   "order": 25,
+   "testament": "OT",
+   "chapters": 5,
+   "blurb": "Poems mourning Jerusalem's fall."
+  },
+  {
+   "id": "ezekiel",
+   "name": "Ezekiel",
+   "abbr": "Eze",
+   "order": 26,
+   "testament": "OT",
+   "chapters": 48,
+   "blurb": "Visions of judgment and restoration from exile."
+  },
+  {
+   "id": "daniel",
+   "name": "Daniel",
+   "abbr": "Dan",
+   "order": 27,
+   "testament": "OT",
+   "chapters": 12,
+   "blurb": "Faithfulness in Babylon and visions of the future."
+  },
+  {
+   "id": "hosea",
+   "name": "Hosea",
+   "abbr": "Hos",
+   "order": 28,
+   "testament": "OT",
+   "chapters": 14,
+   "blurb": "A prophet's marriage pictures God's faithful love."
+  },
+  {
+   "id": "joel",
+   "name": "Joel",
+   "abbr": "Joe",
+   "order": 29,
+   "testament": "OT",
+   "chapters": 3,
+   "blurb": "A locust plague and the day of the LORD."
+  },
+  {
+   "id": "amos",
+   "name": "Amos",
+   "abbr": "Amo",
+   "order": 30,
+   "testament": "OT",
+   "chapters": 9,
+   "blurb": "A herdsman calls for justice."
+  },
+  {
+   "id": "obadiah",
+   "name": "Obadiah",
+   "abbr": "Oba",
+   "order": 31,
+   "testament": "OT",
+   "chapters": 1,
+   "blurb": "Judgment on Edom."
+  },
+  {
+   "id": "jonah",
+   "name": "Jonah",
+   "abbr": "Jon",
+   "order": 32,
+   "testament": "OT",
+   "chapters": 4,
+   "blurb": "A reluctant prophet and the city of Nineveh."
+  },
+  {
+   "id": "micah",
+   "name": "Micah",
+   "abbr": "Mic",
+   "order": 33,
+   "testament": "OT",
+   "chapters": 7,
+   "blurb": "Justice, judgment, and a ruler from Bethlehem."
+  },
+  {
+   "id": "nahum",
+   "name": "Nahum",
+   "abbr": "Nah",
+   "order": 34,
+   "testament": "OT",
+   "chapters": 3,
+   "blurb": "The fall of Nineveh."
+  },
+  {
+   "id": "habakkuk",
+   "name": "Habakkuk",
+   "abbr": "Hab",
+   "order": 35,
+   "testament": "OT",
+   "chapters": 3,
+   "blurb": "A prophet questions God and learns to trust."
+  },
+  {
+   "id": "zephaniah",
+   "name": "Zephaniah",
+   "abbr": "Zep",
+   "order": 36,
+   "testament": "OT",
+   "chapters": 3,
+   "blurb": "The day of the LORD and a promised remnant."
+  },
+  {
+   "id": "haggai",
+   "name": "Haggai",
+   "abbr": "Hag",
+   "order": 37,
+   "testament": "OT",
+   "chapters": 2,
+   "blurb": "A call to rebuild the temple."
+  },
+  {
+   "id": "zechariah",
+   "name": "Zechariah",
+   "abbr": "Zec",
+   "order": 38,
+   "testament": "OT",
+   "chapters": 14,
+   "blurb": "Visions encouraging the returned exiles."
+  },
+  {
+   "id": "malachi",
+   "name": "Malachi",
+   "abbr": "Mal",
+   "order": 39,
+   "testament": "OT",
+   "chapters": 4,
+   "blurb": "The final book of the English Old Testament."
+  },
+  {
+   "id": "matthew",
+   "name": "Matthew",
+   "abbr": "Mat",
+   "order": 40,
+   "testament": "NT",
+   "chapters": 28,
+   "blurb": "Jesus as Messiah and King, including the Sermon on the Mount."
+  },
+  {
+   "id": "mark",
+   "name": "Mark",
+   "abbr": "Mar",
+   "order": 41,
+   "testament": "NT",
+   "chapters": 16,
+   "blurb": "A fast-moving account of Jesus' ministry."
+  },
+  {
+   "id": "luke",
+   "name": "Luke",
+   "abbr": "Luk",
+   "order": 42,
+   "testament": "NT",
+   "chapters": 24,
+   "blurb": "Jesus' life told in careful order, with many parables."
+  },
+  {
+   "id": "john",
+   "name": "John",
+   "abbr": "Joh",
+   "order": 43,
+   "testament": "NT",
+   "chapters": 21,
+   "blurb": "Jesus as the Son of God, with the 'I am' sayings."
+  },
+  {
+   "id": "acts",
+   "name": "Acts",
+   "abbr": "Act",
+   "order": 44,
+   "testament": "NT",
+   "chapters": 28,
+   "blurb": "The early church spreads from Jerusalem to Rome."
+  },
+  {
+   "id": "romans",
+   "name": "Romans",
+   "abbr": "Rom",
+   "order": 45,
+   "testament": "NT",
+   "chapters": 16,
+   "blurb": "Paul explains the gospel to the church in Rome."
+  },
+  {
+   "id": "1-corinthians",
+   "name": "1 Corinthians",
+   "abbr": "1Co",
+   "order": 46,
+   "testament": "NT",
+   "chapters": 16,
+   "blurb": "Paul addresses problems in the Corinthian church."
+  },
+  {
+   "id": "2-corinthians",
+   "name": "2 Corinthians",
+   "abbr": "2Co",
+   "order": 47,
+   "testament": "NT",
+   "chapters": 13,
+   "blurb": "Paul defends his ministry and urges generosity."
+  },
+  {
+   "id": "galatians",
+   "name": "Galatians",
+   "abbr": "Gal",
+   "order": 48,
+   "testament": "NT",
+   "chapters": 6,
+   "blurb": "Freedom in Christ, not the Law."
+  },
+  {
+   "id": "ephesians",
+   "name": "Ephesians",
+   "abbr": "Eph",
+   "order": 49,
+   "testament": "NT",
+   "chapters": 6,
+   "blurb": "The church as Christ's body."
+  },
+  {
+   "id": "philippians",
+   "name": "Philippians",
+   "abbr": "Php",
+   "order": 50,
+   "testament": "NT",
+   "chapters": 4,
+   "blurb": "A joyful letter written from prison."
+  },
+  {
+   "id": "colossians",
+   "name": "Colossians",
+   "abbr": "Col",
+   "order": 51,
+   "testament": "NT",
+   "chapters": 4,
+   "blurb": "The supremacy of Christ."
+  },
+  {
+   "id": "1-thessalonians",
+   "name": "1 Thessalonians",
+   "abbr": "1Th",
+   "order": 52,
+   "testament": "NT",
+   "chapters": 5,
+   "blurb": "Encouragement about Christ's return."
+  },
+  {
+   "id": "2-thessalonians",
+   "name": "2 Thessalonians",
+   "abbr": "2Th",
+   "order": 53,
+   "testament": "NT",
+   "chapters": 3,
+   "blurb": "Further teaching on Christ's return."
+  },
+  {
+   "id": "1-timothy",
+   "name": "1 Timothy",
+   "abbr": "1Ti",
+   "order": 54,
+   "testament": "NT",
+   "chapters": 6,
+   "blurb": "Guidance on leading a church."
+  },
+  {
+   "id": "2-timothy",
+   "name": "2 Timothy",
+   "abbr": "2Ti",
+   "order": 55,
+   "testament": "NT",
+   "chapters": 4,
+   "blurb": "Paul's final charge to Timothy."
+  },
+  {
+   "id": "titus",
+   "name": "Titus",
+   "abbr": "Tit",
+   "order": 56,
+   "testament": "NT",
+   "chapters": 3,
+   "blurb": "Instructions for churches on Crete."
+  },
+  {
+   "id": "philemon",
+   "name": "Philemon",
+   "abbr": "Phm",
+   "order": 57,
+   "testament": "NT",
+   "chapters": 1,
+   "blurb": "A personal appeal on behalf of Onesimus."
+  },
+  {
+   "id": "hebrews",
+   "name": "Hebrews",
+   "abbr": "Heb",
+   "order": 58,
+   "testament": "NT",
+   "chapters": 13,
+   "blurb": "Jesus as superior to the old covenant."
+  },
+  {
+   "id": "james",
+   "name": "James",
+   "abbr": "Jas",
+   "order": 59,
+   "testament": "NT",
+   "chapters": 5,
+   "blurb": "Faith shown through action."
+  },
+  {
+   "id": "1-peter",
+   "name": "1 Peter",
+   "abbr": "1Pe",
+   "order": 60,
+   "testament": "NT",
+   "chapters": 5,
+   "blurb": "Hope for believers who suffer."
+  },
+  {
+   "id": "2-peter",
+   "name": "2 Peter",
+   "abbr": "2Pe",
+   "order": 61,
+   "testament": "NT",
+   "chapters": 3,
+   "blurb": "A warning against false teachers."
+  },
+  {
+   "id": "1-john",
+   "name": "1 John",
+   "abbr": "1Jo",
+   "order": 62,
+   "testament": "NT",
+   "chapters": 5,
+   "blurb": "Love, truth, and assurance."
+  },
+  {
+   "id": "2-john",
+   "name": "2 John",
+   "abbr": "2Jo",
+   "order": 63,
+   "testament": "NT",
+   "chapters": 1,
+   "blurb": "A short letter on truth and love."
+  },
+  {
+   "id": "3-john",
+   "name": "3 John",
+   "abbr": "3Jo",
+   "order": 64,
+   "testament": "NT",
+   "chapters": 1,
+   "blurb": "A short letter commending hospitality."
+  },
+  {
+   "id": "jude",
+   "name": "Jude",
+   "abbr": "Jud",
+   "order": 65,
+   "testament": "NT",
+   "chapters": 1,
+   "blurb": "A short warning to contend for the faith."
+  },
+  {
+   "id": "revelation",
+   "name": "Revelation",
+   "abbr": "Rev",
+   "order": 66,
+   "testament": "NT",
+   "chapters": 22,
+   "blurb": "John's vision of Christ and the end of the age."
+  }
+ ],
+ "schemes": [
+  {
+   "id": "testament",
+   "name": "Testament",
+   "question": "Which testament?",
+   "difficulty": "easy",
+   "tradition": "Standard Protestant English Bible: 39 Old Testament books, 27 New Testament books.",
+   "deckSize": 66,
+   "bins": [
+    {
+     "id": "ot",
+     "label": "Old Testament",
+     "icon": "ot"
+    },
+    {
+     "id": "nt",
+     "label": "New Testament",
+     "icon": "nt"
+    }
+   ],
+   "assign": {
+    "genesis": "ot",
+    "exodus": "ot",
+    "leviticus": "ot",
+    "numbers": "ot",
+    "deuteronomy": "ot",
+    "joshua": "ot",
+    "judges": "ot",
+    "ruth": "ot",
+    "1-samuel": "ot",
+    "2-samuel": "ot",
+    "1-kings": "ot",
+    "2-kings": "ot",
+    "1-chronicles": "ot",
+    "2-chronicles": "ot",
+    "ezra": "ot",
+    "nehemiah": "ot",
+    "esther": "ot",
+    "job": "ot",
+    "psalms": "ot",
+    "proverbs": "ot",
+    "ecclesiastes": "ot",
+    "song-of-solomon": "ot",
+    "isaiah": "ot",
+    "jeremiah": "ot",
+    "lamentations": "ot",
+    "ezekiel": "ot",
+    "daniel": "ot",
+    "hosea": "ot",
+    "joel": "ot",
+    "amos": "ot",
+    "obadiah": "ot",
+    "jonah": "ot",
+    "micah": "ot",
+    "nahum": "ot",
+    "habakkuk": "ot",
+    "zephaniah": "ot",
+    "haggai": "ot",
+    "zechariah": "ot",
+    "malachi": "ot",
+    "matthew": "nt",
+    "mark": "nt",
+    "luke": "nt",
+    "john": "nt",
+    "acts": "nt",
+    "romans": "nt",
+    "1-corinthians": "nt",
+    "2-corinthians": "nt",
+    "galatians": "nt",
+    "ephesians": "nt",
+    "philippians": "nt",
+    "colossians": "nt",
+    "1-thessalonians": "nt",
+    "2-thessalonians": "nt",
+    "1-timothy": "nt",
+    "2-timothy": "nt",
+    "titus": "nt",
+    "philemon": "nt",
+    "hebrews": "nt",
+    "james": "nt",
+    "1-peter": "nt",
+    "2-peter": "nt",
+    "1-john": "nt",
+    "2-john": "nt",
+    "3-john": "nt",
+    "jude": "nt",
+    "revelation": "nt"
+   },
+   "notes": {},
+   "excluded": {}
+  },
+  {
+   "id": "genres",
+   "name": "Genres",
+   "question": "What kind of book?",
+   "difficulty": "medium",
+   "tradition": "Common English Bible groupings. Acts is placed with History; Revelation with Prophecy.",
+   "deckSize": 66,
+   "bins": [
+    {
+     "id": "law",
+     "label": "Law",
+     "icon": "tablets"
+    },
+    {
+     "id": "history",
+     "label": "History",
+     "icon": "scroll"
+    },
+    {
+     "id": "poetry",
+     "label": "Poetry & Wisdom",
+     "icon": "book-open"
+    },
+    {
+     "id": "prophecy",
+     "label": "Prophecy",
+     "icon": "shofar"
+    },
+    {
+     "id": "gospels",
+     "label": "Gospels",
+     "icon": "cross"
+    },
+    {
+     "id": "letters",
+     "label": "Letters",
+     "icon": "edit"
+    }
+   ],
+   "assign": {
+    "genesis": "law",
+    "exodus": "law",
+    "leviticus": "law",
+    "numbers": "law",
+    "deuteronomy": "law",
+    "joshua": "history",
+    "judges": "history",
+    "ruth": "history",
+    "1-samuel": "history",
+    "2-samuel": "history",
+    "1-kings": "history",
+    "2-kings": "history",
+    "1-chronicles": "history",
+    "2-chronicles": "history",
+    "ezra": "history",
+    "nehemiah": "history",
+    "esther": "history",
+    "acts": "history",
+    "job": "poetry",
+    "psalms": "poetry",
+    "proverbs": "poetry",
+    "ecclesiastes": "poetry",
+    "song-of-solomon": "poetry",
+    "isaiah": "prophecy",
+    "jeremiah": "prophecy",
+    "lamentations": "prophecy",
+    "ezekiel": "prophecy",
+    "daniel": "prophecy",
+    "hosea": "prophecy",
+    "joel": "prophecy",
+    "amos": "prophecy",
+    "obadiah": "prophecy",
+    "jonah": "prophecy",
+    "micah": "prophecy",
+    "nahum": "prophecy",
+    "habakkuk": "prophecy",
+    "zephaniah": "prophecy",
+    "haggai": "prophecy",
+    "zechariah": "prophecy",
+    "malachi": "prophecy",
+    "revelation": "prophecy",
+    "matthew": "gospels",
+    "mark": "gospels",
+    "luke": "gospels",
+    "john": "gospels",
+    "romans": "letters",
+    "1-corinthians": "letters",
+    "2-corinthians": "letters",
+    "galatians": "letters",
+    "ephesians": "letters",
+    "philippians": "letters",
+    "colossians": "letters",
+    "1-thessalonians": "letters",
+    "2-thessalonians": "letters",
+    "1-timothy": "letters",
+    "2-timothy": "letters",
+    "titus": "letters",
+    "philemon": "letters",
+    "hebrews": "letters",
+    "james": "letters",
+    "1-peter": "letters",
+    "2-peter": "letters",
+    "1-john": "letters",
+    "2-john": "letters",
+    "3-john": "letters",
+    "jude": "letters"
+   },
+   "notes": {
+    "acts": "Acts is a history of the early church.",
+    "revelation": "Revelation is apocalyptic prophecy.",
+    "hebrews": "Hebrews reads like a sermon but is grouped with the letters."
+   },
+   "excluded": {}
+  },
+  {
+   "id": "ot_sections",
+   "name": "Old Testament Sections",
+   "question": "Which part of the Old Testament?",
+   "difficulty": "medium",
+   "tradition": "The usual five-part English arrangement of the 39 Old Testament books.",
+   "deckSize": 39,
+   "bins": [
+    {
+     "id": "law",
+     "label": "Law",
+     "icon": "tablets"
+    },
+    {
+     "id": "history",
+     "label": "History",
+     "icon": "scroll"
+    },
+    {
+     "id": "poetry",
+     "label": "Poetry & Wisdom",
+     "icon": "book-open"
+    },
+    {
+     "id": "major",
+     "label": "Major Prophets",
+     "icon": null
+    },
+    {
+     "id": "minor",
+     "label": "Minor Prophets",
+     "icon": null
+    }
+   ],
+   "assign": {
+    "genesis": "law",
+    "exodus": "law",
+    "leviticus": "law",
+    "numbers": "law",
+    "deuteronomy": "law",
+    "joshua": "history",
+    "judges": "history",
+    "ruth": "history",
+    "1-samuel": "history",
+    "2-samuel": "history",
+    "1-kings": "history",
+    "2-kings": "history",
+    "1-chronicles": "history",
+    "2-chronicles": "history",
+    "ezra": "history",
+    "nehemiah": "history",
+    "esther": "history",
+    "job": "poetry",
+    "psalms": "poetry",
+    "proverbs": "poetry",
+    "ecclesiastes": "poetry",
+    "song-of-solomon": "poetry",
+    "isaiah": "major",
+    "jeremiah": "major",
+    "lamentations": "major",
+    "ezekiel": "major",
+    "daniel": "major",
+    "hosea": "minor",
+    "joel": "minor",
+    "amos": "minor",
+    "obadiah": "minor",
+    "jonah": "minor",
+    "micah": "minor",
+    "nahum": "minor",
+    "habakkuk": "minor",
+    "zephaniah": "minor",
+    "haggai": "minor",
+    "zechariah": "minor",
+    "malachi": "minor"
+   },
+   "notes": {
+    "lamentations": "English Bibles place Lamentations with the Major Prophets, after Jeremiah.",
+    "daniel": "English Bibles place Daniel with the Major Prophets."
+   },
+   "excluded": {}
+  },
+  {
+   "id": "law_prophets_writings",
+   "name": "Law, Prophets & Writings",
+   "question": "Law, Prophets, or Writings?",
+   "difficulty": "medium",
+   "tradition": "The Hebrew Bible's threefold division, applied to the same 39 books. Luke 24:44 mentions the law of Moses, the prophets, and the psalms.",
+   "deckSize": 39,
+   "bins": [
+    {
+     "id": "law",
+     "label": "Law",
+     "icon": "tablets"
+    },
+    {
+     "id": "prophets",
+     "label": "Prophets",
+     "icon": "shofar"
+    },
+    {
+     "id": "writings",
+     "label": "Writings",
+     "icon": "book-open"
+    }
+   ],
+   "assign": {
+    "genesis": "law",
+    "exodus": "law",
+    "leviticus": "law",
+    "numbers": "law",
+    "deuteronomy": "law",
+    "joshua": "prophets",
+    "judges": "prophets",
+    "1-samuel": "prophets",
+    "2-samuel": "prophets",
+    "1-kings": "prophets",
+    "2-kings": "prophets",
+    "isaiah": "prophets",
+    "jeremiah": "prophets",
+    "ezekiel": "prophets",
+    "hosea": "prophets",
+    "joel": "prophets",
+    "amos": "prophets",
+    "obadiah": "prophets",
+    "jonah": "prophets",
+    "micah": "prophets",
+    "nahum": "prophets",
+    "habakkuk": "prophets",
+    "zephaniah": "prophets",
+    "haggai": "prophets",
+    "zechariah": "prophets",
+    "malachi": "prophets",
+    "psalms": "writings",
+    "proverbs": "writings",
+    "job": "writings",
+    "song-of-solomon": "writings",
+    "ruth": "writings",
+    "lamentations": "writings",
+    "ecclesiastes": "writings",
+    "esther": "writings",
+    "daniel": "writings",
+    "ezra": "writings",
+    "nehemiah": "writings",
+    "1-chronicles": "writings",
+    "2-chronicles": "writings"
+   },
+   "notes": {
+    "joshua": "Joshua to Kings are the 'Former Prophets' in the Hebrew Bible.",
+    "ruth": "English Bibles put Ruth after Judges; the Hebrew Bible places it among the Writings.",
+    "daniel": "English Bibles put Daniel with the Prophets; the Hebrew Bible places it among the Writings.",
+    "lamentations": "English Bibles put Lamentations after Jeremiah; the Hebrew Bible places it among the Writings.",
+    "esther": "In the Hebrew Bible, Esther is among the Writings.",
+    "1-chronicles": "Chronicles closes the Hebrew Bible, within the Writings.",
+    "2-chronicles": "Chronicles closes the Hebrew Bible, within the Writings."
+   },
+   "excluded": {}
+  },
+  {
+   "id": "nt_sections",
+   "name": "New Testament Sections",
+   "question": "Which part of the New Testament?",
+   "difficulty": "medium",
+   "tradition": "The usual five-part English arrangement of the 27 New Testament books.",
+   "deckSize": 27,
+   "bins": [
+    {
+     "id": "gospels",
+     "label": "Gospels",
+     "icon": "cross"
+    },
+    {
+     "id": "acts",
+     "label": "Acts",
+     "icon": "flame"
+    },
+    {
+     "id": "paul",
+     "label": "Paul's Letters",
+     "icon": "edit"
+    },
+    {
+     "id": "general",
+     "label": "General Letters",
+     "icon": "team"
+    },
+    {
+     "id": "revelation",
+     "label": "Revelation",
+     "icon": "eye"
+    }
+   ],
+   "assign": {
+    "matthew": "gospels",
+    "mark": "gospels",
+    "luke": "gospels",
+    "john": "gospels",
+    "acts": "acts",
+    "romans": "paul",
+    "1-corinthians": "paul",
+    "2-corinthians": "paul",
+    "galatians": "paul",
+    "ephesians": "paul",
+    "philippians": "paul",
+    "colossians": "paul",
+    "1-thessalonians": "paul",
+    "2-thessalonians": "paul",
+    "1-timothy": "paul",
+    "2-timothy": "paul",
+    "titus": "paul",
+    "philemon": "paul",
+    "hebrews": "general",
+    "james": "general",
+    "1-peter": "general",
+    "2-peter": "general",
+    "1-john": "general",
+    "2-john": "general",
+    "3-john": "general",
+    "jude": "general",
+    "revelation": "revelation"
+   },
+   "notes": {
+    "hebrews": "Hebrews is grouped with the General Letters; its author is not named."
+   },
+   "excluded": {}
+  },
+  {
+   "id": "paul_or_not",
+   "name": "Paul or Not?",
+   "question": "Did Paul write it?",
+   "difficulty": "hard",
+   "tradition": "Traditional attribution: thirteen letters name Paul as author. Some scholars question a few of them, and Hebrews does not name its author.",
+   "deckSize": 27,
+   "bins": [
+    {
+     "id": "paul",
+     "label": "Paul's Letters",
+     "icon": "edit"
+    },
+    {
+     "id": "other",
+     "label": "Not Paul",
+     "icon": null
+    }
+   ],
+   "assign": {
+    "romans": "paul",
+    "1-corinthians": "paul",
+    "2-corinthians": "paul",
+    "galatians": "paul",
+    "ephesians": "paul",
+    "philippians": "paul",
+    "colossians": "paul",
+    "1-thessalonians": "paul",
+    "2-thessalonians": "paul",
+    "1-timothy": "paul",
+    "2-timothy": "paul",
+    "titus": "paul",
+    "philemon": "paul",
+    "matthew": "other",
+    "mark": "other",
+    "luke": "other",
+    "john": "other",
+    "acts": "other",
+    "hebrews": "other",
+    "james": "other",
+    "1-peter": "other",
+    "2-peter": "other",
+    "1-john": "other",
+    "2-john": "other",
+    "3-john": "other",
+    "jude": "other",
+    "revelation": "other"
+   },
+   "notes": {
+    "hebrews": "Hebrews does not name its author. Some older traditions said Paul, but it is usually listed as unknown.",
+    "acts": "Acts is by the same author as Luke and features Paul, but it is not a letter by Paul."
+   },
+   "excluded": {}
+  },
+  {
+   "id": "major_minor",
+   "name": "Major or Minor?",
+   "question": "Major or Minor prophet?",
+   "difficulty": "hard",
+   "tradition": "'Major' and 'Minor' refer to the length of the books, not their importance.",
+   "deckSize": 17,
+   "bins": [
+    {
+     "id": "major",
+     "label": "Major Prophets",
+     "icon": null
+    },
+    {
+     "id": "minor",
+     "label": "Minor Prophets",
+     "icon": null
+    }
+   ],
+   "assign": {
+    "isaiah": "major",
+    "jeremiah": "major",
+    "lamentations": "major",
+    "ezekiel": "major",
+    "daniel": "major",
+    "hosea": "minor",
+    "joel": "minor",
+    "amos": "minor",
+    "obadiah": "minor",
+    "jonah": "minor",
+    "micah": "minor",
+    "nahum": "minor",
+    "habakkuk": "minor",
+    "zephaniah": "minor",
+    "haggai": "minor",
+    "zechariah": "minor",
+    "malachi": "minor"
+   },
+   "notes": {
+    "lamentations": "Lamentations is grouped with the Major Prophets in English Bibles.",
+    "daniel": "Daniel is grouped with the Major Prophets in English Bibles."
+   },
+   "excluded": {}
+  },
+  {
+   "id": "authors",
+   "name": "Who Wrote It?",
+   "question": "Who wrote it?",
+   "difficulty": "hard",
+   "tradition": "Traditional attribution: the author named in the book or its title, or the long-standing tradition. 'Unknown' means the text names no author and traditions are divided or tentative. Four books are left out because the tradition is more complicated than one bin can show.",
+   "deckSize": 62,
+   "bins": [
+    {
+     "id": "moses",
+     "label": "Moses",
+     "icon": "tablets"
+    },
+    {
+     "id": "david_solomon",
+     "label": "David & Solomon",
+     "icon": "crown"
+    },
+    {
+     "id": "prophet",
+     "label": "A Prophet",
+     "icon": "shofar"
+    },
+    {
+     "id": "paul",
+     "label": "Paul",
+     "icon": "edit"
+    },
+    {
+     "id": "john",
+     "label": "John",
+     "icon": "eye"
+    },
+    {
+     "id": "other_nt",
+     "label": "Other NT Writers",
+     "icon": "bible"
+    },
+    {
+     "id": "unknown",
+     "label": "Unknown",
+     "icon": "help"
+    }
+   ],
+   "assign": {
+    "genesis": "moses",
+    "exodus": "moses",
+    "leviticus": "moses",
+    "numbers": "moses",
+    "deuteronomy": "moses",
+    "psalms": "david_solomon",
+    "proverbs": "david_solomon",
+    "ecclesiastes": "david_solomon",
+    "song-of-solomon": "david_solomon",
+    "isaiah": "prophet",
+    "jeremiah": "prophet",
+    "ezekiel": "prophet",
+    "daniel": "prophet",
+    "hosea": "prophet",
+    "joel": "prophet",
+    "amos": "prophet",
+    "obadiah": "prophet",
+    "jonah": "prophet",
+    "micah": "prophet",
+    "nahum": "prophet",
+    "habakkuk": "prophet",
+    "zephaniah": "prophet",
+    "haggai": "prophet",
+    "zechariah": "prophet",
+    "malachi": "prophet",
+    "romans": "paul",
+    "1-corinthians": "paul",
+    "2-corinthians": "paul",
+    "galatians": "paul",
+    "ephesians": "paul",
+    "philippians": "paul",
+    "colossians": "paul",
+    "1-thessalonians": "paul",
+    "2-thessalonians": "paul",
+    "1-timothy": "paul",
+    "2-timothy": "paul",
+    "titus": "paul",
+    "philemon": "paul",
+    "john": "john",
+    "1-john": "john",
+    "2-john": "john",
+    "3-john": "john",
+    "revelation": "john",
+    "matthew": "other_nt",
+    "mark": "other_nt",
+    "luke": "other_nt",
+    "acts": "other_nt",
+    "james": "other_nt",
+    "1-peter": "other_nt",
+    "2-peter": "other_nt",
+    "jude": "other_nt",
+    "judges": "unknown",
+    "ruth": "unknown",
+    "1-samuel": "unknown",
+    "2-samuel": "unknown",
+    "1-kings": "unknown",
+    "2-kings": "unknown",
+    "1-chronicles": "unknown",
+    "2-chronicles": "unknown",
+    "esther": "unknown",
+    "job": "unknown",
+    "hebrews": "unknown"
+   },
+   "notes": {
+    "psalms": "David wrote many psalms; others, such as Asaph and the sons of Korah, wrote some.",
+    "proverbs": "Mostly Solomon, with sections from others (Agur, Lemuel, the wise).",
+    "ecclesiastes": "Traditionally Solomon; the book names 'the Preacher, son of David, king in Jerusalem'.",
+    "song-of-solomon": "The title attributes the song to Solomon.",
+    "genesis": "Traditionally Moses, as with the other four books of the Law.",
+    "jonah": "A prophet named in the title; traditionally he is the author.",
+    "daniel": "A prophet named in the title; traditionally he is the author.",
+    "john": "Traditionally the apostle John, as with 1, 2 and 3 John.",
+    "revelation": "The book names 'John'; tradition identifies him with the apostle.",
+    "matthew": "Traditionally the apostle Matthew.",
+    "mark": "Traditionally John Mark, a companion of Peter.",
+    "luke": "Traditionally Luke, a companion of Paul, who also wrote Acts.",
+    "acts": "Traditionally Luke, who also wrote the Gospel of Luke.",
+    "james": "Traditionally James, the brother of Jesus.",
+    "jude": "Jude names himself as the brother of James.",
+    "1-peter": "Traditionally the apostle Peter.",
+    "2-peter": "Names Simon Peter as author; some scholars question this.",
+    "judges": "The text names no author. Jewish tradition mentions Samuel.",
+    "ruth": "The text names no author.",
+    "1-samuel": "The text names no author, though the book is named for Samuel.",
+    "2-samuel": "The text names no author.",
+    "1-kings": "The text names no author. Jewish tradition mentions Jeremiah.",
+    "2-kings": "The text names no author. Jewish tradition mentions Jeremiah.",
+    "1-chronicles": "The text names no author. Tradition mentions Ezra.",
+    "2-chronicles": "The text names no author. Tradition mentions Ezra.",
+    "esther": "The text names no author.",
+    "job": "The text names no author.",
+    "hebrews": "The text names no author. Some older traditions said Paul."
+   },
+   "excluded": {
+    "joshua": "Tradition says Joshua, but the book records his death; omitted rather than forced into a bin.",
+    "lamentations": "Anonymous in the text; tradition links it to Jeremiah. Omitted rather than forced into a bin.",
+    "ezra": "Tradition says Ezra, but the book mixes first-person and third-person sections; omitted.",
+    "nehemiah": "Opens 'The words of Nehemiah' but is a joined work with Ezra in tradition; omitted."
+   }
+  }
+ ],
+ "campaign": {
+  "id": "ascent",
+  "name": "The Ascent",
+  "tagline": "Fifteen steps, one climb.",
+  "inspiration": "Songs of Ascents, Psalms 120-134 (fifteen psalms)",
+  "length": {
+   "full": {
+    "steps": 15,
+    "cardsPerStep": 5,
+    "bands": [
+     5,
+     5,
+     5
+    ],
+    "restStopsAfterStep": [
+     5,
+     10
+    ]
+   },
+   "short": {
+    "steps": 8,
+    "cardsPerStep": 5,
+    "bands": [
+     3,
+     3,
+     2
+    ],
+    "restStopsAfterStep": [
+     4
+    ]
+   }
+  },
+  "tiers": {
+   "easy": [
+    "testament"
+   ],
+   "medium": [
+    "genres",
+    "ot_sections",
+    "law_prophets_writings",
+    "nt_sections"
+   ],
+   "hard": [
+    "paul_or_not",
+    "major_minor",
+    "authors"
+   ]
+  },
+  "tierWeightsByBand": [
+   [
+    0.5,
+    0.4,
+    0.1
+   ],
+   [
+    0.2,
+    0.5,
+    0.3
+   ],
+   [
+    0.1,
+    0.4,
+    0.5
+   ]
+  ],
+  "lives": 5,
+  "rampPerStep": 0.025,
+  "rampFloor": 0.65,
+  "schemeChangeGraceMs": 1000,
+  "maxBookUsesPerRun": 2,
+  "recentWindow": 8,
+  "maxConsecutiveSameScheme": 2
+ }
+}

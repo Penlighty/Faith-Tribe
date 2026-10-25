@@ -80,12 +80,14 @@ export const GAME_SEARCH_KEYWORDS: Record<string, string[]> = {
   'tares-among-wheat': ['tare', 'tares', 'wheat', 'impostor', 'traitor', 'deduction', 'parable', 'harvest', 'social', 'secret', 'suspect'],
   'who-said-it': ['who said', 'quote', 'quotes', 'prophet', 'apostle', 'trivia', 'knowledge', 'king', 'disciple', 'speaker', 'said', 'said it'],
   'testament-sort': ['testament', 'sort', 'old', 'new', 'canon', 'books', 'speed', 'order', 'bible books', 'timeline', 'sorting'],
+  'shelf-rush': ['shelf', 'shelf rush', 'rush', 'ascent', 'books', 'sort', 'sorting', 'canon', 'bible books', 'speed', 'order', 'scheme', 'hebrew canon', 'testament'],
   'blueprint-from-the-mountain': ['blueprint', 'mountain', 'tabernacle', 'architecture', 'dimensions', 'exodus', 'ark'],
   'one-accord': ['accord', 'unity', 'harmony', 'acts', 'scripture', 'co-op', 'team'],
   'six-degrees-of-abraham': ['abraham', 'genealogy', 'degrees', 'covenant', 'generations', 'lineage', 'family tree'],
 };
 
 export const AUTO_POPULATE_PILLS: Array<{ label: string; query: string; icon: IconName }> = [
+  { label: 'Shelf Rush', query: 'Shelf Rush', icon: 'book-open' },
   { label: 'Proverb', query: 'Proverb', icon: 'scroll' },
   { label: 'Hot Coal', query: 'Hot Coal', icon: 'flame' },
   { label: 'Wheat & Tares', query: 'Wheat & Tares', icon: 'wheat' },

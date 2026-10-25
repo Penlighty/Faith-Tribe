@@ -7,6 +7,31 @@
    GAME SCOPE TOKENS (--game-container, --game-ink, --game-surface, --game-on-surface)
    ========================================================================== */
 
+/* Game: Shelf Rush (Light) */
+[data-game="shelf-rush"] {
+  --game-container: #E8D2E8;
+  --game-ink: #5E2F66;
+  --game-surface: #f0e6e7;
+  --game-on-surface: #5E2F66;
+}
+
+/* Game: Shelf Rush (Dark) */
+[data-theme="dark"] [data-game="shelf-rush"], [data-theme="dark"][data-game="shelf-rush"], .dark [data-game="shelf-rush"], .dark[data-game="shelf-rush"] {
+  --game-container: #5E2F66;
+  --game-ink: #E8D2E8;
+  --game-surface: #29202d;
+  --game-on-surface: #E8D2E8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not(.light) [data-game="shelf-rush"], :root:not([data-theme="light"]):not(.light)[data-game="shelf-rush"] {
+    --game-container: #5E2F66;
+    --game-ink: #E8D2E8;
+    --game-surface: #29202d;
+    --game-on-surface: #E8D2E8;
+  }
+}
+
 /* Game: Fake-a-Proverb (Light) */
 [data-game="fake-a-proverb"] {
   --game-container: #F9D6DB;
