@@ -11,7 +11,7 @@ import { Icon, GameBadge, GameShape, toVisualGameId, GAME_VISUALS, type GameId, 
 import { SelectGameModal } from '../components/session/SelectGameModal';
 import { HostSessionModal } from '../components/session/HostSessionModal';
 import { AuthModal } from '../components/auth/AuthModal';
-import { fetchFellowshipStats, getCachedFellowshipStats, FellowshipStats } from '../engine/services/gameDataService';
+import { fetchFellowshipStats, getCachedFellowshipStats, getEmptyFellowshipStats, FellowshipStats } from '../engine/services/gameDataService';
 import { useAuth } from '../engine/auth/AuthContext';
 import { useTribes } from '../engine/tribes/TribeContext';
 
@@ -130,7 +130,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { triggerHaptic } = useTheme();
   const { user, isAuthenticated } = useAuth();
-  const { liveActiveSession } = useTribes();
+  const { liveActiveSession, tribes } = useTribes();
 
   // Close search suggestions on click outside
   useEffect(() => {
@@ -143,44 +143,44 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Real database fellowship stats
-  const [stats, setStats] = useState<FellowshipStats>(() => {
-    return (
-      getCachedFellowshipStats() || {
-        gamesPlayedThisMonth: 0,
-        totalGamesPlayed: 0,
-        winsCount: 0,
-        victoryRate: 0,
-        favoritePick: 'Proverbs',
-        weeklyActivity: [
-          { day: 'M', height: 8, count: 0 },
-          { day: 'T', height: 8, count: 0 },
-          { day: 'W', height: 8, count: 0 },
-          { day: 'T', height: 8, count: 0 },
-          { day: 'F', height: 8, count: 0 },
-          { day: 'S', height: 8, count: 0 },
-          { day: 'S', height: 8, count: 0 },
-        ],
-        recentlyGathered: [],
-        activeCount: 0,
-        hasRealData: false,
-        isLoading: true,
+  // User's active tribe IDs
+  const userTribeIds = useMemo(() => tribes.map((t) => t.id), [tribes]);
+
+  // Fellow tribe members across user's tribes
+  const fellowTribeMembers = useMemo(() => {
+    const map = new Map<string, { id: string; name: string; avatarSeed?: string }>();
+    tribes.forEach((t) => {
+      if (t.members) {
+        Object.values(t.members).forEach((m) => {
+          if (m && m.displayName) {
+            map.set(m.uid || m.displayName, {
+              id: m.uid,
+              name: m.displayName,
+              avatarSeed: m.avatarSeed || m.uid,
+            });
+          }
+        });
       }
-    );
+    });
+    return Array.from(map.values());
+  }, [tribes]);
+
+  // Current user identifiers
+  const currentUserId = user?.uid || (typeof window !== 'undefined' ? sessionStorage.getItem('faith_tribe_player_id') || undefined : undefined);
+  const currentUserName = user?.displayName || user?.username || (typeof window !== 'undefined'
+    ? localStorage.getItem('faith_tribe_player_name') ||
+      localStorage.getItem('agape_player_name') ||
+      undefined
+    : undefined);
+
+  // User-isolated fellowship stats
+  const [stats, setStats] = useState<FellowshipStats>(() => {
+    return getCachedFellowshipStats(user?.uid) || getEmptyFellowshipStats();
   });
 
   useEffect(() => {
     let isMounted = true;
-    const currentUserId =
-      typeof window !== 'undefined' ? sessionStorage.getItem('faith_tribe_player_id') || undefined : undefined;
-    const currentUserName =
-      typeof window !== 'undefined'
-        ? localStorage.getItem('faith_tribe_player_name') ||
-          localStorage.getItem('agape_player_name') ||
-          undefined
-        : undefined;
-
-    fetchFellowshipStats(currentUserId, currentUserName).then((liveStats) => {
+    fetchFellowshipStats(currentUserId, currentUserName, userTribeIds, fellowTribeMembers).then((liveStats) => {
       if (isMounted) {
         setStats(liveStats);
       }
@@ -189,7 +189,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [currentUserId, currentUserName, userTribeIds.join(','), fellowTribeMembers.length]);
 
   const launchGames = gameRegistry.getAllMeta();
 
@@ -288,17 +288,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 <Icon name="scoreboard" size={18} />
               </span>
               <h2 className="text-base sm:text-lg font-extrabold tracking-tight text-[var(--on-container)]">
-                Fellowship Activity
+                {user ? `${user.displayName}'s Activity` : 'Fellowship Activity'}
               </h2>
             </div>
             <span
               className={`text-xs font-mono font-bold px-2.5 py-1 rounded-full border flex items-center gap-1 ${
-                stats.activeCount > 0 || stats.hasRealData
+                stats.activeCount > 0
                   ? 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300/30'
                   : 'text-[var(--on-container-variant)] bg-[var(--surface-container)] border-[var(--border-tint)]'
               }`}
             >
-              <Icon name="bolt" size={14} /> {stats.activeCount > 0 ? `${stats.activeCount} Live` : 'Active'}
+              <Icon name="bolt" size={14} /> {stats.activeCount > 0 ? `${stats.activeCount} in Fellowship` : 'Ready'}
             </span>
           </div>
 
@@ -405,7 +405,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 Recently Gathered
               </h2>
               <span className="text-[11px] font-mono text-[var(--on-container-variant)]">
-                {stats.activeCount} {stats.activeCount === 1 ? 'Active' : 'Active'}
+                {stats.recentlyGathered.length} {stats.recentlyGathered.length === 1 ? 'Disciple' : 'Disciples'}
               </span>
             </div>
             <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">

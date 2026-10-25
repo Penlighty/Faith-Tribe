@@ -92,13 +92,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
           const offlineUsersStr = localStorage.getItem(STORAGE_KEY_OFFLINE_USERS) || '{}';
           const offlineUsers = JSON.parse(offlineUsersStr);
-          offlineUsers[cleanUsername(profile.username)] = profile;
+          offlineUsers[cleanUsername(profile.username)] = {
+            uid: profile.uid,
+            username: profile.username,
+            displayName: profile.displayName,
+            avatarSeed: profile.avatarSeed,
+            biblicalTribeId: profile.biblicalTribeId,
+            createdAt: profile.createdAt,
+            stats: profile.stats,
+          };
           localStorage.setItem(STORAGE_KEY_OFFLINE_USERS, JSON.stringify(offlineUsers));
         } catch {
           // ignore
         }
       } else {
         localStorage.removeItem(STORAGE_KEY_PROFILE);
+        localStorage.removeItem('faith_tribe_player_name');
+        sessionStorage.removeItem('faith_tribe_player_id');
       }
     }
   };
@@ -378,7 +388,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await updateProfile({ stats: newStats });
   };
 
-  // Search User by Username
+  // Search User by Username (strictly returns public disciple summary, never email or private data)
   const searchUserByUsername = async (rawUsername: string): Promise<UserProfile | null> => {
     const clean = cleanUsername(rawUsername);
     if (!clean) return null;
@@ -389,7 +399,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (offlineUsersStr) {
         const offlineUsers = JSON.parse(offlineUsersStr);
         if (offlineUsers[clean]) {
-          return offlineUsers[clean];
+          const u = offlineUsers[clean];
+          return {
+            uid: u.uid,
+            username: u.username,
+            displayName: u.displayName,
+            avatarSeed: u.avatarSeed || u.uid,
+            biblicalTribeId: u.biblicalTribeId || 'judah',
+            createdAt: u.createdAt || Date.now(),
+            stats: u.stats || { gamesPlayed: 0, victories: 0, totalScore: 0, highestScore: 0 },
+          };
         }
       }
     } catch {
@@ -403,18 +422,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const snap = await get(ref(db, `usernames/${clean}`));
         if (snap.exists()) {
           const indexRecord = snap.val();
-          const userSnap = await get(ref(db, `users/${indexRecord.uid}`));
-          if (userSnap.exists()) {
-            return userSnap.val() as UserProfile;
-          }
-          // Return synthetic profile from index record
           return {
             uid: indexRecord.uid,
             username: indexRecord.username,
             displayName: indexRecord.displayName,
             avatarSeed: indexRecord.avatarSeed || indexRecord.uid,
             biblicalTribeId: indexRecord.biblicalTribeId || 'judah',
-            createdAt: Date.now(),
+            createdAt: indexRecord.createdAt || Date.now(),
             stats: { gamesPlayed: 0, victories: 0, totalScore: 0, highestScore: 0 },
           };
         }

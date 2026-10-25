@@ -63,7 +63,9 @@ export const FinalLeaderboardScreen: React.FC<FinalLeaderboardScreenProps> = ({
         snapshot.config?.connectionMode || 'online',
         snapshot.gameState?.totalRounds || 4,
         safePlayers,
-        safeTeams
+        safeTeams,
+        snapshot.config?.tribeId,
+        snapshot.config?.tribeName
       ).catch(() => {});
     }
 

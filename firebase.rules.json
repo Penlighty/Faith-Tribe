@@ -6,17 +6,59 @@
       ".write": true
     },
     "game_results": {
-      // Completed game session records, winners, scores, and match statistics
+      // Public match results ledger for leaderboards & room summaries
       ".read": true,
       ".write": true,
       "$resultId": {
         ".validate": "newData.hasChildren(['gameId', 'roomCode', 'finishedAt'])"
       }
     },
+    "user_results": {
+      // Private user match history partition: Only the authenticated user can access their personal matches
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "users": {
+      // Private user profiles: Only the owner can view or edit their profile data (contains email & private info)
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "usernames": {
+      // Public disciple index: Allows searching disciples by @handle to invite to Tribes (contains only handle, displayName, avatar, tribe badge)
+      ".read": true,
+      "$username": {
+        ".write": "auth != null && (!data.exists() || data.child('uid').val() === auth.uid)"
+      }
+    },
+    "tribes": {
+      // Fellowship Tribes: details, rosters, active sessions
+      ".read": true,
+      "$tribeId": {
+        ".write": "auth != null"
+      }
+    },
+    "user_tribes": {
+      // User's private tribe memberships index
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "tribe_invites": {
+      // Invite code mapping for joining fellowships
+      ".read": true,
+      "$inviteCode": {
+        ".write": "auth != null"
+      }
+    },
     "rooms": {
+      // Realtime party session coordination
       ".read": true,
       "$roomCode": {
-        // Realtime party session coordination
         ".read": true,
         ".write": true,
 

@@ -20,6 +20,8 @@ export interface GameResultRecord {
   gameId: string;
   gameName: string;
   roomCode: string;
+  tribeId?: string;
+  tribeName?: string;
   connectionMode: 'online' | 'onsite';
   finishedAt: number;
   totalRounds: number;
@@ -28,6 +30,8 @@ export interface GameResultRecord {
     name: string;
     score: number;
     teamId?: string;
+    authUid?: string;
+    username?: string;
     isWinner: boolean;
   }[];
   teams?: {
@@ -148,7 +152,7 @@ export async function saveGameContentToDatabase(gameId: string, content: any): P
 }
 
 /**
- * Saves a completed game session result to Firebase Realtime Database.
+ * Saves a completed game session result to Firebase Realtime Database and per-user registries.
  */
 export async function recordGameResult(
   gameId: string,
@@ -157,12 +161,12 @@ export async function recordGameResult(
   connectionMode: 'online' | 'onsite',
   totalRounds: number,
   players: Player[],
-  teams: Team[]
+  teams: Team[],
+  tribeId?: string,
+  tribeName?: string
 ): Promise<string | null> {
   try {
     const db = getDatabaseInstance();
-    if (!db) return null;
-
     const safePlayers = Array.isArray(players) ? players : [];
     const safeTeams = Array.isArray(teams) ? teams : [];
 
@@ -174,6 +178,8 @@ export async function recordGameResult(
       gameId,
       gameName,
       roomCode,
+      tribeId,
+      tribeName,
       connectionMode,
       finishedAt: Date.now(),
       totalRounds,
@@ -182,6 +188,8 @@ export async function recordGameResult(
         name: p.name,
         score: p.score || 0,
         teamId: p.teamId,
+        authUid: p.authUid,
+        username: p.username,
         isWinner: p.score === highestPlayerScore && highestPlayerScore > 0,
       })),
       teams:
@@ -196,12 +204,50 @@ export async function recordGameResult(
           : undefined,
     };
 
-    const resultsRef = ref(db, 'game_results');
-    const newRecordRef = push(resultsRef);
-    await set(newRecordRef, deepCleanForFirebase(record));
-    return newRecordRef.key;
+    let resultKey: string | null = null;
+
+    if (db) {
+      try {
+        const resultsRef = ref(db, 'game_results');
+        const newRecordRef = push(resultsRef);
+        await set(newRecordRef, deepCleanForFirebase(record));
+        resultKey = newRecordRef.key;
+
+        // Also record to each authenticated player's personal partition
+        for (const p of safePlayers) {
+          if (p.authUid) {
+            try {
+              await set(ref(db, `user_results/${p.authUid}/${resultKey}`), deepCleanForFirebase(record));
+            } catch {
+              // ignore partition failure
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('[GameDataService] Remote record save failed, saving locally:', err);
+      }
+    }
+
+    // Save to local user history for each player on this device
+    if (typeof window !== 'undefined') {
+      try {
+        for (const p of safePlayers) {
+          const userKey = p.authUid || p.id;
+          if (!userKey) continue;
+          const storageKey = `faith_tribe_user_matches_${userKey}`;
+          const raw = localStorage.getItem(storageKey);
+          const history: GameResultRecord[] = raw ? JSON.parse(raw) : [];
+          history.unshift({ id: resultKey || 'local_' + Date.now(), ...record });
+          localStorage.setItem(storageKey, JSON.stringify(history.slice(0, 30)));
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    return resultKey;
   } catch (err) {
-    console.warn('[GameDataService] Could not record game result to database:', err);
+    console.warn('[GameDataService] Could not record game result:', err);
     return null;
   }
 }
@@ -295,12 +341,34 @@ export interface FellowshipStats {
   isLoading: boolean;
 }
 
-const STATS_STORAGE_KEY = 'faith_tribe_fellowship_stats';
+export function getEmptyFellowshipStats(): FellowshipStats {
+  return {
+    gamesPlayedThisMonth: 0,
+    totalGamesPlayed: 0,
+    winsCount: 0,
+    victoryRate: 0,
+    favoritePick: 'None Yet',
+    weeklyActivity: [
+      { day: 'M', height: 8, count: 0 },
+      { day: 'T', height: 8, count: 0 },
+      { day: 'W', height: 8, count: 0 },
+      { day: 'T', height: 8, count: 0 },
+      { day: 'F', height: 8, count: 0 },
+      { day: 'S', height: 8, count: 0 },
+      { day: 'S', height: 8, count: 0 },
+    ],
+    recentlyGathered: [],
+    activeCount: 0,
+    hasRealData: false,
+    isLoading: false,
+  };
+}
 
-export function getCachedFellowshipStats(): FellowshipStats | null {
+export function getCachedFellowshipStats(userId?: string): FellowshipStats | null {
   if (typeof window === 'undefined') return null;
   try {
-    const raw = localStorage.getItem(STATS_STORAGE_KEY);
+    const key = `faith_tribe_stats_${userId || 'guest'}`;
+    const raw = localStorage.getItem(key);
     if (raw) return JSON.parse(raw);
   } catch {
     // Ignore parse error
@@ -308,12 +376,26 @@ export function getCachedFellowshipStats(): FellowshipStats | null {
   return null;
 }
 
+export function saveCachedFellowshipStats(stats: FellowshipStats, userId?: string) {
+  if (typeof window === 'undefined') return;
+  try {
+    const key = `faith_tribe_stats_${userId || 'guest'}`;
+    localStorage.setItem(key, JSON.stringify(stats));
+  } catch {
+    // Ignore storage quota
+  }
+}
+
 /**
- * Calculates fellowship activity stats from real Firebase game results and active rooms presence.
+ * Calculates user-specific activity stats and gathers disciples exclusively
+ * from sessions the user participated in or their own fellowship tribe.
+ * No user can see or access the match stats, history, or activities of another user.
  */
 export async function fetchFellowshipStats(
   currentUserId?: string,
-  currentUserName?: string
+  currentUserName?: string,
+  userTribeIds: string[] = [],
+  fellowTribeMembers: Array<{ id: string; name: string; avatarSeed?: string }> = []
 ): Promise<FellowshipStats> {
   const now = new Date();
   const dayOfWeek = now.getDay(); // 0 is Sun, 1 is Mon...
@@ -325,60 +407,115 @@ export async function fetchFellowshipStats(
   const dayCounts = [0, 0, 0, 0, 0, 0, 0];
 
   const db = getDatabaseInstance();
-  let results: GameResultRecord[] = [];
-  const activeUsersMap = new Map<string, { id: string; name: string; avatarSeed?: string }>();
+  let userMatches: GameResultRecord[] = [];
+  const lowerUserName = currentUserName?.trim().toLowerCase();
 
-  if (db && typeof window !== 'undefined' && navigator.onLine) {
+  // 1. Check local storage for user's personal matches first (fast and offline-ready)
+  if (typeof window !== 'undefined') {
+    const userKey = currentUserId || 'guest';
+    const storageKey = `faith_tribe_user_matches_${userKey}`;
     try {
-      // 1. Fetch real match records
-      const resultsQuery = query(ref(db, 'game_results'), orderByKey(), limitToLast(60));
-      const snapshot = await get(resultsQuery);
-      if (snapshot.exists()) {
-        snapshot.forEach((child) => {
-          results.unshift({
-            id: child.key || '',
-            ...child.val(),
-          });
-        });
-      }
-    } catch (err) {
-      console.warn('[GameDataService] Error fetching game_results for fellowship stats:', err);
-    }
-
-    try {
-      // 2. Fetch live presence across active rooms
-      const roomsRef = ref(db, 'rooms');
-      const roomsSnap = await get(roomsRef);
-      if (roomsSnap.exists()) {
-        const roomsData = roomsSnap.val() as Record<string, any>;
-        for (const room of Object.values(roomsData)) {
-          if (room && room.presence && typeof room.presence === 'object') {
-            for (const u of Object.values(room.presence) as any[]) {
-              if (u && u.name) {
-                const key = String(u.name).trim().toLowerCase();
-                activeUsersMap.set(key, {
-                  id: u.id || u.name,
-                  name: String(u.name).trim(),
-                  avatarSeed: u.avatarSeed || u.name,
-                });
-              }
-            }
-          }
-        }
+      const raw = localStorage.getItem(storageKey);
+      if (raw) {
+        userMatches = JSON.parse(raw);
       }
     } catch {
-      // Optional: ignore if rooms list restricted
+      // ignore
     }
   }
 
-  const hasRealData = results.length > 0 || activeUsersMap.size > 0;
+  // 2. Fetch authenticated user's remote match records if online
+  if (db && typeof window !== 'undefined' && navigator.onLine) {
+    if (currentUserId) {
+      try {
+        const userResultsQuery = query(ref(db, `user_results/${currentUserId}`), orderByKey(), limitToLast(50));
+        const snap = await get(userResultsQuery);
+        if (snap.exists()) {
+          const remoteRecords: GameResultRecord[] = [];
+          snap.forEach((child) => {
+            remoteRecords.unshift({
+              id: child.key || '',
+              ...child.val(),
+            });
+          });
+          if (remoteRecords.length > 0) {
+            userMatches = remoteRecords;
+          }
+        }
+      } catch {
+        // user_results query error fallback
+      }
+    }
 
-  // Games this month
-  const gamesThisMonth = results.filter((r) => r.finishedAt >= startOfMonth);
+    // If no direct user_results partition yet, query general game_results but STRICTLY filter for this user
+    if (userMatches.length === 0) {
+      try {
+        const resultsQuery = query(ref(db, 'game_results'), orderByKey(), limitToLast(60));
+        const snapshot = await get(resultsQuery);
+        if (snapshot.exists()) {
+          snapshot.forEach((child) => {
+            const val = child.val() as GameResultRecord;
+            if (!val || !Array.isArray(val.players)) return;
+
+            // Strict authorization check: Only include if current user was in this game or if it was their Tribe game
+            const isUserInMatch = val.players.some((p) => {
+              if (currentUserId && (p.id === currentUserId || (p as any).authUid === currentUserId)) {
+                return true;
+              }
+              if (lowerUserName && p.name && p.name.trim().toLowerCase() === lowerUserName) {
+                return true;
+              }
+              return false;
+            });
+
+            const isUserTribeMatch = Boolean(
+              val.tribeId && userTribeIds.length > 0 && userTribeIds.includes(val.tribeId)
+            );
+
+            if (isUserInMatch || isUserTribeMatch) {
+              userMatches.push({
+                id: child.key || '',
+                ...val,
+              });
+            }
+          });
+        }
+      } catch (err) {
+        console.warn('[GameDataService] Error querying user match results:', err);
+      }
+    }
+  }
+
+  // If user has not played any games yet, return a clean empty personal state
+  if (userMatches.length === 0) {
+    // Only display verified fellow members from user's own Tribe in "recently gathered"
+    const tribeGathered = fellowTribeMembers
+      .filter((m) => !lowerUserName || m.name.trim().toLowerCase() !== lowerUserName)
+      .slice(0, 10);
+
+    const emptyStats: FellowshipStats = {
+      gamesPlayedThisMonth: 0,
+      totalGamesPlayed: 0,
+      winsCount: 0,
+      victoryRate: 0,
+      favoritePick: 'None Yet',
+      weeklyActivity: dayLabels.map((day) => ({ day, height: 8, count: 0 })),
+      recentlyGathered: tribeGathered,
+      activeCount: tribeGathered.length,
+      hasRealData: tribeGathered.length > 0,
+      isLoading: false,
+    };
+
+    saveCachedFellowshipStats(emptyStats, currentUserId);
+    return emptyStats;
+  }
+
+  // Games this month for THIS user only
+  const gamesThisMonth = userMatches.filter((r) => r.finishedAt >= startOfMonth);
   const gamesPlayedThisMonth = gamesThisMonth.length;
 
-  // Day distribution
-  for (const record of results) {
+  // Day distribution for THIS user's games this week
+  for (const record of userMatches) {
     if (record.finishedAt >= monday.getTime()) {
       const gDate = new Date(record.finishedAt);
       const gDay = (gDate.getDay() + 6) % 7;
@@ -398,16 +535,15 @@ export async function fetchFellowshipStats(
     return { day, height, count };
   });
 
-  // Wins and victory rate
+  // Wins and victory rate strictly for THIS user
   let winsCount = 0;
   let userGamesCount = 0;
-  const lowerUserName = currentUserName?.trim().toLowerCase();
 
-  for (const record of results) {
+  for (const record of userMatches) {
     if (Array.isArray(record.players)) {
       const matched = record.players.find(
         (p) =>
-          (currentUserId && p.id === currentUserId) ||
+          (currentUserId && (p.id === currentUserId || (p as any).authUid === currentUserId)) ||
           (lowerUserName && p.name && p.name.trim().toLowerCase() === lowerUserName)
       );
       if (matched) {
@@ -417,26 +553,16 @@ export async function fetchFellowshipStats(
     }
   }
 
-  let victoryRate = 0;
-  if (userGamesCount > 0) {
-    victoryRate = Math.round((winsCount / userGamesCount) * 100);
-  } else if (results.length > 0) {
-    const totalWinners = results.reduce(
-      (acc, r) => acc + (r.players?.filter((p) => p.isWinner).length || 0),
-      0
-    );
-    winsCount = totalWinners;
-    victoryRate = Math.min(100, Math.round((totalWinners / results.length) * 100));
-  }
+  const victoryRate = userGamesCount > 0 ? Math.round((winsCount / userGamesCount) * 100) : 0;
 
-  // Favorite game
+  // Favorite game of THIS user
   const gameFrequency: Record<string, number> = {};
-  for (const record of results) {
+  for (const record of userMatches) {
     const name = record.gameName || record.gameId;
     gameFrequency[name] = (gameFrequency[name] || 0) + 1;
   }
 
-  let favoritePick = 'Proverbs';
+  let favoritePick = 'None Yet';
   let highestFreq = 0;
   for (const [name, freq] of Object.entries(gameFrequency)) {
     if (freq > highestFreq) {
@@ -450,41 +576,40 @@ export async function fetchFellowshipStats(
     }
   }
 
-  // Recently Gathered disciples
+  // Recently Gathered: ONLY co-players who played in the same game with this user, plus user's tribe members
   const recentDisciplesMap = new Map<string, { id: string; name: string; avatarSeed?: string; lastSeen: number }>();
 
-  for (const record of results) {
+  for (const record of userMatches) {
     if (Array.isArray(record.players)) {
       for (const p of record.players) {
-        if (p && p.name && p.name.trim()) {
-          const key = p.name.trim().toLowerCase();
-          if (!recentDisciplesMap.has(key)) {
-            recentDisciplesMap.set(key, {
-              id: p.id || p.name,
-              name: p.name.trim(),
-              avatarSeed: p.name.trim(),
-              lastSeen: record.finishedAt || 0,
-            });
-          }
+        if (!p || !p.name || !p.name.trim()) continue;
+        const key = p.name.trim().toLowerCase();
+        // Do not include the current user themselves
+        if (lowerUserName && key === lowerUserName) continue;
+        if (currentUserId && (p.id === currentUserId || (p as any).authUid === currentUserId)) continue;
+
+        if (!recentDisciplesMap.has(key)) {
+          recentDisciplesMap.set(key, {
+            id: p.id || p.name,
+            name: p.name.trim(),
+            avatarSeed: p.name.trim(),
+            lastSeen: record.finishedAt || 0,
+          });
         }
       }
     }
   }
 
-  for (const [key, activeUser] of activeUsersMap.entries()) {
-    recentDisciplesMap.set(key, {
-      ...activeUser,
-      lastSeen: Date.now(),
-    });
-  }
-
-  if (currentUserName && currentUserName.trim() && currentUserName !== 'Player') {
-    const userKey = currentUserName.trim().toLowerCase();
-    if (!recentDisciplesMap.has(userKey)) {
-      recentDisciplesMap.set(userKey, {
-        id: currentUserId || userKey,
-        name: currentUserName.trim(),
-        avatarSeed: currentUserName.trim(),
+  // Include fellow tribe members
+  for (const m of fellowTribeMembers) {
+    if (!m || !m.name) continue;
+    const key = m.name.trim().toLowerCase();
+    if (lowerUserName && key === lowerUserName) continue;
+    if (!recentDisciplesMap.has(key)) {
+      recentDisciplesMap.set(key, {
+        id: m.id || m.name,
+        name: m.name,
+        avatarSeed: m.avatarSeed || m.name,
         lastSeen: Date.now(),
       });
     }
@@ -495,26 +620,21 @@ export async function fetchFellowshipStats(
     .slice(0, 10)
     .map(({ id, name, avatarSeed }) => ({ id, name, avatarSeed }));
 
-  const activeCount = Math.max(activeUsersMap.size, recentlyGathered.length);
+  const activeCount = recentlyGathered.length;
 
   const stats: FellowshipStats = {
     gamesPlayedThisMonth,
-    totalGamesPlayed: results.length,
+    totalGamesPlayed: userMatches.length,
     winsCount,
     victoryRate,
     favoritePick,
     weeklyActivity,
     recentlyGathered,
     activeCount,
-    hasRealData,
+    hasRealData: userMatches.length > 0 || recentlyGathered.length > 0,
     isLoading: false,
   };
 
-  try {
-    localStorage.setItem(STATS_STORAGE_KEY, JSON.stringify(stats));
-  } catch {
-    // Ignore storage quota
-  }
-
+  saveCachedFellowshipStats(stats, currentUserId);
   return stats;
 }
