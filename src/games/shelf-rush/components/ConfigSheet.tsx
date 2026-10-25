@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { allSchemes, campaignData } from '../engine/loader';
 import { ShelfRushConfig, ShelfRushScheme } from '../engine/types';
 import { SpeedSetting, LifeRule, AccessTimeSetting } from '../engine/constants';
-import { Icon } from '@design/icons';
+import { Card } from '../../../components/ui/Card';
+import { Button } from '../../../components/ui/Button';
+import { Chip } from '../../../components/ui/Chip';
+import { Switch } from '../../../components/ui/Switch';
+import { Icon } from '../../../design/icons';
+import { useTheme } from '../../../theme/ThemeContext';
 
 export interface ConfigSheetProps {
   initialConfig?: Partial<ShelfRushConfig>;
@@ -19,6 +24,8 @@ export const ConfigSheet: React.FC<ConfigSheetProps> = ({
   onStart,
   onClose,
 }) => {
+  const { triggerHaptic } = useTheme();
+
   const [mode, setMode] = useState<'scheme' | 'ascent'>(initialConfig?.mode || 'scheme');
   const [selectedSchemeId, setSelectedSchemeId] = useState<string>(
     initialConfig?.schemeId || 'testament'
@@ -32,16 +39,18 @@ export const ConfigSheet: React.FC<ConfigSheetProps> = ({
   const [practice, setPractice] = useState<boolean>(initialConfig?.playMode === 'practice');
   const [weakBooks, setWeakBooks] = useState<boolean>(!!initialConfig?.weakBooks);
 
-  // Difficulty dots helper
+  // Difficulty dots helper with Material 3 tokens
   const getDifficultyDots = (diff: string) => {
     const count = diff === 'easy' ? 1 : diff === 'medium' ? 2 : 3;
     return (
-      <div className="flex items-center gap-0.5">
+      <div className="flex items-center gap-1" title={`Difficulty: ${diff}`}>
         {[1, 2, 3].map((dot) => (
           <span
             key={dot}
-            className={`w-1.5 h-1.5 rounded-full ${
-              dot <= count ? 'bg-purple-600 dark:bg-purple-400' : 'bg-gray-300 dark:bg-gray-700'
+            className={`w-1.5 h-1.5 rounded-full transition-colors ${
+              dot <= count
+                ? 'bg-[var(--primary-action)]'
+                : 'bg-[var(--border-tint)] opacity-60'
             }`}
           />
         ))}
@@ -52,6 +61,7 @@ export const ConfigSheet: React.FC<ConfigSheetProps> = ({
   const todayDateStr = new Date().toISOString().split('T')[0];
 
   const handleStartGame = (overrideSeed?: number) => {
+    triggerHaptic('heavy');
     const seed = overrideSeed ?? Math.floor(Math.random() * 2147483647);
     const config: ShelfRushConfig = {
       mode,
@@ -59,6 +69,7 @@ export const ConfigSheet: React.FC<ConfigSheetProps> = ({
       length: mode === 'ascent' ? ascentLength : undefined,
       speed,
       lifeRule,
+      play: practice ? 'practice' : isHost || isGuest ? 'race' : 'solo',
       playMode: practice ? 'practice' : isHost || isGuest ? 'race' : 'solo',
       accessTime,
       weakBooks: mode === 'scheme' ? weakBooks : false,
@@ -68,7 +79,7 @@ export const ConfigSheet: React.FC<ConfigSheetProps> = ({
   };
 
   const handleDailyAscent = () => {
-    // Generate deterministic seed based on today's date YYYYMMDD
+    triggerHaptic('medium');
     const numSeed = parseInt(todayDateStr.replace(/-/g, ''), 10);
     setMode('ascent');
     handleStartGame(numSeed);
@@ -77,101 +88,178 @@ export const ConfigSheet: React.FC<ConfigSheetProps> = ({
   const selectedScheme = allSchemes.find((s) => s.id === selectedSchemeId);
 
   return (
-    <div className="w-full max-w-lg mx-auto bg-[var(--surface)] text-[var(--on-surface)] rounded-3xl p-5 shadow-xl border border-[var(--border-tint)] flex flex-col gap-5 select-none">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <span className="text-xs font-mono font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
-            Shelf Rush Setup
-          </span>
-          <h2 className="text-2xl font-black">Choose Your Mode</h2>
+    <Card
+      variant="elevated"
+      padding="lg"
+      className="w-full max-w-xl mx-auto bg-[var(--surface-card)] border-2 border-[var(--border-tint)] shadow-2xl rounded-[32px] flex flex-col gap-6 relative select-none animate-scaleUp"
+    >
+      {/* Top Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-extrabold uppercase tracking-widest text-[var(--primary-action)] flex items-center gap-1.5">
+              <span>⚡</span> Shelf Rush Setup
+            </span>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[var(--surface-container-high)] text-[var(--on-container-variant)] border border-[var(--border-tint)]/60">
+              M3 Canon Sorter
+            </span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-[var(--on-container)] tracking-tight">
+            Choose Your Mode
+          </h2>
+          <p className="text-xs sm:text-sm text-[var(--on-container-variant)] font-medium leading-relaxed">
+            Select between a focused single-scheme drill or the multi-era Ascent campaign.
+          </p>
         </div>
+
         {onClose && (
           <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-sm font-bold"
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              onClose();
+            }}
+            className="w-9 h-9 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[var(--on-container-variant)] flex items-center justify-center transition-colors cursor-pointer border border-[var(--border-tint)]/60 shrink-0"
             aria-label="Close"
           >
-            ✕
+            <Icon name="close" size={18} />
           </button>
         )}
       </div>
 
-      {/* Mode Segmented Control */}
+      {/* Mode Selector Cards (Material 3 Selectable Option Cards) */}
       {!isGuest && (
-        <div className="grid grid-cols-2 p-1 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Mode 1: One Scheme */}
           <button
             type="button"
-            onClick={() => setMode('scheme')}
-            className={`py-2 rounded-xl text-sm font-bold transition-all ${
+            onClick={() => {
+              triggerHaptic('selection');
+              setMode('scheme');
+            }}
+            className={`p-4 rounded-2xl border-2 text-left flex flex-col justify-between gap-3 transition-all cursor-pointer select-none ${
               mode === 'scheme'
-                ? 'bg-purple-600 text-white shadow-sm'
-                : 'text-[var(--on-container-variant)] hover:text-[var(--on-container)]'
+                ? 'border-[var(--primary-action)] bg-[var(--primary-action)]/10 shadow-sm ring-2 ring-[var(--primary-action)]/20'
+                : 'border-[var(--border-tint)] bg-[var(--surface-container)] hover:border-[var(--border-tint)]/80 opacity-90'
             }`}
           >
-            One Scheme
+            <div className="flex items-center justify-between w-full">
+              <span className="text-2xl">📚</span>
+              {mode === 'scheme' ? (
+                <div className="w-5 h-5 rounded-full bg-[var(--primary-action)] text-[var(--primary-action-text,#fff)] flex items-center justify-center shadow-xs">
+                  <Icon name="check" size={12} strokeWidth={3} />
+                </div>
+              ) : (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--surface-container-high)] text-[var(--on-container-variant)] border border-[var(--border-tint)]">
+                  8 Schemes
+                </span>
+              )}
+            </div>
+            <div>
+              <div className="text-base font-black text-[var(--on-container)]">
+                One Scheme
+              </div>
+              <p className="text-xs text-[var(--on-container-variant)] mt-1 leading-relaxed">
+                Master a specific canon category (e.g., Testaments, Gospels, Pentateuch).
+              </p>
+            </div>
           </button>
+
+          {/* Mode 2: The Ascent */}
           <button
             type="button"
-            onClick={() => setMode('ascent')}
-            className={`py-2 rounded-xl text-sm font-bold transition-all ${
+            onClick={() => {
+              triggerHaptic('selection');
+              setMode('ascent');
+            }}
+            className={`p-4 rounded-2xl border-2 text-left flex flex-col justify-between gap-3 transition-all cursor-pointer select-none ${
               mode === 'ascent'
-                ? 'bg-purple-600 text-white shadow-sm'
-                : 'text-[var(--on-container-variant)] hover:text-[var(--on-container)]'
+                ? 'border-[var(--primary-action)] bg-[var(--primary-action)]/10 shadow-sm ring-2 ring-[var(--primary-action)]/20'
+                : 'border-[var(--border-tint)] bg-[var(--surface-container)] hover:border-[var(--border-tint)]/80 opacity-90'
             }`}
           >
-            The Ascent
+            <div className="flex items-center justify-between w-full">
+              <span className="text-2xl">⛰️</span>
+              {mode === 'ascent' ? (
+                <div className="w-5 h-5 rounded-full bg-[var(--primary-action)] text-[var(--primary-action-text,#fff)] flex items-center justify-center shadow-xs">
+                  <Icon name="check" size={12} strokeWidth={3} />
+                </div>
+              ) : (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--surface-container-high)] text-[var(--on-container-variant)] border border-[var(--border-tint)]">
+                  Campaign
+                </span>
+              )}
+            </div>
+            <div>
+              <div className="text-base font-black text-[var(--on-container)]">
+                The Ascent
+              </div>
+              <p className="text-xs text-[var(--on-container-variant)] mt-1 leading-relaxed">
+                Climb through eras with dynamic questions, difficulty tiers, and rest-stops.
+              </p>
+            </div>
           </button>
         </div>
       )}
 
-      {/* Mode 1: One Scheme View */}
+      {/* Mode 1: One Scheme Selector */}
       {mode === 'scheme' && (
         <div className="flex flex-col gap-3">
-          <div className="text-xs font-bold text-[var(--on-container-variant)] uppercase tracking-wider">
-            Select Sorting Scheme (8 available)
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-[var(--on-container)] uppercase tracking-wider flex items-center gap-1.5">
+              <span>🎯</span> Select Sorting Rule
+            </span>
+            <span className="text-[11px] font-mono text-[var(--on-container-variant)]">
+              {allSchemes.length} Available
+            </span>
           </div>
-          <div className="grid grid-cols-2 gap-2.5 max-h-56 overflow-y-auto pr-1">
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-60 overflow-y-auto pr-1">
             {allSchemes.map((scheme: ShelfRushScheme) => {
               const isSelected = selectedSchemeId === scheme.id;
               return (
                 <button
                   key={scheme.id}
                   type="button"
-                  onClick={() => !isGuest && setSelectedSchemeId(scheme.id)}
+                  onClick={() => {
+                    if (!isGuest) {
+                      triggerHaptic('selection');
+                      setSelectedSchemeId(scheme.id);
+                    }
+                  }}
                   disabled={isGuest}
-                  className={`p-3 rounded-2xl text-left border transition-all flex flex-col justify-between gap-2 ${
+                  className={`p-3.5 rounded-2xl text-left border-2 transition-all flex flex-col justify-between gap-2.5 cursor-pointer select-none ${
                     isSelected
-                      ? 'border-purple-600 bg-purple-50 dark:bg-purple-950/40 ring-2 ring-purple-400'
-                      : 'border-[var(--border-tint)] bg-[var(--surface-container)] hover:border-purple-300'
+                      ? 'border-[var(--primary-action)] bg-[var(--surface-container-high)] shadow-sm ring-1 ring-[var(--primary-action)]'
+                      : 'border-[var(--border-tint)] bg-[var(--surface-container)] hover:border-[var(--border-tint)]/80 hover:bg-[var(--surface-container-high)]/50'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold opacity-60">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[var(--surface-card)] text-[var(--on-container-variant)] border border-[var(--border-tint)]">
                       {scheme.deckSize} cards
                     </span>
                     {getDifficultyDots(scheme.difficulty)}
                   </div>
                   <div>
-                    <h4 className="text-sm font-black leading-tight text-[var(--on-container)]">
+                    <h4 className="text-sm font-extrabold text-[var(--on-container)] leading-snug">
                       {scheme.name}
                     </h4>
-                    <p className="text-[11px] text-[var(--on-container-variant)] mt-0.5 line-clamp-1">
+                    <p className="text-[11px] text-[var(--on-container-variant)] mt-0.5 line-clamp-1 font-medium">
                       {scheme.question}
                     </p>
                   </div>
-                  {/* Mini Bin Chips */}
-                  <div className="flex items-center gap-1 flex-wrap">
+                  {/* Mini Bin Assist Chips */}
+                  <div className="flex items-center gap-1 flex-wrap pt-0.5">
                     {scheme.bins.slice(0, 3).map((b) => (
                       <span
                         key={b.id}
-                        className="text-[9px] px-1.5 py-0.5 rounded-md bg-black/5 dark:bg-white/5 font-bold"
+                        className="text-[9px] px-2 py-0.5 rounded-md font-bold bg-[var(--surface-card)] text-[var(--on-container)] border border-[var(--border-tint)]/60"
                       >
                         {b.label.split(' ')[0]}
                       </span>
                     ))}
                     {scheme.bins.length > 3 && (
-                      <span className="text-[9px] font-bold opacity-60">
+                      <span className="text-[9px] font-bold text-[var(--on-container-variant)] px-1">
                         +{scheme.bins.length - 3}
                       </span>
                     )}
@@ -181,11 +269,14 @@ export const ConfigSheet: React.FC<ConfigSheetProps> = ({
             })}
           </div>
 
-          {/* Tradition note of selected scheme */}
+          {/* Selected Scheme Tradition Callout */}
           {selectedScheme && (
-            <div className="p-3 rounded-xl bg-[var(--surface-container)] text-xs text-[var(--on-container-variant)] border border-[var(--border-tint)]">
-              <span className="font-bold text-[var(--on-container)]">Tradition: </span>
-              {selectedScheme.tradition}
+            <div className="p-3.5 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)] text-xs text-[var(--on-container-variant)] flex items-start gap-2.5">
+              <span className="text-base shrink-0">📜</span>
+              <div>
+                <span className="font-bold text-[var(--on-container)]">Tradition &amp; Rule: </span>
+                <span>{selectedScheme.tradition}</span>
+              </div>
             </div>
           )}
         </div>
@@ -193,47 +284,41 @@ export const ConfigSheet: React.FC<ConfigSheetProps> = ({
 
       {/* Mode 2: The Ascent Campaign View */}
       {mode === 'ascent' && (
-        <div className="flex flex-col gap-4 p-4 rounded-2xl bg-gradient-to-br from-purple-900/10 to-indigo-900/10 border border-purple-500/20">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xl">⛰️</span>
-              <h3 className="text-lg font-black text-purple-950 dark:text-purple-200">
+        <div className="flex flex-col gap-4 p-4 sm:p-5 rounded-2xl bg-[var(--surface-container-high)] border border-[var(--border-tint)] shadow-xs">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl p-2 rounded-xl bg-[var(--surface-card)] border border-[var(--border-tint)] shadow-2xs">
+              ⛰️
+            </span>
+            <div>
+              <h3 className="text-base sm:text-lg font-black text-[var(--on-container)]">
                 {campaignData.name}
               </h3>
+              <p className="text-xs text-[var(--on-container-variant)] mt-0.5 font-medium leading-relaxed">
+                "{campaignData.tagline}" — Climb through biblical eras with evolving questions and
+                increasing speed!
+              </p>
             </div>
-            <p className="text-xs text-[var(--on-container-variant)] mt-0.5">
-              "{campaignData.tagline}" — Climb through biblical eras with evolving questions and
-              increasing speed!
-            </p>
           </div>
 
-          {/* Length toggle */}
+          {/* Length Toggle using M3 Chips */}
           {!isGuest && (
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold">Campaign Length:</span>
-              <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-[var(--surface-container)] text-xs font-bold">
-                <button
-                  type="button"
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-[var(--border-tint)]">
+              <span className="text-xs font-bold text-[var(--on-container)]">Campaign Length:</span>
+              <div className="flex items-center gap-1.5">
+                <Chip
+                  size="sm"
+                  selected={ascentLength === 'full'}
                   onClick={() => setAscentLength('full')}
-                  className={`px-3 py-1.5 rounded-lg transition-all ${
-                    ascentLength === 'full'
-                      ? 'bg-purple-600 text-white'
-                      : 'text-[var(--on-container-variant)]'
-                  }`}
                 >
                   Full (15 steps · 75 cards)
-                </button>
-                <button
-                  type="button"
+                </Chip>
+                <Chip
+                  size="sm"
+                  selected={ascentLength === 'short'}
                   onClick={() => setAscentLength('short')}
-                  className={`px-3 py-1.5 rounded-lg transition-all ${
-                    ascentLength === 'short'
-                      ? 'bg-purple-600 text-white'
-                      : 'text-[var(--on-container-variant)]'
-                  }`}
                 >
                   Short (8 steps · 40 cards)
-                </button>
+                </Chip>
               </div>
             </div>
           )}
@@ -243,121 +328,129 @@ export const ConfigSheet: React.FC<ConfigSheetProps> = ({
             <button
               type="button"
               onClick={handleDailyAscent}
-              className="w-full py-2.5 px-3 rounded-xl bg-purple-100 dark:bg-purple-950/60 border border-purple-300 dark:border-purple-800 text-purple-900 dark:text-purple-200 text-xs font-black flex items-center justify-between hover:bg-purple-200 transition-colors"
+              className="w-full py-3 px-4 rounded-2xl bg-[var(--surface-card)] hover:bg-[var(--primary-action)]/10 border-2 border-[var(--primary-action)]/40 text-[var(--on-container)] text-xs font-extrabold flex items-center justify-between transition-all cursor-pointer shadow-xs active:scale-[0.99]"
             >
-              <span className="flex items-center gap-1.5">
-                <span>📅</span>
+              <span className="flex items-center gap-2">
+                <span className="text-base">📅</span>
                 <span>Play Daily Ascent ({todayDateStr})</span>
               </span>
-              <span className="text-[10px] font-mono opacity-70">Shared Daily Seed →</span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--primary-action)] text-[var(--primary-action-text,#fff)]">
+                Global Seed →
+              </span>
             </button>
           )}
         </div>
       )}
 
-      {/* Settings Rows */}
+      {/* Gameplay & Speed Tuning Section (M3 List Items) */}
       {!isGuest && (
-        <div className="flex flex-col gap-3 pt-2 border-t border-[var(--border-tint)] text-xs">
-          {/* Speed */}
-          <div className="flex items-center justify-between">
-            <span className="font-bold">Speed:</span>
-            <div className="flex items-center gap-1 bg-[var(--surface-container)] p-1 rounded-xl">
+        <div className="flex flex-col gap-3.5 pt-3 border-t border-[var(--border-tint)]">
+          <span className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)] flex items-center gap-1.5">
+            <Icon name="settings" size={14} className="text-[var(--primary-action)]" />
+            Gameplay &amp; Speed Tuning
+          </span>
+
+          {/* Speed Selector */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)]">
+            <div>
+              <div className="text-xs font-bold text-[var(--on-container)]">Game Speed</div>
+              <div className="text-[11px] text-[var(--on-container-variant)]">
+                Window duration per sorting card
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5">
               {(['relaxed', 'standard', 'blitz'] as SpeedSetting[]).map((s) => (
-                <button
+                <Chip
                   key={s}
-                  type="button"
+                  size="sm"
+                  selected={speed === s}
                   onClick={() => setSpeed(s)}
-                  className={`px-2.5 py-1 rounded-lg capitalize font-bold transition-all ${
-                    speed === s
-                      ? 'bg-purple-600 text-white shadow-sm'
-                      : 'text-[var(--on-container-variant)]'
-                  }`}
+                  className="capitalize font-bold"
                 >
                   {s}
-                </button>
+                </Chip>
               ))}
             </div>
           </div>
 
           {/* Lives Rule */}
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center justify-between">
-              <span className="font-bold">Lives:</span>
-              <div className="flex items-center gap-1 bg-[var(--surface-container)] p-1 rounded-xl">
+          <div className="flex flex-col gap-2 p-3 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <div className="text-xs font-bold text-[var(--on-container)]">Lives Rule</div>
+                <div className="text-[11px] text-[var(--on-container-variant)]">
+                  {lifeRule === 'forgiving'
+                    ? 'Forgiving: earn lives back on streaks & rest-stops'
+                    : 'Strict: no lives can ever be earned back'}
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
                 {(['forgiving', 'strict'] as LifeRule[]).map((rule) => (
-                  <button
+                  <Chip
                     key={rule}
-                    type="button"
+                    size="sm"
+                    selected={lifeRule === rule}
                     onClick={() => setLifeRule(rule)}
-                    className={`px-2.5 py-1 rounded-lg capitalize font-bold transition-all ${
-                      lifeRule === rule
-                        ? 'bg-purple-600 text-white shadow-sm'
-                        : 'text-[var(--on-container-variant)]'
-                    }`}
+                    className="capitalize font-bold"
                   >
                     {rule}
-                  </button>
+                  </Chip>
                 ))}
               </div>
             </div>
-            <p className="text-[11px] text-[var(--on-container-variant)] italic">
-              {lifeRule === 'forgiving'
-                ? 'Forgiving: earn lives back as you go (streak & rest stops)'
-                : 'Strict: no lives are ever earned back'}
-            </p>
           </div>
 
-          {/* Extra Time */}
-          <div className="flex items-center justify-between">
-            <span className="font-bold">Extra Time:</span>
-            <div className="flex items-center gap-1 bg-[var(--surface-container)] p-1 rounded-xl">
+          {/* Extra Time (Accessibility) */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)]">
+            <div>
+              <div className="text-xs font-bold text-[var(--on-container)]">Extra Accessibility Time</div>
+              <div className="text-[11px] text-[var(--on-container-variant)]">
+                Extends time window for players who need more reading time
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5">
               {([1, 1.5, 2] as AccessTimeSetting[]).map((mult) => (
-                <button
+                <Chip
                   key={mult}
-                  type="button"
+                  size="sm"
+                  selected={accessTime === mult}
                   onClick={() => setAccessTime(mult)}
-                  className={`px-2.5 py-1 rounded-lg font-bold transition-all ${
-                    accessTime === mult
-                      ? 'bg-purple-600 text-white shadow-sm'
-                      : 'text-[var(--on-container-variant)]'
-                  }`}
+                  className="font-bold"
                 >
-                  {mult === 1 ? 'Off' : `x${mult}`}
-                </button>
+                  {mult === 1 ? 'Off' : `+${Math.round((mult - 1) * 100)}%`}
+                </Chip>
               ))}
             </div>
           </div>
 
-          {/* Practice Toggle */}
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="font-bold">Practice Mode:</span>
-              <p className="text-[10px] text-[var(--on-container-variant)]">
-                Unlimited lives & reveal answers on miss
-              </p>
+          {/* Practice Mode Switch */}
+          <div className="flex items-center justify-between p-3 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)]">
+            <div className="flex flex-col gap-0.5">
+              <div className="text-xs font-bold text-[var(--on-container)]">Practice Mode</div>
+              <div className="text-[11px] text-[var(--on-container-variant)]">
+                Unlimited lives &amp; reveal study blurb on missed cards
+              </div>
             </div>
-            <input
-              type="checkbox"
+            <Switch
               checked={practice}
-              onChange={(e) => setPractice(e.target.checked)}
-              className="w-5 h-5 accent-purple-600 rounded cursor-pointer"
+              onChange={setPractice}
+              ariaLabel="Toggle Practice Mode"
             />
           </div>
 
-          {/* Weak Books (Scheme mode only) */}
+          {/* Prioritize Weak Books Switch (Scheme mode only) */}
           {mode === 'scheme' && (
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="font-bold">Prioritize Weak Books:</span>
-                <p className="text-[10px] text-[var(--on-container-variant)]">
-                  Focus on books you missed recently
-                </p>
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)]">
+              <div className="flex flex-col gap-0.5">
+                <div className="text-xs font-bold text-[var(--on-container)]">Focus Weak Books</div>
+                <div className="text-[11px] text-[var(--on-container-variant)]">
+                  Target books you recently struggled with to build mastery
+                </div>
               </div>
-              <input
-                type="checkbox"
+              <Switch
                 checked={weakBooks}
-                onChange={(e) => setWeakBooks(e.target.checked)}
-                className="w-5 h-5 accent-purple-600 rounded cursor-pointer"
+                onChange={setWeakBooks}
+                ariaLabel="Toggle Focus Weak Books"
               />
             </div>
           )}
@@ -366,21 +459,27 @@ export const ConfigSheet: React.FC<ConfigSheetProps> = ({
 
       {/* Guest Read-Only Info */}
       {isGuest && (
-        <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-200 border border-amber-300/40 text-xs">
-          Waiting for host to configure and launch Shelf Rush for everyone...
+        <div className="p-4 rounded-2xl bg-[var(--surface-container-high)] border border-[var(--border-tint)] text-xs text-[var(--on-container-variant)] flex items-center gap-3">
+          <span className="text-xl">⏳</span>
+          <span className="font-medium">
+            Waiting for host to configure and launch Shelf Rush for everyone...
+          </span>
         </div>
       )}
 
-      {/* Primary Action Button */}
+      {/* Primary Action Button (Material 3 Expressive Pill Button) */}
       {!isGuest && (
-        <button
-          type="button"
+        <Button
+          variant="primary"
+          size="hero"
+          pill
           onClick={() => handleStartGame()}
-          className="w-full py-3.5 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-black text-base shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+          className="w-full shadow-lg"
+          leftIcon={<Icon name="play" variant="tonal" size={20} />}
         >
           <span>{isHost ? 'Start for Everyone 🚀' : 'Start Rush ⚡'}</span>
-        </button>
+        </Button>
       )}
-    </div>
+    </Card>
   );
 };
