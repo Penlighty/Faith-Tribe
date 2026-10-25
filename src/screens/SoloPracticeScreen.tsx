@@ -20,6 +20,8 @@ import { ProverbItem } from '../games/fake-a-proverb/types';
 import { PassageItem } from '../games/tares-among-the-wheat/types';
 import { HotCoalCategory } from '../games/hot-coal/types';
 import { getPassageDifficulty } from '../games/tares-among-the-wheat/reducer';
+import { ShelfRushPlayerView } from '../games/shelf-rush/PlayerView';
+
 
 import { getFreshPool, markItemSeen, shuffle } from '../engine/services/randomizer';
 import { getStreakMilestone, getRandomEncouragement, StreakMilestone } from '../engine/services/streakRewards';
@@ -63,12 +65,14 @@ export const SoloPracticeScreen: React.FC<SoloPracticeScreenProps> = ({ gameId, 
     <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 pb-28 pt-2 sm:pt-6 flex flex-col gap-6 select-none animate-fadeIn">
       {gameId === 'who-said' && <WhoSaidSoloPractice onBack={handleRequestExit} onDirectExit={onBack} />}
       {gameId === 'testament-sort' && <TestamentSortSoloPractice onBack={handleRequestExit} onDirectExit={onBack} />}
+      {gameId === 'shelf-rush' && <ShelfRushSoloPractice onDirectExit={onBack} />}
       {gameId === 'tares-among-the-wheat' && <TaresSoloPractice onBack={handleRequestExit} onDirectExit={onBack} />}
       {gameId === 'hot-coal' && <HotCoalSoloPractice onBack={handleRequestExit} onDirectExit={onBack} />}
       {gameId === 'fake-a-proverb' && <FakeAProverbSoloPractice onBack={handleRequestExit} onDirectExit={onBack} />}
-      {!['who-said', 'testament-sort', 'tares-among-the-wheat', 'hot-coal', 'fake-a-proverb'].includes(gameId) && (
+      {!['who-said', 'testament-sort', 'shelf-rush', 'tares-among-the-wheat', 'hot-coal', 'fake-a-proverb'].includes(gameId) && (
         <FakeAProverbSoloPractice onBack={handleRequestExit} onDirectExit={onBack} />
       )}
+
 
       {/* Confirmation Modal on Back / Leave */}
       <LeaveConfirmationModal
@@ -1436,3 +1440,15 @@ const GameOverCard: React.FC<{
     </div>
   </Card>
 );
+
+// ==========================================
+// 6. SHELF RUSH SOLO PRACTICE
+// ==========================================
+const ShelfRushSoloPractice: React.FC<{ onDirectExit: () => void }> = ({ onDirectExit }) => {
+  return (
+    <div className="w-full">
+      <ShelfRushPlayerView onExit={onDirectExit} />
+    </div>
+  );
+};
+

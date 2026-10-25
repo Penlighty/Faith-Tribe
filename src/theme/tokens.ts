@@ -197,6 +197,42 @@ export const PALETTE_PRESETS: Record<string, { light: TonalPalette; dark: TonalP
       borderTint: 'rgba(255, 255, 255, 0.1)',
     },
   },
+  // Purple / Shelf Rush (container #E8D2E8, ink #5E2F66)
+  purple: {
+
+    light: {
+      seed: '#E8D2E8',
+      bgTint: '#FAF7FA',
+      surfaceContainer: '#E8D2E8',
+      surfaceContainerHigh: '#DEBEDE',
+      surfaceCard: '#FFFFFF',
+      primaryAction: '#5E2F66',
+      primaryActionHover: '#4B2452',
+      primaryActionText: '#FFFFFF',
+      onContainer: '#5E2F66',
+      onContainerVariant: '#7D4F86',
+      chipBg: '#EFE0EF',
+      chipText: '#5E2F66',
+      accentSecondary: '#8E5A99',
+      borderTint: 'rgba(94, 47, 102, 0.12)',
+    },
+    dark: {
+      seed: '#321937',
+      bgTint: '#140C16',
+      surfaceContainer: '#221425',
+      surfaceContainerHigh: '#2F1A33',
+      surfaceCard: '#27162C',
+      primaryAction: '#E8D2E8',
+      primaryActionHover: '#F2E4F2',
+      primaryActionText: '#2B1230',
+      onContainer: '#F3E4F3',
+      onContainerVariant: '#D4B8D6',
+      chipBg: '#3B213F',
+      chipText: '#F4E7F4',
+      accentSecondary: '#BA91BE',
+      borderTint: 'rgba(255, 255, 255, 0.1)',
+    },
+  },
 };
 
 // Aliases for game IDs
@@ -206,9 +242,11 @@ PALETTE_PRESETS['hot-coal'] = PALETTE_PRESETS.peach;
 PALETTE_PRESETS['who-said'] = PALETTE_PRESETS.butter;
 PALETTE_PRESETS['who-said-that'] = PALETTE_PRESETS.butter;
 PALETTE_PRESETS['testament-sort'] = PALETTE_PRESETS.lavender;
+PALETTE_PRESETS['shelf-rush'] = PALETTE_PRESETS.purple;
 PALETTE_PRESETS['blueprint-from-the-mountain'] = PALETTE_PRESETS.lavender;
 PALETTE_PRESETS['one-accord'] = PALETTE_PRESETS.mint;
 PALETTE_PRESETS['six-degrees-of-abraham'] = PALETTE_PRESETS.butter;
+
 
 export const SHAPE_TOKENS = {
   cardRadius: '28px',

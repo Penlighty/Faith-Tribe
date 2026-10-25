@@ -14,11 +14,16 @@ import { ResultsView } from './components/ResultsView';
 import { WavyTimer } from '../../components/ui/WavyTimer';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export const ShelfRushPlayerView: React.FC<GameViewProps<ShelfRushGameState>> = ({
+export interface ShelfRushPlayerViewProps extends Partial<GameViewProps<ShelfRushGameState>> {
+  onExit?: () => void;
+}
+
+export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
   state,
-  playerId,
-  isHost,
+  playerId = 'disciple',
+  isHost = true,
   dispatchIntent,
+  onExit,
 }) => {
   // Local solo / practice run state support when outside room or during local run
   const isMultiplayer = !!(state && state.currentPhaseId);
@@ -26,6 +31,7 @@ export const ShelfRushPlayerView: React.FC<GameViewProps<ShelfRushGameState>> = 
     state?.config || createDefaultConfig()
   );
   const [inLocalSetup, setInLocalSetup] = useState<boolean>(!isMultiplayer || state.currentPhaseId === 'setup');
+
   const [countdownNum, setCountdownNum] = useState<number | null>(null);
 
   // Active run state
@@ -261,6 +267,10 @@ export const ShelfRushPlayerView: React.FC<GameViewProps<ShelfRushGameState>> = 
 
   // Exit / Leave handler
   const handleLeave = () => {
+    if (onExit && (inLocalSetup || !runState || runState.status === 'won' || runState.status === 'lost')) {
+      onExit();
+      return;
+    }
     setRunState(null);
     setInLocalSetup(true);
   };
@@ -273,7 +283,9 @@ export const ShelfRushPlayerView: React.FC<GameViewProps<ShelfRushGameState>> = 
           initialConfig={localConfig}
           isHost={isHost}
           isGuest={!isHost && isMultiplayer}
+          onClose={onExit}
           onStart={(cfg) => {
+
             setLocalConfig(cfg);
             if (isMultiplayer && isHost && dispatchIntent) {
               dispatchIntent('UPDATE_CONFIG', cfg);
@@ -333,8 +345,9 @@ export const ShelfRushPlayerView: React.FC<GameViewProps<ShelfRushGameState>> = 
           setRunState(null);
           setInLocalSetup(true);
         }}
-        onDone={handleLeave}
+        onDone={onExit || handleLeave}
       />
+
     );
   }
 
