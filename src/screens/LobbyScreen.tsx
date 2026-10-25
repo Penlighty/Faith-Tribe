@@ -101,6 +101,15 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-28 pt-2 sm:pt-6 flex flex-col gap-6">
+      {/* Participant "Stay on page" sticky notice */}
+      {!isHost && (
+        <div className="sticky top-0 z-30 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-2.5 bg-amber-50 dark:bg-amber-950/80 border-b border-amber-400/40 backdrop-blur-md flex items-center gap-2.5">
+          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse flex-shrink-0" />
+          <p className="text-xs font-bold text-amber-900 dark:text-amber-200 leading-tight">
+            Please stay on this page while the host starts the game. Leaving may disconnect you from the session.
+          </p>
+        </div>
+      )}
       {/* Top Bar with room code, connection badge, game badge, and leave */}
       <div className="flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
         <div className="flex items-center gap-2.5">
@@ -199,8 +208,15 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
               />
               <span className="text-[11px] text-gray-700 font-bold flex items-center gap-1">
                 <Icon name="qr" size={14} />
-                {qrTab === 'wifi' ? 'Scan to Connect to Host Wi-Fi' : 'Scan with camera to Join Room'}
+                {qrTab === 'wifi'
+                  ? 'Step 1 of 2 \u2014 Scan to Join Host Wi-Fi Network'
+                  : 'Scan with camera to Join Room'}
               </span>
+              {qrTab === 'wifi' && (
+                <div className="text-[10px] text-emerald-700 dark:text-emerald-300 font-semibold leading-tight max-w-[160px] text-center">
+                  After connecting to Wi-Fi, scan the \u201cGame QR\u201d tab to enter the room.
+                </div>
+              )}
 
               {/* Localhost helper toggle: Phone Camera (Cloud) vs Localhost */}
               {isLocalhost && !isOnsite && (

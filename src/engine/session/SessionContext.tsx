@@ -9,6 +9,9 @@ import { useTheme } from '../../theme/ThemeContext';
 import { soundManager } from '../services/audio';
 import { recordGameResult } from '../services/gameDataService';
 
+export type ConnectionStatus = 'idle' | 'connected' | 'disconnected' | 'reconnecting';
+export type DisconnectReason = 'dropped' | 'game_started' | null;
+
 export interface SessionContextType {
   roomCode: string;
   isHost: boolean;
@@ -19,6 +22,8 @@ export interface SessionContextType {
   snapshot: SessionSnapshot | null;
   transportName: string;
   isConnected: boolean;
+  connectionStatus: ConnectionStatus;
+  disconnectReason: DisconnectReason;
   createSession: (
     gameId: string,
     hostName: string,
@@ -31,6 +36,7 @@ export interface SessionContextType {
     connectionMode?: ConnectionMode
   ) => Promise<boolean>;
   leaveSession: () => Promise<void>;
+  reconnect: () => Promise<boolean>;
   updateConfig: (patch: Partial<SessionConfig>) => void;
   setPlayerTeam: (playerId: string, teamId?: string) => void;
   autoBalanceTeams: () => void;
@@ -85,6 +91,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   });
   const [snapshot, setSnapshot] = useState<SessionSnapshot | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('idle');
+  const [disconnectReason, setDisconnectReason] = useState<DisconnectReason>(null);
 
   const [currentTransport, setCurrentTransport] = useState<Transport>(() => createTransport('auto'));
   const transportRef = useRef<Transport>(currentTransport);
@@ -728,6 +736,31 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
   }, [currentTransport, handleHostIntent]);
 
+  // Listen for transport disconnection events (participant only)
+  useEffect(() => {
+    const transport = transportRef.current;
+    if (!transport?.onDisconnect) return;
+
+    const unsubDisconnect = transport.onDisconnect(() => {
+      // Ignore if we're the host or already disconnected or cleanly left
+      if (isHostRef.current || !snapshotRef.current) return;
+
+      const currentSnap = snapshotRef.current;
+      const reason: DisconnectReason =
+        currentSnap?.status === 'in_game' || currentSnap?.status === 'final_leaderboard'
+          ? 'game_started'
+          : 'dropped';
+
+      setIsConnected(false);
+      setConnectionStatus('disconnected');
+      setDisconnectReason(reason);
+    });
+
+    return () => {
+      unsubDisconnect();
+    };
+  }, [currentTransport]);
+
   // Host creates session
   const createSession = async (
     gameId: string,
@@ -810,6 +843,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     await transport.send('SNAPSHOT', initialSnapshot, initialSnapshot.version);
 
     setIsConnected(true);
+    setConnectionStatus('connected');
+    setDisconnectReason(null);
     return code;
   };
 
@@ -862,6 +897,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
 
     setIsConnected(true);
+    setConnectionStatus('connected');
+    setDisconnectReason(null);
 
     // Explicitly notify host of player join
     await transport.send('PLAYER_JOIN', { player: playerUser });
@@ -893,6 +930,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setIsHost(false);
     setSnapshot(null);
     setIsConnected(false);
+    setConnectionStatus('idle');
+    setDisconnectReason(null);
     setPlayers([]);
     setTeams([]);
     snapshotRef.current = null;
@@ -907,6 +946,44 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     // 5. Fresh transport instance for future sessions
     initOrSwitchTransport('auto');
+  };
+
+  // Reconnect after a drop (participant only)
+  const reconnect = async (): Promise<boolean> => {
+    if (isHostRef.current || !roomCode || !currentUser) return false;
+
+    setConnectionStatus('reconnecting');
+
+    try {
+      const transport = transportRef.current;
+
+      // WebRTC transport has a dedicated reconnect method
+      if ('reconnect' in transport && typeof (transport as any).reconnect === 'function') {
+        const ok = await (transport as any).reconnect();
+        if (ok) {
+          // Re-send player join and request fresh snapshot
+          await transport.send('PLAYER_JOIN', { player: currentUser });
+          await transport.send('REQUEST_SNAPSHOT', { playerId: currentUser.id });
+          setIsConnected(true);
+          setConnectionStatus('connected');
+          setDisconnectReason(null);
+          return true;
+        }
+      }
+
+      // Fallback: full re-connect via joinSession
+      const connectionMode = (snapshotRef.current?.config?.connectionMode ?? 'online') as ConnectionMode;
+      const success = await joinSession(roomCode, currentUser.name, connectionMode);
+      if (success) {
+        setConnectionStatus('connected');
+        setDisconnectReason(null);
+      }
+      return success;
+    } catch (err) {
+      console.warn('[SessionContext] Reconnect failed:', err);
+      setConnectionStatus('disconnected');
+      return false;
+    }
   };
 
   // Dispatch player intent
@@ -1056,9 +1133,12 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         snapshot,
         transportName: transportRef.current?.getTransportName() || 'Unknown',
         isConnected,
+        connectionStatus,
+        disconnectReason,
         createSession,
         joinSession,
         leaveSession,
+        reconnect,
         updateConfig,
         setPlayerTeam,
         autoBalanceTeams,

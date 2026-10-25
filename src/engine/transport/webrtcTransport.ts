@@ -12,6 +12,7 @@ export class WebRTCTransport implements Transport {
   private user: PresenceUser | null = null;
   private messageListeners = new Set<(msg: TransportMessage<any>) => void>();
   private presenceListeners = new Set<(users: PresenceUser[]) => void>();
+  private disconnectListeners = new Set<() => void>();
   private connected = false;
 
   // WebRTC / PeerJS
@@ -237,6 +238,10 @@ export class WebRTCTransport implements Transport {
 
       conn.on('close', () => {
         this.hostConnection = null;
+        // Notify session layer that we lost connection to the host
+        if (this.connected) {
+          this.notifyDisconnect();
+        }
       });
 
       conn.on('error', (err) => {
@@ -437,6 +442,25 @@ export class WebRTCTransport implements Transport {
     };
   }
 
+  onDisconnect(handler: () => void): () => void {
+    this.disconnectListeners.add(handler);
+    return () => {
+      this.disconnectListeners.delete(handler);
+    };
+  }
+
+  /** Attempt to reconnect a participant to the host peer after a drop. */
+  async reconnect(): Promise<boolean> {
+    if (!this.user || !this.roomCode || this.user.isHost) return false;
+    const hostPeerId = `faith-tribe-${this.roomCode.toLowerCase()}`;
+    try {
+      this.connectToHostPeer(hostPeerId, this.user);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   getPresence(): PresenceUser[] {
     return Array.from(this.presenceUsers.values());
   }
@@ -451,6 +475,16 @@ export class WebRTCTransport implements Transport {
         fn(msg);
       } catch (err) {
         console.error('Error in message listener', err);
+      }
+    });
+  }
+
+  private notifyDisconnect() {
+    this.disconnectListeners.forEach((fn) => {
+      try {
+        fn();
+      } catch (err) {
+        console.error('Error in disconnect listener', err);
       }
     });
   }

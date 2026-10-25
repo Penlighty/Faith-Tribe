@@ -47,7 +47,16 @@ export const QrScannerModal: React.FC<QrScannerModalProps> = ({
 
   const parseCodeFromText = (text: string) => {
     try {
-      // Check if text is full URL
+      // ── Wi-Fi QR Code (WIFI:S:<ssid>;T:<sec>;P:<pass>;;) ──
+      // Pass the raw Wi-Fi string straight to the consumer so it can trigger the guided Wi-Fi flow
+      if (text.startsWith('WIFI:S:') || text.startsWith('WIFI:T:')) {
+        triggerHaptic('heavy');
+        stopCamera();
+        onScanned(text); // JoinScreen handles parsing
+        return true;
+      }
+
+      // ── Game Join URL (e.g. ?join=ZION&mode=onsite&ssid=...) ──
       if (text.includes('?join=') || text.includes('&join=')) {
         const url = new URL(text.startsWith('http') ? text : `https://dummy.com/${text}`);
         const code = url.searchParams.get('join');
@@ -61,7 +70,7 @@ export const QrScannerModal: React.FC<QrScannerModalProps> = ({
         }
       }
 
-      // Check if text is 4-letter alphanumeric room code
+      // ── Plain 4-letter room code ──
       const trimmed = text.trim().toUpperCase();
       if (/^[A-Z0-9]{4}$/.test(trimmed)) {
         triggerHaptic('heavy');
@@ -172,7 +181,8 @@ export const QrScannerModal: React.FC<QrScannerModalProps> = ({
             Scan Host Screen QR
           </h2>
           <p className="text-xs text-[var(--on-container-variant)]">
-            Point your camera at the host&apos;s lobby screen to enter the room automatically.
+            Scan the <strong>Game QR</strong> to enter the room code automatically, or scan the{' '}
+            <strong>Wi-Fi QR</strong> to connect to the host&apos;s hotspot.
           </p>
         </div>
 

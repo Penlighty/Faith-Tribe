@@ -23,6 +23,8 @@ export interface Transport {
   send<T = unknown>(type: string, payload: T, version?: number): Promise<void>;
   onMessage<T = unknown>(handler: (msg: TransportMessage<T>) => void): () => void;
   onPresenceSync(handler: (users: PresenceUser[]) => void): () => void;
+  /** Optional: callback fired when the participant loses connection to the host. */
+  onDisconnect?(handler: () => void): () => void;
   getPresence(): PresenceUser[];
   isConnected(): boolean;
   getTransportName(): string;

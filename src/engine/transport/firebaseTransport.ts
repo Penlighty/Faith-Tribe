@@ -81,6 +81,7 @@ export class FirebaseRealtimeTransport implements Transport {
 
   private messageListeners = new Set<(msg: TransportMessage<any>) => void>();
   private presenceListeners = new Set<(users: PresenceUser[]) => void>();
+  private disconnectListeners = new Set<() => void>();
 
   // Firebase listener refs (for cleanup)
   private unsubMessages: (() => void) | null = null;
@@ -155,6 +156,7 @@ export class FirebaseRealtimeTransport implements Transport {
     if (!this.fallback) return;
     this.messageListeners.forEach((fn) => this.fallback!.onMessage(fn));
     this.presenceListeners.forEach((fn) => this.fallback!.onPresenceSync(fn));
+    this.disconnectListeners.forEach((fn) => this.fallback!.onDisconnect?.(fn));
   }
 
   // -------------------------------------------------------------------------
@@ -348,6 +350,12 @@ export class FirebaseRealtimeTransport implements Transport {
     // Immediately fire with current presence
     handler(this.getPresence());
     return () => this.presenceListeners.delete(handler);
+  }
+
+  onDisconnect(handler: () => void): () => void {
+    if (this.fallback) return this.fallback.onDisconnect?.(handler) ?? (() => {});
+    this.disconnectListeners.add(handler);
+    return () => this.disconnectListeners.delete(handler);
   }
 
   getPresence(): PresenceUser[] {

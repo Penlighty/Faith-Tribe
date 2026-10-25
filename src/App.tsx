@@ -14,6 +14,7 @@ import { SettingsScreen } from './screens/SettingsScreen';
 import { SoloPracticeScreen } from './screens/SoloPracticeScreen';
 import { DevIconGalleryScreen } from './screens/DevIconGalleryScreen';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
+import { DisconnectedOverlay } from './components/session/DisconnectedOverlay';
 import { PlayMode, ConnectionMode, HotspotInfo } from './engine/types';
 import { syncAllGamesContent } from './engine/services/gameDataService';
 
@@ -37,7 +38,7 @@ const AppContent: React.FC = () => {
   const [selectedGameId, setSelectedGameId] = useState<string>('fake-a-proverb');
   const [activeNavTab, setActiveNavTab] = useState<NavTabId>('home');
 
-  const { snapshot, roomCode, createSession, currentUser, leaveSession } = useSession();
+  const { snapshot, roomCode, createSession, currentUser, leaveSession, connectionStatus, disconnectReason, reconnect, isHost } = useSession();
   const { setPaletteKey } = useTheme();
 
   // Watch snapshot status to transition in-game and leaderboard automatically
@@ -115,6 +116,20 @@ const AppContent: React.FC = () => {
   };
 
   const isInActiveGame = currentView === 'in_game';
+  // Show disconnected overlay for non-host participants who have been dropped
+  const showDisconnectOverlay =
+    !isHost && connectionStatus === 'disconnected' && disconnectReason !== null;
+  const isReconnecting = connectionStatus === 'reconnecting';
+
+  const handleReconnect = async () => {
+    await reconnect();
+  };
+
+  const handleLeaveAfterDisconnect = async () => {
+    await leaveSession();
+    setCurrentView('home');
+    setPaletteKey('lavender');
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -237,6 +252,18 @@ const AppContent: React.FC = () => {
           onTabChange={handleNavTabChange}
           visible={!isInActiveGame && currentView !== 'lobby' && currentView !== 'solo_practice' && currentView !== 'dev_icons'}
         />
+
+        {/* Disconnected overlay: shown when a participant loses connection */}
+        {showDisconnectOverlay && (
+          <DisconnectedOverlay
+            reason={disconnectReason}
+            playerName={currentUser?.name}
+            roomCode={roomCode}
+            isReconnecting={isReconnecting}
+            onReconnect={handleReconnect}
+            onLeave={handleLeaveAfterDisconnect}
+          />
+        )}
       </div>
     </div>
   );
