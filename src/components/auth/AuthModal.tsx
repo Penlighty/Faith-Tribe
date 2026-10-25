@@ -13,6 +13,27 @@ export interface AuthModalProps {
   onSuccess?: () => void;
 }
 
+const GoogleIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
+  <svg className={`${className} shrink-0`} viewBox="0 0 24 24">
+    <path
+      fill="#4285F4"
+      d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"
+    />
+    <path
+      fill="#34A853"
+      d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24Z"
+    />
+    <path
+      fill="#FBBC05"
+      d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.14-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.04 0 12s.45 3.82 1.25 5.42l4.03-3.15Z"
+    />
+    <path
+      fill="#EA4335"
+      d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98Z"
+    />
+  </svg>
+);
+
 export const AuthModal: React.FC<AuthModalProps> = ({
   isOpen,
   onClose,
@@ -98,7 +119,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         onSuccess?.();
         onClose();
       } else {
-        setError(res.error || 'Google sign-in was cancelled.');
+        setError(res.error || 'Google sign-in was cancelled or failed.');
       }
     } finally {
       setSubmitting(false);
@@ -106,227 +127,241 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <Card
-        variant="elevated"
-        padding="lg"
-        className="w-full max-w-md bg-[var(--surface-card)] border-2 border-[var(--border-tint)] shadow-2xl rounded-3xl flex flex-col gap-4 relative overflow-hidden animate-scaleUp max-h-[92vh] overflow-y-auto"
-      >
-        {/* Close Button */}
-        <button
-          onClick={() => {
-            triggerHaptic('light');
-            onClose();
-          }}
-          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[var(--on-container-variant)] flex items-center justify-center transition-colors cursor-pointer"
-          aria-label="Close"
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm animate-fadeIn p-4 sm:p-6 flex justify-center items-start sm:items-center">
+      <div className="my-auto w-full max-w-md py-4 sm:py-6">
+        <Card
+          variant="elevated"
+          padding="none"
+          className="w-full bg-[var(--surface-card)] border-2 border-[var(--border-tint)] shadow-2xl rounded-[28px] sm:rounded-[32px] flex flex-col relative overflow-hidden animate-scaleUp max-h-[88vh]"
         >
-          <Icon name="close" size={16} />
-        </button>
+          {/* Fixed Pinned Header (Never cut off or lost during scroll) */}
+          <div className="p-5 sm:p-6 pb-3 border-b border-[var(--border-tint)] flex flex-col gap-2 relative bg-[var(--surface-card)] shrink-0">
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                onClose();
+              }}
+              className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[var(--on-container-variant)] flex items-center justify-center transition-colors cursor-pointer border border-[var(--border-tint)]/60"
+              aria-label="Close"
+            >
+              <Icon name="close" size={18} />
+            </button>
 
-        {/* Header Notice */}
-        <div className="flex flex-col gap-1 pr-8">
-          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--primary-action)]">
-            <Icon name="cross" size={14} />
-            <span>Faith Tribe Account</span>
+            {/* Header Content */}
+            <div className="flex flex-col gap-1 pr-10">
+              <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--primary-action)]">
+                <Icon name="cross" size={14} />
+                <span>Faith Tribe Account</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black text-[var(--on-container)]">
+                {tab === 'signin' ? 'Sign In to Faith Tribe' : 'Join the Fellowship'}
+              </h2>
+            </div>
+
+            {/* Tab Switcher */}
+            <div className="flex rounded-2xl bg-[var(--surface-container)] p-1 border border-[var(--border-tint)] mt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('selection');
+                  setTab('signin');
+                  setError('');
+                }}
+                className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  tab === 'signin'
+                    ? 'bg-[var(--surface-card)] text-[var(--primary-action)] shadow-sm'
+                    : 'text-[var(--on-container-variant)] hover:text-[var(--on-container)]'
+                }`}
+              >
+                Sign In
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('selection');
+                  setTab('signup');
+                  setError('');
+                }}
+                className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  tab === 'signup'
+                    ? 'bg-[var(--surface-card)] text-[var(--primary-action)] shadow-sm'
+                    : 'text-[var(--on-container-variant)] hover:text-[var(--on-container)]'
+                }`}
+              >
+                Create Account
+              </button>
+            </div>
           </div>
-          <h2 className="text-xl sm:text-2xl font-black text-[var(--on-container)]">
-            {tab === 'signin' ? 'Sign In to Faith Tribe' : 'Join the Fellowship'}
-          </h2>
-          {requiredForHost ? (
-            <p className="text-xs text-amber-700 dark:text-amber-300 font-semibold bg-amber-50 dark:bg-amber-950/40 p-2.5 rounded-xl border border-amber-300/40">
-              🛡️ <strong>Host Authentication Required:</strong> You must sign in to initiate and manage game rooms for your fellowship.
-            </p>
-          ) : (
-            <p className="text-xs text-[var(--on-container-variant)]">
-              Sign in to keep your scores, rank on leaderboards, and belong to your Tribe fellowship.
-            </p>
-          )}
-        </div>
 
-        {/* Tab Switcher */}
-        <div className="flex rounded-2xl bg-[var(--surface-container)] p-1 border border-[var(--border-tint)]">
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic('selection');
-              setTab('signin');
-              setError('');
-            }}
-            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              tab === 'signin'
-                ? 'bg-[var(--surface-card)] text-[var(--primary-action)] shadow-sm'
-                : 'text-[var(--on-container-variant)] hover:text-[var(--on-container)]'
-            }`}
-          >
-            Sign In
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic('selection');
-              setTab('signup');
-              setError('');
-            }}
-            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              tab === 'signup'
-                ? 'bg-[var(--surface-card)] text-[var(--primary-action)] shadow-sm'
-                : 'text-[var(--on-container-variant)] hover:text-[var(--on-container)]'
-            }`}
-          >
-            Create Account
-          </button>
-        </div>
-
-        {/* Error Alert */}
-        {error && (
-          <div className="p-3 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-400/30 text-xs text-red-600 dark:text-red-400 font-bold flex items-center gap-2">
-            <Icon name="close" size={14} className="shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          {tab === 'signup' && (
-            <>
-              <div>
-                <label className="text-xs font-bold text-[var(--on-container-variant)] mb-1 block">
-                  Username (@handle)
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-mono font-bold text-[var(--on-container-variant)] text-sm">
-                    @
-                  </span>
-                  <input
-                    type="text"
-                    value={username}
-                    onChange={(e) =>
-                      setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))
-                    }
-                    placeholder="e.g. pastordavid"
-                    required
-                    maxLength={20}
-                    className="w-full pl-8 pr-4 py-2.5 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)] text-sm font-mono font-bold text-[var(--on-container)] focus:outline-none focus:border-[var(--primary-action)]"
-                  />
-                </div>
-                <span className="text-[10px] text-[var(--on-container-variant)] mt-0.5 block">
-                  Other disciples can add you to their Tribe using @{username || 'username'}
+          {/* Scrollable Form Body */}
+          <div className="p-5 sm:p-6 overflow-y-auto flex flex-col gap-4">
+            {requiredForHost ? (
+              <div className="text-xs text-amber-800 dark:text-amber-200 font-semibold bg-amber-50 dark:bg-amber-950/40 p-3 rounded-2xl border border-amber-300/40 flex items-start gap-2">
+                <span className="text-base shrink-0">🛡️</span>
+                <span>
+                  <strong>Host Authentication Required:</strong> You must sign in to initiate and manage game rooms for your fellowship.
                 </span>
               </div>
+            ) : (
+              <p className="text-xs text-[var(--on-container-variant)] font-medium">
+                Sign in to keep your scores, rank on leaderboards, and belong to your Tribe fellowship.
+              </p>
+            )}
+
+            {/* Error Alert Box */}
+            {error && (
+              <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-400/40 text-xs text-red-700 dark:text-red-300 font-medium flex items-start gap-2.5 leading-relaxed">
+                <Icon name="close" size={16} className="text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            {/* Google Sign In Button (Top priority quick auth) */}
+            <Button
+              type="button"
+              variant="tonal"
+              size="lg"
+              pill
+              disabled={submitting || isLoading}
+              onClick={handleGoogleSignIn}
+              leftIcon={<GoogleIcon />}
+              className="w-full font-bold flex items-center justify-center gap-2.5 text-xs shadow-xs"
+            >
+              <span>Continue with Google</span>
+            </Button>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-[1px] bg-[var(--border-tint)]" />
+              <span className="text-[10px] uppercase font-bold text-[var(--on-container-variant)] tracking-wider">
+                Or with email
+              </span>
+              <div className="flex-1 h-[1px] bg-[var(--border-tint)]" />
+            </div>
+
+            {/* Email & Password Form */}
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
+              {tab === 'signup' && (
+                <>
+                  <div>
+                    <label className="text-xs font-bold text-[var(--on-container-variant)] mb-1 block">
+                      Username (@handle)
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-mono font-bold text-[var(--on-container-variant)] text-sm">
+                        @
+                      </span>
+                      <input
+                        type="text"
+                        value={username}
+                        onChange={(e) =>
+                          setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))
+                        }
+                        placeholder="e.g. pastordavid"
+                        required
+                        maxLength={20}
+                        className="w-full pl-8 pr-4 py-2.5 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)] text-sm font-mono font-bold text-[var(--on-container)] focus:outline-none focus:border-[var(--primary-action)]"
+                      />
+                    </div>
+                    <span className="text-[10px] text-[var(--on-container-variant)] mt-0.5 block">
+                      Other disciples can add you to their Tribe using @{username || 'username'}
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-[var(--on-container-variant)] mb-1 block">
+                      Display / Full Name
+                    </label>
+                    <input
+                      type="text"
+                      value={displayName}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                      placeholder="e.g. David Ogunleye"
+                      required
+                      maxLength={30}
+                      className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)] text-sm font-bold text-[var(--on-container)] focus:outline-none focus:border-[var(--primary-action)]"
+                    />
+                  </div>
+
+                  {/* Biblical Tribe Emblem Picker */}
+                  <div>
+                    <label className="text-xs font-bold text-[var(--on-container-variant)] mb-1 block">
+                      Select Biblical Tribe Emblem
+                    </label>
+                    <div className="grid grid-cols-4 gap-1.5 max-h-32 overflow-y-auto p-1.5 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)]">
+                      {TRIBES.map((trb) => (
+                        <button
+                          key={trb.id}
+                          type="button"
+                          onClick={() => {
+                            triggerHaptic('light');
+                            setSelectedTribeId(trb.id);
+                          }}
+                          className={`p-1.5 rounded-xl flex flex-col items-center gap-1 text-[10px] font-bold transition-all cursor-pointer border ${
+                            selectedTribeId === trb.id
+                              ? 'border-[var(--primary-action)] bg-[var(--surface-card)] shadow-sm'
+                              : 'border-transparent hover:bg-[var(--surface-container-high)] opacity-75'
+                          }`}
+                        >
+                          <span
+                            className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black"
+                            style={{ backgroundColor: trb.container, color: trb.ink }}
+                          >
+                            {trb.name[0]}
+                          </span>
+                          <span className="truncate w-full text-center">{trb.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
 
               <div>
                 <label className="text-xs font-bold text-[var(--on-container-variant)] mb-1 block">
-                  Display / Full Name
+                  Email Address
                 </label>
                 <input
-                  type="text"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="e.g. David Ogunleye"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="disciple@fellowship.org"
                   required
-                  maxLength={30}
-                  className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)] text-sm font-bold text-[var(--on-container)] focus:outline-none focus:border-[var(--primary-action)]"
+                  className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)] text-sm font-medium text-[var(--on-container)] focus:outline-none focus:border-[var(--primary-action)]"
                 />
               </div>
 
-              {/* Biblical Tribe Emblem Picker */}
               <div>
                 <label className="text-xs font-bold text-[var(--on-container-variant)] mb-1 block">
-                  Select Biblical Tribe Emblem
+                  Password
                 </label>
-                <div className="grid grid-cols-4 gap-1.5 max-h-32 overflow-y-auto p-1 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)]">
-                  {TRIBES.map((trb) => (
-                    <button
-                      key={trb.id}
-                      type="button"
-                      onClick={() => {
-                        triggerHaptic('light');
-                        setSelectedTribeId(trb.id);
-                      }}
-                      className={`p-1.5 rounded-xl flex flex-col items-center gap-1 text-[10px] font-bold transition-all cursor-pointer border ${
-                        selectedTribeId === trb.id
-                          ? 'border-[var(--primary-action)] bg-[var(--surface-card)] shadow-sm'
-                          : 'border-transparent hover:bg-[var(--surface-container-high)] opacity-75'
-                      }`}
-                    >
-                      <span
-                        className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black"
-                        style={{ backgroundColor: trb.container, color: trb.ink }}
-                      >
-                        {trb.name[0]}
-                      </span>
-                      <span className="truncate w-full text-center">{trb.name}</span>
-                    </button>
-                  ))}
-                </div>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  minLength={6}
+                  className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)] text-sm font-medium text-[var(--on-container)] focus:outline-none focus:border-[var(--primary-action)]"
+                />
               </div>
-            </>
-          )}
 
-          <div>
-            <label className="text-xs font-bold text-[var(--on-container-variant)] mb-1 block">
-              Email Address
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="disciple@fellowship.org"
-              required
-              className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)] text-sm font-medium text-[var(--on-container)] focus:outline-none focus:border-[var(--primary-action)]"
-            />
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                pill
+                disabled={submitting || isLoading}
+                className="w-full mt-1 font-black shadow-md flex items-center justify-center gap-2"
+              >
+                {submitting ? 'Please wait…' : tab === 'signin' ? 'Sign In' : 'Create Tribe Account'}
+              </Button>
+            </form>
           </div>
-
-          <div>
-            <label className="text-xs font-bold text-[var(--on-container-variant)] mb-1 block">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-              minLength={6}
-              className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)] text-sm font-medium text-[var(--on-container)] focus:outline-none focus:border-[var(--primary-action)]"
-            />
-          </div>
-
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            pill
-            disabled={submitting || isLoading}
-            className="w-full mt-2 font-black shadow-md flex items-center justify-center gap-2"
-          >
-            {submitting ? 'Please wait…' : tab === 'signin' ? 'Sign In' : 'Create Tribe Account'}
-          </Button>
-        </form>
-
-        {/* Divider */}
-        <div className="flex items-center gap-3 my-1">
-          <div className="flex-1 h-[1px] bg-[var(--border-tint)]" />
-          <span className="text-[10px] uppercase font-bold text-[var(--on-container-variant)] tracking-wider">
-            Or
-          </span>
-          <div className="flex-1 h-[1px] bg-[var(--border-tint)]" />
-        </div>
-
-        {/* Google Sign In */}
-        <Button
-          type="button"
-          variant="tonal"
-          size="md"
-          pill
-          disabled={submitting || isLoading}
-          onClick={handleGoogleSignIn}
-          className="w-full font-bold flex items-center justify-center gap-2 text-xs"
-        >
-          <span>Continue with Google</span>
-        </Button>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 };

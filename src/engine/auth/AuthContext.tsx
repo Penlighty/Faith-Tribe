@@ -320,12 +320,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInWithGoogle = async (): Promise<{ success: boolean; error?: string }> => {
     try {
       const auth = getAuthInstance();
-      if (!auth) throw new Error('Authentication service unavailable');
+      if (!auth) {
+        throw new Error(
+          'Firebase Authentication is unavailable. Please ensure VITE_FIREBASE_API_KEY is configured in your Vercel Project Environment Variables.'
+        );
+      }
       const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
       const cred = await signInWithPopup(auth, provider);
       await syncProfileFromDb(cred.user);
       return { success: true };
     } catch (err: any) {
+      if (err?.code === 'auth/unauthorized-domain') {
+        const currentDomain = typeof window !== 'undefined' ? window.location.hostname : 'your-domain.vercel.app';
+        return {
+          success: false,
+          error: `Domain "${currentDomain}" is not authorized. Please add "${currentDomain}" to Firebase Console -> Authentication -> Settings -> Authorized domains.`,
+        };
+      }
+      if (err?.code === 'auth/popup-blocked') {
+        return {
+          success: false,
+          error: 'The Google sign-in popup was blocked by your browser. Please allow popups for this site.',
+        };
+      }
+      if (err?.code === 'auth/popup-closed-by-user') {
+        return {
+          success: false,
+          error: 'Google sign-in popup was closed before completing.',
+        };
+      }
+      if (err?.code === 'auth/cancelled-popup-request') {
+        return {
+          success: false,
+          error: 'Another sign-in popup is already open.',
+        };
+      }
       return { success: false, error: err?.message || 'Google sign in was cancelled or failed' };
     }
   };
