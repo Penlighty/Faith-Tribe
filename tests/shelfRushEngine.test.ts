@@ -241,4 +241,56 @@ describe('Shelf Rush Engine: Leaderboard', () => {
     expect(lb[2].rank).toBe(3); // Charlie is rank 3
     expect(lb[3].rank).toBe(4); // David is rank 4
   });
+
+  it('protects lives and enters revealing only on wrong sorts in practice mode', () => {
+    const config = {
+      mode: 'scheme' as const,
+      schemeId: 'testament',
+      speed: 'standard' as const,
+      lifeRule: 'strict' as const,
+      play: 'practice' as const,
+      accessTime: 1 as const,
+    };
+
+    const mockDeck = [
+      { index: 0, bookId: 'genesis', schemeId: 'testament' },
+      { index: 1, bookId: 'matthew', schemeId: 'testament' },
+    ];
+
+    let state = createInitialRunState(config, mockDeck);
+    state = reduceRun(state, { type: 'START' });
+    state = reduceRun(state, { type: 'SHOW', timestamp: 1000 });
+
+    // Correct sort: Genesis is OT -> stays showing (or advances), status should NOT be revealing
+    state = reduceRun(state, { type: 'SORT', binId: 'ot', timestamp: 1500 });
+    expect(state.status).toBe('showing');
+    expect(state.lives).toBe(3); // protected
+
+    // Wrong sort: Matthew is NT, answering 'ot' -> enters revealing and preserves lives
+    state = reduceRun(state, { type: 'SHOW', timestamp: 2000 });
+    state = reduceRun(state, { type: 'SORT', binId: 'ot', timestamp: 2500 });
+    expect(state.status).toBe('revealing');
+    expect(state.lives).toBe(3); // lives protected in practice mode!
+  });
+
+  it('marks run as finished or won when completing the deck', () => {
+    const schemeConfig = {
+      mode: 'scheme' as const,
+      schemeId: 'testament',
+      speed: 'standard' as const,
+      lifeRule: 'strict' as const,
+      play: 'solo' as const,
+      accessTime: 1 as const,
+    };
+
+    const mockDeck = [{ index: 0, bookId: 'genesis', schemeId: 'testament' }];
+    let state = createInitialRunState(schemeConfig, mockDeck);
+    state = reduceRun(state, { type: 'START' });
+    state = reduceRun(state, { type: 'SHOW', timestamp: 1000 });
+    state = reduceRun(state, { type: 'SORT', binId: 'ot', timestamp: 1500 });
+
+    // Finished scheme mode
+    expect(state.status).toBe('finished');
+  });
 });
+

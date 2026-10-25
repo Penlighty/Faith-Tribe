@@ -120,10 +120,13 @@ export function reduceRun(
       } else {
         newStreak = 0;
         newStrikes++;
-        if (state.config.play !== 'practice') {
+        const isPracticeMode =
+          state.config.play === 'practice' || state.config.playMode === 'practice';
+        if (!isPracticeMode) {
           newLives = Math.max(0, state.lives - 1);
         }
       }
+
 
       const bestStreak = Math.max(state.bestStreak, newStreak);
       const newScore = state.score + pointsEarned;
@@ -177,7 +180,9 @@ export function reduceRun(
       }
 
       // Check win/loss/completion
-      const isOutOfLives = state.config.play !== 'practice' && newLives <= 0;
+      const isPractice =
+        state.config.play === 'practice' || state.config.playMode === 'practice';
+      const isOutOfLives = !isPractice && newLives <= 0;
       const isLastCard = state.cursor + 1 >= newDeck.length;
 
       let nextStatus: RunState['status'] = 'showing';
@@ -203,9 +208,10 @@ export function reduceRun(
             livesRemaining: newLives,
           });
         }
-      } else if (state.config.play === 'practice') {
+      } else if (isPractice && !isCorrect) {
         nextStatus = 'revealing';
       }
+
 
       return {
         ...state,

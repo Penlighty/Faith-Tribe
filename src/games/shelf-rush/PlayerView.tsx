@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { GameViewProps } from '../../engine/types';
-import { ShelfRushGameState, ShelfRushConfig, RunState } from './engine/types';
+import { ShelfRushGameState, ShelfRushConfig, RunState, ShelfRushCard } from './engine/types';
 import { createInitialRunState, reduceRun } from './engine/run';
 import { getCardWindowMs } from './engine/timing';
 import { getBook, getScheme } from './engine/loader';
@@ -50,17 +50,32 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
   const [remainingSeconds, setRemainingSeconds] = useState<number>(4);
   const animFrameRef = useRef<number | null>(null);
   const lastProgressSentRef = useRef<number>(0);
+  const isTransitioningRef = useRef<boolean>(false);
+
+  // Practice mode reveal card
+  const [practiceMissedCard, setPracticeMissedCard] = useState<ShelfRushCard | null>(null);
+
+  // Practice mode flag
+  const isPracticeMode =
+    runState?.config.play === 'practice' || runState?.config.playMode === 'practice';
 
   // Current Card & Scheme
-  const currentCard = runState && runState.deck[runState.cursor];
+  const currentCard = runState && runState.cursor < runState.deck.length ? runState.deck[runState.cursor] : null;
   const currentScheme = currentCard ? getScheme(currentCard.schemeId) : null;
   const currentBook = currentCard ? getBook(currentCard.bookId) : null;
+
+  // Active display card (use practiceMissedCard when studying a missed card)
+  const displayCard = (cardStatus === 'wrong' && practiceMissedCard) ? practiceMissedCard : currentCard;
+  const displayScheme = displayCard ? getScheme(displayCard.schemeId) : currentScheme;
+  const displayBook = displayCard ? getBook(displayCard.bookId) : currentBook;
 
   // Initialize or start run
   const startRun = useCallback(
     (cfg: ShelfRushConfig) => {
       const deck = generateDeckForConfig(cfg);
       const initial = createInitialRunState(cfg, deck);
+      isTransitioningRef.current = false;
+      setPracticeMissedCard(null);
       setRunState(initial);
       setInLocalSetup(false);
       setCountdownNum(3);
@@ -85,8 +100,9 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
       const now = performance.now();
       const next = reduceRun(runState, { type: 'START' });
       const showing = reduceRun(next, { type: 'SHOW', timestamp: now });
-      setRunState(showing);
       timerStartRef.current = now;
+      isTransitioningRef.current = false;
+      setRunState(showing);
     }
   }, [countdownNum, runState]);
 
@@ -96,6 +112,8 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
     if (state.currentPhaseId === 'countdown' && countdownNum === null && (!runState || runState.status === 'ready')) {
       const cfg = state.config;
       const initial = createInitialRunState(cfg, state.deck);
+      isTransitioningRef.current = false;
+      setPracticeMissedCard(null);
       setRunState(initial);
       setCountdownNum(3);
     }
@@ -104,7 +122,10 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
   // Per-card timing tick using requestAnimationFrame
   useEffect(() => {
     if (!runState || runState.status !== 'showing' || !currentCard || !currentScheme) {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      if (animFrameRef.current) {
+        cancelAnimationFrame(animFrameRef.current);
+        animFrameRef.current = null;
+      }
       return;
     }
 
@@ -117,6 +138,8 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
     timerDurationRef.current = windowMs;
 
     const tick = (now: number) => {
+      if (isTransitioningRef.current) return;
+
       const elapsed = now - timerStartRef.current;
       const remainingMs = Math.max(0, timerDurationRef.current - elapsed);
       setRemainingSeconds(Math.ceil(remainingMs / 1000));
@@ -128,6 +151,10 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
 
       // Check timeout
       if (elapsed >= timerDurationRef.current) {
+        if (animFrameRef.current) {
+          cancelAnimationFrame(animFrameRef.current);
+          animFrameRef.current = null;
+        }
         handleTimeout(now);
         return;
       }
@@ -137,20 +164,37 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
 
     animFrameRef.current = requestAnimationFrame(tick);
     return () => {
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      if (animFrameRef.current) {
+        cancelAnimationFrame(animFrameRef.current);
+        animFrameRef.current = null;
+      }
     };
   }, [runState?.cursor, runState?.status]);
 
   // Handle Timeout
   const handleTimeout = (now: number) => {
+    if (isTransitioningRef.current) return;
     if (!runState || runState.status !== 'showing') return;
+    isTransitioningRef.current = true;
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
+
     const next = reduceRun(runState, { type: 'TIMEOUT', timestamp: now });
-    handleSortFeedback(false, null, next, now);
+    handleSortFeedback(false, null, next);
   };
 
   // Handle Sort Pick
   const handleSelectBin = (binId: string) => {
+    if (isTransitioningRef.current) return;
     if (!runState || runState.status !== 'showing' || !currentCard || !currentScheme) return;
+    isTransitioningRef.current = true;
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
+
     const now = performance.now();
     const isCorrect = currentScheme.assign[currentCard.bookId] === binId;
 
@@ -160,18 +204,22 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
       timestamp: now,
     });
 
-    handleSortFeedback(isCorrect, binId, next, now);
+    handleSortFeedback(isCorrect, binId, next);
   };
 
   const handleSortFeedback = (
     isCorrect: boolean,
     chosenBinId: string | null,
-    nextState: RunState,
-    now: number
+    nextState: RunState
   ) => {
-    if (!currentCard || !currentScheme) return;
+    if (!currentCard || !currentScheme) {
+      isTransitioningRef.current = false;
+      return;
+    }
     const correctBinId = currentScheme.assign[currentCard.bookId];
     const correctBin = currentScheme.bins.find((b) => b.id === correctBinId);
+    const isPractice =
+      runState?.config.play === 'practice' || runState?.config.playMode === 'practice';
 
     if (isCorrect) {
       setCardStatus('correct');
@@ -181,7 +229,7 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
       setTimeout(() => {
         setCardStatus('idle');
         setPointsToast(null);
-        advanceToNextCard(nextState, now);
+        advanceToNextCard(nextState);
       }, 180);
     } else {
       setCardStatus('wrong');
@@ -197,28 +245,47 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
         setWrongToastMessage(null);
       }, 1200);
 
-      if (runState?.config.playMode === 'practice') {
-        // In practice mode, pause and let player review
+      if (isPractice) {
+        // In practice mode, pause and show study reveal for the missed card
+        setPracticeMissedCard(currentCard);
         setRunState(nextState);
       } else {
         setTimeout(() => {
           setCardStatus('idle');
           setWrongBinHighlight(null);
           setCorrectBinHighlight(null);
-          advanceToNextCard(nextState, now);
+          advanceToNextCard(nextState);
         }, 240);
       }
     }
   };
 
-  const advanceToNextCard = (nextState: RunState, now: number) => {
-    if (nextState.status === 'won' || nextState.status === 'lost') {
-      setRunState(nextState);
+  const advanceToNextCard = (nextState: RunState) => {
+    // If run finished, won, lost, or cursor out of bounds
+    if (
+      nextState.status === 'won' ||
+      nextState.status === 'lost' ||
+      nextState.status === 'finished' ||
+      nextState.cursor >= nextState.deck.length
+    ) {
+      isTransitioningRef.current = false;
+      const finalStatus =
+        nextState.status === 'lost'
+          ? ('lost' as const)
+          : nextState.status === 'won'
+          ? ('won' as const)
+          : ('finished' as const);
+      const finalState = {
+        ...nextState,
+        status: finalStatus,
+      };
+      setRunState(finalState);
+
       // Dispatch finish intent to host in multiplayer
       if (dispatchIntent) {
         dispatchIntent('FINISH', {
-          log: nextState.log,
-          totalTimeMs: nextState.log.reduce((acc, l) => acc + l.ms, 0),
+          log: finalState.log,
+          totalTimeMs: finalState.log.reduce((acc, l) => acc + l.ms, 0),
         });
       }
       return;
@@ -237,13 +304,15 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
       setTimeout(() => setStepBanner(null), 900);
     }
 
-    timerStartRef.current = now;
-    const showing = reduceRun(nextState, { type: 'SHOW', timestamp: now });
+    const freshNow = performance.now();
+    timerStartRef.current = freshNow;
+    const showing = reduceRun(nextState, { type: 'SHOW', timestamp: freshNow });
+    isTransitioningRef.current = false;
     setRunState(showing);
 
     // Send progress heartbeat
-    if (dispatchIntent && now - lastProgressSentRef.current >= 1000) {
-      lastProgressSentRef.current = now;
+    if (dispatchIntent && freshNow - lastProgressSentRef.current >= 1000) {
+      lastProgressSentRef.current = freshNow;
       dispatchIntent('PROGRESS', {
         cardsDone: showing.cursor,
         correctCount: showing.correctBooks.size,
@@ -261,9 +330,11 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
     setCardStatus('idle');
     setWrongBinHighlight(null);
     setCorrectBinHighlight(null);
-    const now = performance.now();
-    advanceToNextCard(runState, now);
+    setPracticeMissedCard(null);
+    isTransitioningRef.current = false;
+    advanceToNextCard(runState);
   };
+
 
   // Exit / Leave handler
   const handleLeave = () => {
@@ -322,13 +393,22 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
 
   // 3. RESULTS VIEW
   if (
-    (runState && (runState.status === 'won' || runState.status === 'lost')) ||
+    (runState &&
+      (runState.status === 'won' ||
+        runState.status === 'lost' ||
+        runState.status === 'finished')) ||
     (state && state.currentPhaseId === 'results')
   ) {
     return (
       <ResultsView
         score={runState?.score || 0}
-        status={runState?.status === 'lost' ? 'lost' : 'won'}
+        status={
+          runState?.status === 'lost'
+            ? 'lost'
+            : runState?.status === 'won'
+            ? 'won'
+            : 'finished'
+        }
         config={runState?.config || localConfig}
         log={runState?.log || []}
         bestStreak={runState?.bestStreak || 0}
@@ -437,22 +517,22 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
       </div>
 
       {/* Stage: SortCard */}
-      {currentBook && (
+      {displayBook && (
         <SortCard
-          bookName={currentBook.name}
-          bookOrder={currentBook.order}
-          practiceMode={runState?.config.playMode === 'practice'}
+          bookName={displayBook.name}
+          bookOrder={displayBook.order}
+          practiceMode={isPracticeMode}
           status={cardStatus}
         />
       )}
 
       {/* Practice Mode Pause Reveal Card */}
-      {runState?.config.playMode === 'practice' && cardStatus === 'wrong' && currentBook && (
+      {isPracticeMode && cardStatus === 'wrong' && displayBook && (
         <div className="my-2 p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 flex flex-col gap-2 text-xs">
           <span className="font-bold text-amber-900 dark:text-amber-200">
-            Study Reveal: {currentBook.name}
+            Study Reveal: {displayBook.name}
           </span>
-          <p className="italic text-[var(--on-container-variant)]">"{currentBook.blurb}"</p>
+          <p className="italic text-[var(--on-container-variant)]">"{displayBook.blurb}"</p>
           <button
             onClick={handlePracticeContinue}
             className="w-full py-2 rounded-xl bg-purple-600 text-white font-bold text-xs"
