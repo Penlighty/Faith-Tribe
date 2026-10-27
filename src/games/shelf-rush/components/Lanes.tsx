@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Icon } from '../../../design/icons';
 
 export interface PlayerLaneData {
   playerId: string;
@@ -81,8 +82,9 @@ export const Lanes: React.FC<LanesProps> = ({ lanes, totalCards }) => {
 
                 <div className="flex items-center gap-2">
                   {lane.streak >= 3 && (
-                    <span className="text-xs font-bold text-amber-500 flex items-center gap-0.5">
-                      🔥 {lane.streak}
+                    <span className="text-xs font-bold text-amber-500 flex items-center gap-1">
+                      <Icon name="flame" size={12} />
+                      <span>{lane.streak}</span>
                     </span>
                   )}
                   {/* Hearts */}
@@ -92,7 +94,7 @@ export const Lanes: React.FC<LanesProps> = ({ lanes, totalCards }) => {
                         key={idx}
                         className={idx < lane.lives ? 'text-rose-500' : 'text-gray-400 opacity-30'}
                       >
-                        ❤️
+                        <Icon name="heart" size={12} />
                       </span>
                     ))}
                   </div>

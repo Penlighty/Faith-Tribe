@@ -176,8 +176,9 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({
               : 'bg-blue-50 text-blue-800 dark:bg-blue-950 dark:text-blue-200 border-blue-500/40'
           }`}
         >
-          <span>{isOnsiteMode ? '📶 Onsite Hotspot' : '🌐 Online Cloud'}</span>
-          <span className="text-[10px] opacity-70 underline">Switch</span>
+          <Icon name={isOnsiteMode ? 'host' : 'link'} size={12} />
+          <span>{isOnsiteMode ? 'Onsite Hotspot' : 'Online Cloud'}</span>
+          <span className="text-[10px] opacity-70 underline ml-1">Switch</span>
         </button>
       </div>
 
@@ -239,7 +240,7 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({
               onClick={handleTriggerWifi}
               className="text-xs font-extrabold text-emerald-700 dark:text-emerald-300 underline hover:opacity-80 flex items-center gap-1 cursor-pointer"
             >
-              📱 Open Wi-Fi Settings
+              <Icon name="settings" size={14} /> Open Wi-Fi Settings
             </button>
           </div>
 
@@ -288,7 +289,7 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({
 
           {wifiConnected && (
             <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 dark:text-emerald-200 bg-emerald-100 dark:bg-emerald-900/40 rounded-xl p-2.5">
-              <span>✅</span>
+              <Icon name="check" size={16} />
               <span>Connected! Proceed to Step 2 — enter the 4-letter room code below and tap Join.</span>
             </div>
           )}
@@ -296,7 +297,7 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({
           {wifiFailed && (
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 text-xs font-bold text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/40 rounded-xl p-2.5">
-                <span>❌</span>
+                <Icon name="close" size={16} />
                 <span>
                   Your device doesn&apos;t appear to be connected to Wi-Fi yet
                   {wifiCheckCount > 1 ? ` (checked ${wifiCheckCount} times)` : ''}.
@@ -357,8 +358,9 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({
             <label htmlFor="room-code-input" className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
               4-Letter Room Code
             </label>
-            <span className="text-[10px] font-bold text-[var(--on-container-variant)]">
-              {isOnsiteMode ? '📶 Onsite' : '🌐 Online'}
+            <span className="text-[10px] font-bold text-[var(--on-container-variant)] flex items-center gap-1">
+              <Icon name={isOnsiteMode ? 'host' : 'link'} size={12} />
+              {isOnsiteMode ? 'Onsite' : 'Online'}
             </span>
           </div>
           <input

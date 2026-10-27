@@ -1,0 +1,2340 @@
+{
+ "version": 1,
+ "name": "Four Signs",
+ "clueFormat": "'i:<iconId>' = pictogram from the Four Signs icon library; 'w:<text>' = word clue; (future) 'm:<imageId>' = image",
+ "notes": "Each puzzle has 4 clues and an answer. Options shown to the player = answer + 3 distractors, shuffled per player.",
+ "icons": [
+  {
+   "id": "sun",
+   "category": "sky",
+   "uses": 10
+  },
+  {
+   "id": "moon",
+   "category": "sky",
+   "uses": 4
+  },
+  {
+   "id": "star",
+   "category": "sky",
+   "uses": 9
+  },
+  {
+   "id": "cloud",
+   "category": "sky",
+   "uses": 2
+  },
+  {
+   "id": "rain",
+   "category": "sky",
+   "uses": 3
+  },
+  {
+   "id": "storm",
+   "category": "sky",
+   "uses": 3
+  },
+  {
+   "id": "wind",
+   "category": "sky",
+   "uses": 2
+  },
+  {
+   "id": "flame",
+   "category": "sky",
+   "uses": 13
+  },
+  {
+   "id": "drop",
+   "category": "sky",
+   "uses": 13
+  },
+  {
+   "id": "waves",
+   "category": "sky",
+   "uses": 3
+  },
+  {
+   "id": "river",
+   "category": "sky",
+   "uses": 8
+  },
+  {
+   "id": "rainbow",
+   "category": "sky",
+   "uses": 2
+  },
+  {
+   "id": "mountain",
+   "category": "land",
+   "uses": 10
+  },
+  {
+   "id": "cave",
+   "category": "land",
+   "uses": 2
+  },
+  {
+   "id": "tree",
+   "category": "land",
+   "uses": 9
+  },
+  {
+   "id": "leaf",
+   "category": "land",
+   "uses": 2
+  },
+  {
+   "id": "olive",
+   "category": "land",
+   "uses": 3
+  },
+  {
+   "id": "wheat",
+   "category": "land",
+   "uses": 8
+  },
+  {
+   "id": "seed",
+   "category": "land",
+   "uses": 4
+  },
+  {
+   "id": "flower",
+   "category": "land",
+   "uses": 1
+  },
+  {
+   "id": "grapes",
+   "category": "land",
+   "uses": 4
+  },
+  {
+   "id": "fruit",
+   "category": "land",
+   "uses": 2
+  },
+  {
+   "id": "honey",
+   "category": "land",
+   "uses": 2
+  },
+  {
+   "id": "salt",
+   "category": "things",
+   "uses": 1
+  },
+  {
+   "id": "island",
+   "category": "land",
+   "uses": 2
+  },
+  {
+   "id": "bread",
+   "category": "things",
+   "uses": 8
+  },
+  {
+   "id": "basket",
+   "category": "things",
+   "uses": 5
+  },
+  {
+   "id": "jar",
+   "category": "things",
+   "uses": 5
+  },
+  {
+   "id": "gift",
+   "category": "things",
+   "uses": 4
+  },
+  {
+   "id": "chest",
+   "category": "things",
+   "uses": 1
+  },
+  {
+   "id": "coins",
+   "category": "things",
+   "uses": 10
+  },
+  {
+   "id": "cup",
+   "category": "things",
+   "uses": 9
+  },
+  {
+   "id": "lamp",
+   "category": "things",
+   "uses": 10
+  },
+  {
+   "id": "candle",
+   "category": "things",
+   "uses": 1
+  },
+  {
+   "id": "speech",
+   "category": "things",
+   "uses": 3
+  },
+  {
+   "id": "cross",
+   "category": "faith",
+   "uses": 3
+  },
+  {
+   "id": "nails",
+   "category": "faith",
+   "uses": 2
+  },
+  {
+   "id": "thorns",
+   "category": "faith",
+   "uses": 2
+  },
+  {
+   "id": "shofar",
+   "category": "faith",
+   "uses": 4
+  },
+  {
+   "id": "tablets",
+   "category": "faith",
+   "uses": 4
+  },
+  {
+   "id": "scroll",
+   "category": "faith",
+   "uses": 9
+  },
+  {
+   "id": "altar",
+   "category": "faith",
+   "uses": 5
+  },
+  {
+   "id": "temple",
+   "category": "faith",
+   "uses": 4
+  },
+  {
+   "id": "tent",
+   "category": "faith",
+   "uses": 3
+  },
+  {
+   "id": "bird",
+   "category": "creatures",
+   "uses": 8
+  },
+  {
+   "id": "fish",
+   "category": "creatures",
+   "uses": 4
+  },
+  {
+   "id": "sheep",
+   "category": "creatures",
+   "uses": 10
+  },
+  {
+   "id": "lion",
+   "category": "creatures",
+   "uses": 3
+  },
+  {
+   "id": "serpent",
+   "category": "creatures",
+   "uses": 3
+  },
+  {
+   "id": "frog",
+   "category": "creatures",
+   "uses": 3
+  },
+  {
+   "id": "baby",
+   "category": "people",
+   "uses": 2
+  },
+  {
+   "id": "wings",
+   "category": "people",
+   "uses": 1
+  },
+  {
+   "id": "eye",
+   "category": "people",
+   "uses": 3
+  },
+  {
+   "id": "hand",
+   "category": "people",
+   "uses": 9
+  },
+  {
+   "id": "heart",
+   "category": "people",
+   "uses": 4
+  },
+  {
+   "id": "footprints",
+   "category": "people",
+   "uses": 8
+  },
+  {
+   "id": "chain",
+   "category": "things",
+   "uses": 4
+  },
+  {
+   "id": "scissors",
+   "category": "things",
+   "uses": 2
+  },
+  {
+   "id": "staff",
+   "category": "things",
+   "uses": 3
+  },
+  {
+   "id": "harp",
+   "category": "things",
+   "uses": 3
+  },
+  {
+   "id": "boat",
+   "category": "things",
+   "uses": 9
+  },
+  {
+   "id": "net",
+   "category": "things",
+   "uses": 3
+  },
+  {
+   "id": "rock",
+   "category": "land",
+   "uses": 5
+  },
+  {
+   "id": "keys",
+   "category": "things",
+   "uses": 2
+  },
+  {
+   "id": "crown",
+   "category": "things",
+   "uses": 16
+  },
+  {
+   "id": "ring",
+   "category": "things",
+   "uses": 4
+  },
+  {
+   "id": "coat",
+   "category": "things",
+   "uses": 4
+  },
+  {
+   "id": "scales",
+   "category": "things",
+   "uses": 5
+  },
+  {
+   "id": "ladder",
+   "category": "things",
+   "uses": 3
+  },
+  {
+   "id": "hammer",
+   "category": "things",
+   "uses": 2
+  },
+  {
+   "id": "sword",
+   "category": "things",
+   "uses": 2
+  },
+  {
+   "id": "shield",
+   "category": "things",
+   "uses": 3
+  },
+  {
+   "id": "helmet",
+   "category": "things",
+   "uses": 2
+  },
+  {
+   "id": "spear",
+   "category": "things",
+   "uses": 1
+  },
+  {
+   "id": "sling",
+   "category": "things",
+   "uses": 1
+  },
+  {
+   "id": "sickle",
+   "category": "things",
+   "uses": 1
+  },
+  {
+   "id": "well",
+   "category": "things",
+   "uses": 2
+  },
+  {
+   "id": "pillars",
+   "category": "faith",
+   "uses": 2
+  },
+  {
+   "id": "wall",
+   "category": "buildings",
+   "uses": 7
+  },
+  {
+   "id": "gate",
+   "category": "buildings",
+   "uses": 3
+  },
+  {
+   "id": "door",
+   "category": "buildings",
+   "uses": 2
+  },
+  {
+   "id": "tower",
+   "category": "buildings",
+   "uses": 1
+  },
+  {
+   "id": "bricks",
+   "category": "buildings",
+   "uses": 2
+  },
+  {
+   "id": "pyramid",
+   "category": "buildings",
+   "uses": 2
+  },
+  {
+   "id": "house",
+   "category": "buildings",
+   "uses": 8
+  },
+  {
+   "id": "anchor",
+   "category": "things",
+   "uses": 1
+  }
+ ],
+ "puzzles": [
+  {
+   "id": "fs-001",
+   "tier": 1,
+   "answer": "NOAH",
+   "category": "person",
+   "clues": [
+    "i:boat",
+    "i:rain",
+    "i:bird",
+    "i:rainbow"
+   ],
+   "distractors": [
+    "JONAH",
+    "MOSES",
+    "ABRAHAM"
+   ],
+   "ref": "Genesis 6-9",
+   "why": "An ark, a flood, a returning dove, and the covenant sign."
+  },
+  {
+   "id": "fs-002",
+   "tier": 1,
+   "answer": "MOSES",
+   "category": "person",
+   "clues": [
+    "i:staff",
+    "i:tablets",
+    "i:flame",
+    "i:waves"
+   ],
+   "distractors": [
+    "AARON",
+    "JOSHUA",
+    "ELIJAH"
+   ],
+   "ref": "Exodus 3-20",
+   "why": "A staff, a burning bush, the sea parted, and the law on tablets."
+  },
+  {
+   "id": "fs-003",
+   "tier": 1,
+   "answer": "DAVID",
+   "category": "person",
+   "clues": [
+    "i:sling",
+    "i:harp",
+    "i:crown",
+    "i:sheep"
+   ],
+   "distractors": [
+    "SAUL",
+    "SOLOMON",
+    "SAMUEL"
+   ],
+   "ref": "1 Samuel 16-17",
+   "why": "A shepherd, a musician, a giant-slayer, and a king."
+  },
+  {
+   "id": "fs-004",
+   "tier": 1,
+   "answer": "GOLIATH",
+   "category": "person",
+   "clues": [
+    "i:helmet",
+    "i:spear",
+    "i:rock",
+    "i:shield"
+   ],
+   "distractors": [
+    "SAMSON",
+    "HAMAN",
+    "PHARAOH"
+   ],
+   "ref": "1 Samuel 17",
+   "why": "The armored champion felled by a single stone."
+  },
+  {
+   "id": "fs-005",
+   "tier": 1,
+   "answer": "JONAH",
+   "category": "person",
+   "clues": [
+    "i:fish",
+    "i:boat",
+    "i:storm",
+    "i:leaf"
+   ],
+   "distractors": [
+    "NOAH",
+    "PAUL",
+    "ELIJAH"
+   ],
+   "ref": "Jonah 1-4",
+   "why": "A great fish, a ship in a storm, and a plant that shaded him."
+  },
+  {
+   "id": "fs-006",
+   "tier": 1,
+   "answer": "DANIEL",
+   "category": "person",
+   "clues": [
+    "i:lion",
+    "i:hand",
+    "i:cave",
+    "i:scroll"
+   ],
+   "distractors": [
+    "JOSEPH",
+    "ESTHER",
+    "ISAIAH"
+   ],
+   "ref": "Daniel 5-6",
+   "why": "Writing on the wall, a den of lions, and visions he recorded."
+  },
+  {
+   "id": "fs-007",
+   "tier": 1,
+   "answer": "ESTHER",
+   "category": "person",
+   "clues": [
+    "i:crown",
+    "i:scroll",
+    "i:ring",
+    "i:cup"
+   ],
+   "distractors": [
+    "RUTH",
+    "NAOMI",
+    "DEBORAH"
+   ],
+   "ref": "Esther 2-8",
+   "why": "A queen, a royal decree sealed with a ring, and a banquet."
+  },
+  {
+   "id": "fs-008",
+   "tier": 1,
+   "answer": "JOSEPH",
+   "category": "person",
+   "clues": [
+    "i:coat",
+    "i:well",
+    "i:star",
+    "i:wheat"
+   ],
+   "distractors": [
+    "JUDAH",
+    "BENJAMIN",
+    "REUBEN"
+   ],
+   "ref": "Genesis 37-41",
+   "why": "A special coat, a pit, dreams of stars, and stored grain."
+  },
+  {
+   "id": "fs-009",
+   "tier": 1,
+   "answer": "ABRAHAM",
+   "category": "person",
+   "clues": [
+    "i:star",
+    "i:sheep",
+    "i:tent",
+    "i:altar"
+   ],
+   "distractors": [
+    "ISAAC",
+    "LOT",
+    "JACOB"
+   ],
+   "ref": "Genesis 12-22",
+   "why": "Countless stars, a tent, an altar, and a ram."
+  },
+  {
+   "id": "fs-010",
+   "tier": 1,
+   "answer": "PETER",
+   "category": "person",
+   "clues": [
+    "i:keys",
+    "i:net",
+    "i:rock",
+    "w:Denied three times"
+   ],
+   "distractors": [
+    "ANDREW",
+    "JOHN",
+    "PAUL"
+   ],
+   "ref": "Matthew 4; 16; 26",
+   "why": "A fisherman given the keys, called the rock, who denied Jesus."
+  },
+  {
+   "id": "fs-011",
+   "tier": 1,
+   "answer": "PAUL",
+   "category": "person",
+   "clues": [
+    "i:tent",
+    "i:scroll",
+    "i:boat",
+    "i:chain"
+   ],
+   "distractors": [
+    "SILAS",
+    "TIMOTHY",
+    "BARNABAS"
+   ],
+   "ref": "Acts 18; 27-28",
+   "why": "A tentmaker who wrote letters, was shipwrecked, and wore chains."
+  },
+  {
+   "id": "fs-012",
+   "tier": 1,
+   "answer": "SAMSON",
+   "category": "person",
+   "clues": [
+    "i:lion",
+    "i:scissors",
+    "i:pillars",
+    "i:honey"
+   ],
+   "distractors": [
+    "GIDEON",
+    "GOLIATH",
+    "JEPHTHAH"
+   ],
+   "ref": "Judges 14-16",
+   "why": "A lion, honey in its carcass, cut hair, and toppled pillars."
+  },
+  {
+   "id": "fs-013",
+   "tier": 1,
+   "answer": "MARY",
+   "category": "person",
+   "clues": [
+    "i:star",
+    "i:baby",
+    "i:wings",
+    "i:flower"
+   ],
+   "distractors": [
+    "ELIZABETH",
+    "MARTHA",
+    "RUTH"
+   ],
+   "ref": "Luke 1-2",
+   "why": "An angel's visit, a baby, and the star over Bethlehem."
+  },
+  {
+   "id": "fs-014",
+   "tier": 1,
+   "answer": "EDEN",
+   "category": "place",
+   "clues": [
+    "i:tree",
+    "i:serpent",
+    "i:fruit",
+    "i:sword"
+   ],
+   "distractors": [
+    "SINAI",
+    "ZION",
+    "SHILOH"
+   ],
+   "ref": "Genesis 2-3",
+   "why": "A garden, a tempting snake, forbidden fruit, and a guarded gate."
+  },
+  {
+   "id": "fs-015",
+   "tier": 1,
+   "answer": "MANNA",
+   "category": "thing",
+   "clues": [
+    "i:sun",
+    "i:drop",
+    "i:basket",
+    "i:bread"
+   ],
+   "distractors": [
+    "QUAIL",
+    "HONEY",
+    "LEAVEN"
+   ],
+   "ref": "Exodus 16",
+   "why": "Bread-like food gathered each morning with the dew."
+  },
+  {
+   "id": "fs-016",
+   "tier": 1,
+   "answer": "BETHLEHEM",
+   "category": "place",
+   "clues": [
+    "i:star",
+    "i:baby",
+    "i:sheep",
+    "i:crown"
+   ],
+   "distractors": [
+    "NAZARETH",
+    "JERICHO",
+    "CAPERNAUM"
+   ],
+   "ref": "Micah 5:2; Luke 2",
+   "why": "The town of Jesus' birth, the shepherds, and David's city."
+  },
+  {
+   "id": "fs-017",
+   "tier": 1,
+   "answer": "JERICHO",
+   "category": "place",
+   "clues": [
+    "i:wall",
+    "i:shofar",
+    "i:footprints",
+    "i:tree"
+   ],
+   "distractors": [
+    "BABYLON",
+    "SODOM",
+    "DAMASCUS"
+   ],
+   "ref": "Joshua 6",
+   "why": "A walled city of palms that fell after a march and trumpets."
+  },
+  {
+   "id": "fs-018",
+   "tier": 1,
+   "answer": "EGYPT",
+   "category": "place",
+   "clues": [
+    "i:pyramid",
+    "i:river",
+    "i:bricks",
+    "i:frog"
+   ],
+   "distractors": [
+    "CANAAN",
+    "ASSYRIA",
+    "BABYLON"
+   ],
+   "ref": "Exodus 1-12",
+   "why": "The Nile, brickmaking slaves, and the plagues."
+  },
+  {
+   "id": "fs-019",
+   "tier": 1,
+   "answer": "GALILEE",
+   "category": "place",
+   "clues": [
+    "i:boat",
+    "i:fish",
+    "i:net",
+    "i:waves"
+   ],
+   "distractors": [
+    "JORDAN",
+    "SINAI",
+    "CARMEL"
+   ],
+   "ref": "Matthew 4:18",
+   "why": "A lake where fishermen were called."
+  },
+  {
+   "id": "fs-020",
+   "tier": 1,
+   "answer": "PASSOVER",
+   "category": "thing",
+   "clues": [
+    "i:sheep",
+    "i:door",
+    "i:drop",
+    "i:bread"
+   ],
+   "distractors": [
+    "PENTECOST",
+    "SABBATH",
+    "JUBILEE"
+   ],
+   "ref": "Exodus 12",
+   "why": "A lamb, blood on the doorframe, and unleavened bread."
+  },
+  {
+   "id": "fs-021",
+   "tier": 1,
+   "answer": "SINAI",
+   "category": "place",
+   "clues": [
+    "i:mountain",
+    "i:tablets",
+    "i:storm",
+    "i:shofar"
+   ],
+   "distractors": [
+    "CARMEL",
+    "ZION",
+    "ARARAT"
+   ],
+   "ref": "Exodus 19-20",
+   "why": "Thunder, a trumpet blast, and the law given on a mountain."
+  },
+  {
+   "id": "fs-022",
+   "tier": 1,
+   "answer": "LIGHT",
+   "category": "thing",
+   "clues": [
+    "i:sun",
+    "i:lamp",
+    "i:candle",
+    "i:star"
+   ],
+   "distractors": [
+    "SALT",
+    "VINE",
+    "DOOR"
+   ],
+   "ref": "Matthew 5:14; John 8:12",
+   "why": "Things that shine; Jesus called his followers this."
+  },
+  {
+   "id": "fs-023",
+   "tier": 1,
+   "answer": "SHEPHERD",
+   "category": "person",
+   "clues": [
+    "i:staff",
+    "i:sheep",
+    "i:harp",
+    "i:star"
+   ],
+   "distractors": [
+    "FISHERMAN",
+    "FARMER",
+    "CARPENTER"
+   ],
+   "ref": "Psalm 23; Luke 2",
+   "why": "A staff, a flock, a night watch, and a psalm."
+  },
+  {
+   "id": "fs-024",
+   "tier": 1,
+   "answer": "GOLGOTHA",
+   "category": "place",
+   "clues": [
+    "i:cross",
+    "i:mountain",
+    "i:nails",
+    "i:thorns"
+   ],
+   "distractors": [
+    "GETHSEMANE",
+    "BETHANY",
+    "EMMAUS"
+   ],
+   "ref": "Matthew 27:33",
+   "why": "The hill of the crucifixion."
+  },
+  {
+   "id": "fs-025",
+   "tier": 1,
+   "answer": "HARVEST",
+   "category": "thing",
+   "clues": [
+    "i:wheat",
+    "i:sickle",
+    "i:basket",
+    "i:sun"
+   ],
+   "distractors": [
+    "FAMINE",
+    "FLOOD",
+    "EXILE"
+   ],
+   "ref": "Matthew 9:37",
+   "why": "Grain, a sickle, and full baskets."
+  },
+  {
+   "id": "fs-026",
+   "tier": 1,
+   "answer": "LOVE",
+   "category": "thing",
+   "clues": [
+    "i:heart",
+    "i:cross",
+    "i:hand",
+    "w:The greatest of these"
+   ],
+   "distractors": [
+    "FAITH",
+    "HOPE",
+    "ENVY"
+   ],
+   "ref": "1 Corinthians 13",
+   "why": "Greater than faith and hope."
+  },
+  {
+   "id": "fs-027",
+   "tier": 1,
+   "answer": "PEACE",
+   "category": "thing",
+   "clues": [
+    "i:bird",
+    "i:olive",
+    "i:sun",
+    "w:Be still"
+   ],
+   "distractors": [
+    "JOY",
+    "WAR",
+    "PATIENCE"
+   ],
+   "ref": "Genesis 8:11; John 14:27",
+   "why": "A dove with an olive leaf, and stillness."
+  },
+  {
+   "id": "fs-028",
+   "tier": 1,
+   "answer": "BREAD",
+   "category": "thing",
+   "clues": [
+    "i:wheat",
+    "i:basket",
+    "i:fish",
+    "i:rock"
+   ],
+   "distractors": [
+    "WINE",
+    "HONEY",
+    "OIL"
+   ],
+   "ref": "Matthew 4:3; John 6:35",
+   "why": "Grain, loaves and fish, and stones that could be turned into it."
+  },
+  {
+   "id": "fs-029",
+   "tier": 2,
+   "answer": "ELIJAH",
+   "category": "person",
+   "clues": [
+    "i:bird",
+    "i:flame",
+    "i:rain",
+    "i:mountain"
+   ],
+   "distractors": [
+    "ELISHA",
+    "ISAIAH",
+    "JEREMIAH"
+   ],
+   "ref": "1 Kings 17-19",
+   "why": "Ravens that fed him, fire on Carmel, and rain after drought."
+  },
+  {
+   "id": "fs-030",
+   "tier": 2,
+   "answer": "PENTECOST",
+   "category": "thing",
+   "clues": [
+    "i:flame",
+    "i:wind",
+    "i:bird",
+    "i:speech"
+   ],
+   "distractors": [
+    "PASSOVER",
+    "SABBATH",
+    "JUBILEE"
+   ],
+   "ref": "Acts 2",
+   "why": "Tongues of fire, a rushing wind, and many languages."
+  },
+  {
+   "id": "fs-031",
+   "tier": 2,
+   "answer": "GETHSEMANE",
+   "category": "place",
+   "clues": [
+    "i:tree",
+    "i:moon",
+    "i:cup",
+    "i:lamp"
+   ],
+   "distractors": [
+    "GOLGOTHA",
+    "BETHANY",
+    "EMMAUS"
+   ],
+   "ref": "Matthew 26:36-46; John 18:3",
+   "why": "A night garden of olive trees, a prayer about a cup, and lanterns."
+  },
+  {
+   "id": "fs-032",
+   "tier": 2,
+   "answer": "ARARAT",
+   "category": "place",
+   "clues": [
+    "i:mountain",
+    "i:boat",
+    "i:bird",
+    "i:olive"
+   ],
+   "distractors": [
+    "SINAI",
+    "CARMEL",
+    "NEBO"
+   ],
+   "ref": "Genesis 8:4",
+   "why": "Where the ark came to rest."
+  },
+  {
+   "id": "fs-033",
+   "tier": 2,
+   "answer": "BABEL",
+   "category": "place",
+   "clues": [
+    "i:tower",
+    "i:bricks",
+    "i:speech",
+    "i:wind"
+   ],
+   "distractors": [
+    "BABYLON",
+    "SODOM",
+    "NINEVEH"
+   ],
+   "ref": "Genesis 11:1-9",
+   "why": "A tower of bricks, confused speech, and scattered people."
+  },
+  {
+   "id": "fs-034",
+   "tier": 2,
+   "answer": "JORDAN",
+   "category": "place",
+   "clues": [
+    "i:river",
+    "i:bird",
+    "i:drop",
+    "i:footprints"
+   ],
+   "distractors": [
+    "GALILEE",
+    "NILE",
+    "EUPHRATES"
+   ],
+   "ref": "Joshua 3; Matthew 3",
+   "why": "A river crossed on foot and the site of a dove-marked baptism."
+  },
+  {
+   "id": "fs-035",
+   "tier": 2,
+   "answer": "JERUSALEM",
+   "category": "place",
+   "clues": [
+    "i:wall",
+    "i:temple",
+    "i:mountain",
+    "i:gate"
+   ],
+   "distractors": [
+    "BETHLEHEM",
+    "BABYLON",
+    "DAMASCUS"
+   ],
+   "ref": "Psalm 122; Nehemiah 2",
+   "why": "A hilltop city with walls, gates, and a temple."
+  },
+  {
+   "id": "fs-036",
+   "tier": 2,
+   "answer": "RUTH",
+   "category": "person",
+   "clues": [
+    "i:wheat",
+    "i:heart",
+    "i:basket",
+    "i:hand"
+   ],
+   "distractors": [
+    "NAOMI",
+    "ESTHER",
+    "DEBORAH"
+   ],
+   "ref": "Ruth 1-4",
+   "why": "A gleaner in the fields, loyal to her mother-in-law."
+  },
+  {
+   "id": "fs-037",
+   "tier": 2,
+   "answer": "JACOB",
+   "category": "person",
+   "clues": [
+    "i:ladder",
+    "i:rock",
+    "i:sheep",
+    "i:well"
+   ],
+   "distractors": [
+    "ESAU",
+    "ISAAC",
+    "LABAN"
+   ],
+   "ref": "Genesis 28-29",
+   "why": "A stairway dream, a stone pillow, flocks, and a well."
+  },
+  {
+   "id": "fs-038",
+   "tier": 2,
+   "answer": "NEHEMIAH",
+   "category": "person",
+   "clues": [
+    "i:wall",
+    "i:cup",
+    "i:hammer",
+    "i:scroll"
+   ],
+   "distractors": [
+    "EZRA",
+    "ISAIAH",
+    "HAGGAI"
+   ],
+   "ref": "Nehemiah 1-6",
+   "why": "A cupbearer who rebuilt a wall."
+  },
+  {
+   "id": "fs-039",
+   "tier": 2,
+   "answer": "ZACCHAEUS",
+   "category": "person",
+   "clues": [
+    "i:tree",
+    "i:coins",
+    "i:house",
+    "w:A short man"
+   ],
+   "distractors": [
+    "NICODEMUS",
+    "MATTHEW",
+    "BARTIMAEUS"
+   ],
+   "ref": "Luke 19:1-10",
+   "why": "A tax collector in a tree who hosted Jesus."
+  },
+  {
+   "id": "fs-040",
+   "tier": 2,
+   "answer": "LAZARUS",
+   "category": "person",
+   "clues": [
+    "i:cave",
+    "i:drop",
+    "w:Four days",
+    "w:Grave clothes"
+   ],
+   "distractors": [
+    "MARTHA",
+    "JAIRUS",
+    "SIMON"
+   ],
+   "ref": "John 11",
+   "why": "Tears at a tomb, then a man called out alive."
+  },
+  {
+   "id": "fs-041",
+   "tier": 2,
+   "answer": "GIDEON",
+   "category": "person",
+   "clues": [
+    "i:jar",
+    "i:lamp",
+    "i:shofar",
+    "i:sheep"
+   ],
+   "distractors": [
+    "SAMSON",
+    "BARAK",
+    "EHUD"
+   ],
+   "ref": "Judges 6-7",
+   "why": "Jars with torches, trumpets, and a fleece test."
+  },
+  {
+   "id": "fs-042",
+   "tier": 2,
+   "answer": "SOLOMON",
+   "category": "person",
+   "clues": [
+    "i:temple",
+    "i:scales",
+    "i:crown",
+    "i:coins"
+   ],
+   "distractors": [
+    "DAVID",
+    "HEZEKIAH",
+    "REHOBOAM"
+   ],
+   "ref": "1 Kings 3-10",
+   "why": "A wise judge, a temple builder, and great wealth."
+  },
+  {
+   "id": "fs-043",
+   "tier": 2,
+   "answer": "PHARAOH",
+   "category": "person",
+   "clues": [
+    "i:crown",
+    "i:pyramid",
+    "i:frog",
+    "i:waves"
+   ],
+   "distractors": [
+    "HEROD",
+    "CAESAR",
+    "AHASUERUS"
+   ],
+   "ref": "Exodus 5-14",
+   "why": "The ruler who faced plagues and lost his army in the sea."
+  },
+  {
+   "id": "fs-044",
+   "tier": 2,
+   "answer": "BABYLON",
+   "category": "place",
+   "clues": [
+    "i:river",
+    "i:tree",
+    "i:lion",
+    "i:gate"
+   ],
+   "distractors": [
+    "EGYPT",
+    "NINEVEH",
+    "JERICHO"
+   ],
+   "ref": "Psalm 137; Daniel 1-6",
+   "why": "A city of rivers where exiles hung their harps, with lions."
+  },
+  {
+   "id": "fs-045",
+   "tier": 2,
+   "answer": "SODOM",
+   "category": "place",
+   "clues": [
+    "i:flame",
+    "i:salt",
+    "i:wall",
+    "w:Lot's escape"
+   ],
+   "distractors": [
+    "JERICHO",
+    "NINEVEH",
+    "BABEL"
+   ],
+   "ref": "Genesis 19",
+   "why": "Fire from heaven and a pillar of salt."
+  },
+  {
+   "id": "fs-046",
+   "tier": 2,
+   "answer": "CANAAN",
+   "category": "place",
+   "clues": [
+    "i:grapes",
+    "i:honey",
+    "i:jar",
+    "i:wheat"
+   ],
+   "distractors": [
+    "EGYPT",
+    "MOAB",
+    "EDOM"
+   ],
+   "ref": "Exodus 3:8; Numbers 13",
+   "why": "The land of milk and honey and giant grape clusters."
+  },
+  {
+   "id": "fs-047",
+   "tier": 2,
+   "answer": "CANA",
+   "category": "place",
+   "clues": [
+    "i:jar",
+    "i:grapes",
+    "i:cup",
+    "i:ring"
+   ],
+   "distractors": [
+    "NAIN",
+    "EMMAUS",
+    "BETHANY"
+   ],
+   "ref": "John 2:1-11",
+   "why": "A wedding where water became wine."
+  },
+  {
+   "id": "fs-048",
+   "tier": 2,
+   "answer": "MAGI",
+   "category": "person",
+   "clues": [
+    "i:star",
+    "i:gift",
+    "i:crown",
+    "i:footprints"
+   ],
+   "distractors": [
+    "SHEPHERDS",
+    "ANGELS",
+    "PRIESTS"
+   ],
+   "ref": "Matthew 2:1-12",
+   "why": "Travelers who followed a star bearing gifts."
+  },
+  {
+   "id": "fs-049",
+   "tier": 2,
+   "answer": "PARABLE",
+   "category": "thing",
+   "clues": [
+    "i:seed",
+    "i:sheep",
+    "i:coins",
+    "i:lamp"
+   ],
+   "distractors": [
+    "PROPHECY",
+    "PSALM",
+    "PROVERB"
+   ],
+   "ref": "Matthew 13; Luke 15",
+   "why": "A sower, a lost sheep, a lost coin: stories Jesus told."
+  },
+  {
+   "id": "fs-050",
+   "tier": 2,
+   "answer": "BAPTISM",
+   "category": "thing",
+   "clues": [
+    "i:drop",
+    "i:river",
+    "i:bird",
+    "w:Immersed"
+   ],
+   "distractors": [
+    "COMMUNION",
+    "SABBATH",
+    "PASSOVER"
+   ],
+   "ref": "Matthew 3:13-17",
+   "why": "Water, a river, and a descending dove."
+  },
+  {
+   "id": "fs-051",
+   "tier": 2,
+   "answer": "ARMOR",
+   "category": "thing",
+   "clues": [
+    "i:helmet",
+    "i:shield",
+    "i:sword",
+    "w:Stand firm"
+   ],
+   "distractors": [
+    "BANNER",
+    "CHARIOT",
+    "FORTRESS"
+   ],
+   "ref": "Ephesians 6:10-17",
+   "why": "Helmet, shield, and sword of the Spirit."
+  },
+  {
+   "id": "fs-052",
+   "tier": 2,
+   "answer": "FAITH",
+   "category": "thing",
+   "clues": [
+    "i:seed",
+    "i:mountain",
+    "i:shield",
+    "w:Not by sight"
+   ],
+   "distractors": [
+    "HOPE",
+    "LOVE",
+    "GRACE"
+   ],
+   "ref": "Matthew 17:20; Ephesians 6:16",
+   "why": "A mustard seed that moves mountains, and a shield."
+  },
+  {
+   "id": "fs-053",
+   "tier": 2,
+   "answer": "HOPE",
+   "category": "thing",
+   "clues": [
+    "i:anchor",
+    "i:sun",
+    "i:seed",
+    "i:star"
+   ],
+   "distractors": [
+    "FAITH",
+    "LOVE",
+    "PEACE"
+   ],
+   "ref": "Hebrews 6:19",
+   "why": "An anchor for the soul and a rising dawn."
+  },
+  {
+   "id": "fs-054",
+   "tier": 2,
+   "answer": "GRACE",
+   "category": "thing",
+   "clues": [
+    "i:gift",
+    "i:hand",
+    "i:heart",
+    "w:Unearned favor"
+   ],
+   "distractors": [
+    "LAW",
+    "MERCY",
+    "TRUTH"
+   ],
+   "ref": "Ephesians 2:8-9",
+   "why": "A free gift received with open hands."
+  },
+  {
+   "id": "fs-055",
+   "tier": 2,
+   "answer": "VINE",
+   "category": "thing",
+   "clues": [
+    "i:grapes",
+    "i:leaf",
+    "i:scissors",
+    "i:cup"
+   ],
+   "distractors": [
+    "FIG",
+    "OLIVE",
+    "CEDAR"
+   ],
+   "ref": "John 15:1-5",
+   "why": "Branches, pruning, and grapes."
+  },
+  {
+   "id": "fs-056",
+   "tier": 2,
+   "answer": "OIL",
+   "category": "thing",
+   "clues": [
+    "i:lamp",
+    "i:olive",
+    "i:drop",
+    "i:crown"
+   ],
+   "distractors": [
+    "WINE",
+    "WATER",
+    "MILK"
+   ],
+   "ref": "1 Samuel 16:13; Matthew 25",
+   "why": "Fuel for lamps and the anointing of kings."
+  },
+  {
+   "id": "fs-057",
+   "tier": 2,
+   "answer": "ROCK",
+   "category": "thing",
+   "clues": [
+    "i:house",
+    "i:drop",
+    "i:keys",
+    "i:mountain"
+   ],
+   "distractors": [
+    "SAND",
+    "CLAY",
+    "IRON"
+   ],
+   "ref": "Matthew 7:24; Exodus 17:6; Matthew 16:18",
+   "why": "A house's foundation, water from a rock, and Peter."
+  },
+  {
+   "id": "fs-058",
+   "tier": 2,
+   "answer": "SOWER",
+   "category": "person",
+   "clues": [
+    "i:seed",
+    "i:bird",
+    "i:rock",
+    "i:thorns"
+   ],
+   "distractors": [
+    "REAPER",
+    "SHEPHERD",
+    "VINEDRESSER"
+   ],
+   "ref": "Matthew 13:3-8",
+   "why": "Seed on the path, rocks, and thorns."
+  },
+  {
+   "id": "fs-059",
+   "tier": 3,
+   "answer": "NICODEMUS",
+   "category": "person",
+   "clues": [
+    "i:moon",
+    "i:lamp",
+    "i:scroll",
+    "w:Born again"
+   ],
+   "distractors": [
+    "ZACCHAEUS",
+    "GAMALIEL",
+    "CAIAPHAS"
+   ],
+   "ref": "John 3:1-21",
+   "why": "A Pharisee who came by night."
+  },
+  {
+   "id": "fs-060",
+   "tier": 3,
+   "answer": "PILATE",
+   "category": "person",
+   "clues": [
+    "i:hand",
+    "i:drop",
+    "i:scroll",
+    "i:scales"
+   ],
+   "distractors": [
+    "HEROD",
+    "CAIAPHAS",
+    "FELIX"
+   ],
+   "ref": "Matthew 27:24; John 19:19",
+   "why": "A judge who washed his hands and posted a sign."
+  },
+  {
+   "id": "fs-061",
+   "tier": 3,
+   "answer": "THOMAS",
+   "category": "person",
+   "clues": [
+    "i:hand",
+    "i:nails",
+    "i:eye",
+    "w:Doubting"
+   ],
+   "distractors": [
+    "PHILIP",
+    "ANDREW",
+    "MATTHEW"
+   ],
+   "ref": "John 20:24-29",
+   "why": "He wanted to see and touch the wounds."
+  },
+  {
+   "id": "fs-062",
+   "tier": 3,
+   "answer": "NAZARETH",
+   "category": "place",
+   "clues": [
+    "i:hammer",
+    "i:house",
+    "i:mountain",
+    "w:Carpenter's son"
+   ],
+   "distractors": [
+    "BETHLEHEM",
+    "CANA",
+    "CAPERNAUM"
+   ],
+   "ref": "Matthew 13:55; Luke 4:16-29",
+   "why": "The hometown where he grew up working with wood."
+  },
+  {
+   "id": "fs-063",
+   "tier": 3,
+   "answer": "CAPERNAUM",
+   "category": "place",
+   "clues": [
+    "i:boat",
+    "i:net",
+    "i:house",
+    "i:coins"
+   ],
+   "distractors": [
+    "BETHSAIDA",
+    "CANA",
+    "TIBERIAS"
+   ],
+   "ref": "Matthew 9:1; 17:24",
+   "why": "A lakeside base with fishermen and tax collectors."
+  },
+  {
+   "id": "fs-064",
+   "tier": 3,
+   "answer": "EMMAUS",
+   "category": "place",
+   "clues": [
+    "i:footprints",
+    "i:bread",
+    "i:sun",
+    "i:hand"
+   ],
+   "distractors": [
+    "BETHANY",
+    "SYCHAR",
+    "ANTIOCH"
+   ],
+   "ref": "Luke 24:13-35",
+   "why": "Two travelers recognized him when he broke bread."
+  },
+  {
+   "id": "fs-065",
+   "tier": 3,
+   "answer": "PATMOS",
+   "category": "place",
+   "clues": [
+    "i:island",
+    "i:scroll",
+    "i:eye",
+    "i:lamp"
+   ],
+   "distractors": [
+    "CRETE",
+    "MALTA",
+    "CYPRUS"
+   ],
+   "ref": "Revelation 1:9-11",
+   "why": "An island exile with a vision to write."
+  },
+  {
+   "id": "fs-066",
+   "tier": 3,
+   "answer": "CARMEL",
+   "category": "place",
+   "clues": [
+    "i:mountain",
+    "i:flame",
+    "i:rain",
+    "i:altar"
+   ],
+   "distractors": [
+    "SINAI",
+    "TABOR",
+    "HERMON"
+   ],
+   "ref": "1 Kings 18",
+   "why": "Fire on an altar and then rain."
+  },
+  {
+   "id": "fs-067",
+   "tier": 3,
+   "answer": "DAMASCUS",
+   "category": "place",
+   "clues": [
+    "i:sun",
+    "i:footprints",
+    "i:eye",
+    "w:Straight street"
+   ],
+   "distractors": [
+    "ANTIOCH",
+    "TARSUS",
+    "PHILIPPI"
+   ],
+   "ref": "Acts 9:1-19",
+   "why": "A blinding light on the road and a stay on a street."
+  },
+  {
+   "id": "fs-068",
+   "tier": 3,
+   "answer": "TABERNACLE",
+   "category": "thing",
+   "clues": [
+    "i:tent",
+    "i:lamp",
+    "i:altar",
+    "i:tablets"
+   ],
+   "distractors": [
+    "TEMPLE",
+    "SYNAGOGUE",
+    "PALACE"
+   ],
+   "ref": "Exodus 25-40",
+   "why": "A portable tent with a lampstand, altar, and the law."
+  },
+  {
+   "id": "fs-069",
+   "tier": 3,
+   "answer": "COVENANT",
+   "category": "thing",
+   "clues": [
+    "i:rainbow",
+    "i:tablets",
+    "i:cup",
+    "i:bread"
+   ],
+   "distractors": [
+    "PARABLE",
+    "PROPHECY",
+    "SACRIFICE"
+   ],
+   "ref": "Genesis 9; Exodus 24; Luke 22:20",
+   "why": "A rainbow, stone tablets, and a cup and bread."
+  },
+  {
+   "id": "fs-070",
+   "tier": 3,
+   "answer": "COMMUNION",
+   "category": "thing",
+   "clues": [
+    "i:bread",
+    "i:cup",
+    "i:cross",
+    "i:grapes"
+   ],
+   "distractors": [
+    "BAPTISM",
+    "PASSOVER",
+    "SABBATH"
+   ],
+   "ref": "1 Corinthians 11:23-26",
+   "why": "Bread and cup in remembrance."
+  },
+  {
+   "id": "fs-071",
+   "tier": 3,
+   "answer": "WISDOM",
+   "category": "thing",
+   "clues": [
+    "i:scales",
+    "i:lamp",
+    "i:tree",
+    "i:crown"
+   ],
+   "distractors": [
+    "FOLLY",
+    "PRIDE",
+    "WEALTH"
+   ],
+   "ref": "Proverbs 3-4",
+   "why": "A tree of life, a lamp, and good judgment."
+  },
+  {
+   "id": "fs-072",
+   "tier": 3,
+   "answer": "TREASURE",
+   "category": "thing",
+   "clues": [
+    "i:coins",
+    "i:chest",
+    "i:heart",
+    "i:gift"
+   ],
+   "distractors": [
+    "HARVEST",
+    "WAGES",
+    "LEGACY"
+   ],
+   "ref": "Matthew 6:19-21",
+   "why": "Where it is, there your heart will be."
+  },
+  {
+   "id": "fs-073",
+   "tier": 3,
+   "answer": "PLAGUES",
+   "category": "thing",
+   "clues": [
+    "i:frog",
+    "i:drop",
+    "i:cloud",
+    "i:flame"
+   ],
+   "distractors": [
+    "PARABLES",
+    "MIRACLES",
+    "COVENANTS"
+   ],
+   "ref": "Exodus 7-12",
+   "why": "Frogs, blood, darkness, and fire from the sky."
+  },
+  {
+   "id": "fs-074",
+   "tier": 3,
+   "answer": "SERPENT",
+   "category": "thing",
+   "clues": [
+    "i:staff",
+    "i:tree",
+    "i:fruit",
+    "i:flame"
+   ],
+   "distractors": [
+    "DRAGON",
+    "LOCUST",
+    "SCORPION"
+   ],
+   "ref": "Genesis 3; Exodus 4; Numbers 21",
+   "why": "A staff that changed, a garden tempter, and fiery bites."
+  },
+  {
+   "id": "fs-075",
+   "tier": 3,
+   "answer": "DREAM",
+   "category": "thing",
+   "clues": [
+    "i:moon",
+    "i:star",
+    "i:ladder",
+    "i:wheat"
+   ],
+   "distractors": [
+    "FAMINE",
+    "PLAGUE",
+    "COVENANT"
+   ],
+   "ref": "Genesis 28; 37; 41",
+   "why": "A stairway, sheaves, and stars bowing."
+  },
+  {
+   "id": "fs-076",
+   "tier": 3,
+   "answer": "HEAVEN",
+   "category": "place",
+   "clues": [
+    "i:cloud",
+    "i:ladder",
+    "i:sun",
+    "i:gate"
+   ],
+   "distractors": [
+    "SHEOL",
+    "ZION",
+    "EDEN"
+   ],
+   "ref": "Genesis 28:12; Revelation 21",
+   "why": "A ladder to the sky and gates of the new city."
+  },
+  {
+   "id": "fs-077",
+   "tier": 3,
+   "answer": "SACRIFICE",
+   "category": "thing",
+   "clues": [
+    "i:altar",
+    "i:sheep",
+    "i:flame",
+    "i:hand"
+   ],
+   "distractors": [
+    "PROPHECY",
+    "PILGRIMAGE",
+    "PARABLE"
+   ],
+   "ref": "Genesis 22; Leviticus 1",
+   "why": "An altar, a lamb, and a fire."
+  },
+  {
+   "id": "fs-078",
+   "tier": 3,
+   "answer": "EXILE",
+   "category": "thing",
+   "clues": [
+    "i:river",
+    "i:harp",
+    "i:chain",
+    "i:footprints"
+   ],
+   "distractors": [
+    "HARVEST",
+    "COVENANT",
+    "JUBILEE"
+   ],
+   "ref": "Psalm 137; 2 Kings 25",
+   "why": "Harps hung on willows by the rivers of a foreign land."
+  },
+  {
+   "id": "fs-079",
+   "tier": 3,
+   "answer": "PRODIGAL",
+   "category": "person",
+   "clues": [
+    "i:coins",
+    "i:ring",
+    "i:coat",
+    "i:house"
+   ],
+   "distractors": [
+    "SAMARITAN",
+    "STEWARD",
+    "SOWER"
+   ],
+   "ref": "Luke 15:11-32",
+   "why": "Wasted money, a returning son, a ring, and a robe."
+  },
+  {
+   "id": "fs-080",
+   "tier": 3,
+   "answer": "SAMARITAN",
+   "category": "person",
+   "clues": [
+    "i:footprints",
+    "i:drop",
+    "i:coins",
+    "i:house"
+   ],
+   "distractors": [
+    "PRODIGAL",
+    "PHARISEE",
+    "PUBLICAN"
+   ],
+   "ref": "Luke 10:25-37",
+   "why": "A road, oil and wine, coins, and an inn."
+  },
+  {
+   "id": "fs-081",
+   "tier": 3,
+   "answer": "TITHE",
+   "category": "thing",
+   "clues": [
+    "i:wheat",
+    "i:coins",
+    "i:basket",
+    "i:temple"
+   ],
+   "distractors": [
+    "LOANS",
+    "TAXES",
+    "WAGES"
+   ],
+   "ref": "Malachi 3:10; Leviticus 27:30",
+   "why": "A tenth of the grain brought to the house of God."
+  },
+  {
+   "id": "fs-082",
+   "tier": 3,
+   "answer": "WILDERNESS",
+   "category": "place",
+   "clues": [
+    "i:sun",
+    "i:serpent",
+    "i:bread",
+    "i:flame"
+   ],
+   "distractors": [
+    "GARDEN",
+    "VINEYARD",
+    "MARKET"
+   ],
+   "ref": "Exodus 13-16; Numbers 21",
+   "why": "Forty years of manna, a pillar of fire, and snakes."
+  },
+  {
+   "id": "fs-083",
+   "tier": 3,
+   "answer": "WEDDING",
+   "category": "thing",
+   "clues": [
+    "i:ring",
+    "i:jar",
+    "i:crown",
+    "i:lamp"
+   ],
+   "distractors": [
+    "FUNERAL",
+    "HARVEST",
+    "SABBATH"
+   ],
+   "ref": "John 2; Matthew 25:1-13",
+   "why": "Wine jars at Cana and ten lamps waiting for the bridegroom."
+  },
+  {
+   "id": "fs-084",
+   "tier": 3,
+   "answer": "PRAYER",
+   "category": "thing",
+   "clues": [
+    "i:door",
+    "i:moon",
+    "i:flame",
+    "w:Kneeling"
+   ],
+   "distractors": [
+    "FASTING",
+    "WORSHIP",
+    "PREACHING"
+   ],
+   "ref": "Matthew 6:6; Luke 22:41",
+   "why": "Go into a room, shut the door, and talk with God."
+  },
+  {
+   "id": "fs-085",
+   "tier": 3,
+   "answer": "ROME",
+   "category": "place",
+   "clues": [
+    "i:chain",
+    "i:boat",
+    "i:footprints",
+    "i:crown"
+   ],
+   "distractors": [
+    "ATHENS",
+    "CORINTH",
+    "EPHESUS"
+   ],
+   "ref": "Acts 27-28",
+   "why": "A prisoner's voyage and journey to the capital."
+  },
+  {
+   "id": "fs-086",
+   "tier": 4,
+   "answer": "NEBUCHADNEZZAR",
+   "category": "person",
+   "clues": [
+    "i:crown",
+    "i:tree",
+    "i:flame",
+    "w:Seven times"
+   ],
+   "distractors": [
+    "BELSHAZZAR",
+    "DARIUS",
+    "CYRUS"
+   ],
+   "ref": "Daniel 3-4",
+   "why": "A king of Babylon, a furnace, and a dream of a great tree."
+  },
+  {
+   "id": "fs-087",
+   "tier": 4,
+   "answer": "JUBILEE",
+   "category": "thing",
+   "clues": [
+    "i:shofar",
+    "i:chain",
+    "i:wheat",
+    "w:Every fiftieth year"
+   ],
+   "distractors": [
+    "SABBATH",
+    "PASSOVER",
+    "PENTECOST"
+   ],
+   "ref": "Leviticus 25:8-13",
+   "why": "A trumpet, freedom for captives, and returned land."
+  },
+  {
+   "id": "fs-088",
+   "tier": 4,
+   "answer": "NAAMAN",
+   "category": "person",
+   "clues": [
+    "i:river",
+    "i:drop",
+    "i:coins",
+    "w:Seven times"
+   ],
+   "distractors": [
+    "GEHAZI",
+    "ELISHA",
+    "HIRAM"
+   ],
+   "ref": "2 Kings 5",
+   "why": "A commander washed in a river and healed."
+  },
+  {
+   "id": "fs-089",
+   "tier": 4,
+   "answer": "BELSHAZZAR",
+   "category": "person",
+   "clues": [
+    "i:hand",
+    "i:cup",
+    "i:wall",
+    "i:crown"
+   ],
+   "distractors": [
+    "NEBUCHADNEZZAR",
+    "DARIUS",
+    "CYRUS"
+   ],
+   "ref": "Daniel 5",
+   "why": "A feast, sacred cups, and writing that appeared on a wall."
+  },
+  {
+   "id": "fs-090",
+   "tier": 4,
+   "answer": "LYDIA",
+   "category": "person",
+   "clues": [
+    "i:coat",
+    "i:river",
+    "i:house",
+    "w:Seller of purple"
+   ],
+   "distractors": [
+    "PRISCILLA",
+    "DORCAS",
+    "PHOEBE"
+   ],
+   "ref": "Acts 16:13-15",
+   "why": "A merchant by a river whose household was baptized."
+  },
+  {
+   "id": "fs-091",
+   "tier": 4,
+   "answer": "HEZEKIAH",
+   "category": "person",
+   "clues": [
+    "i:sun",
+    "i:scroll",
+    "i:wall",
+    "i:drop"
+   ],
+   "distractors": [
+    "JOSIAH",
+    "MANASSEH",
+    "UZZIAH"
+   ],
+   "ref": "2 Kings 18-20; Isaiah 38",
+   "why": "A shadow on the sun, a letter spread before God, and a water tunnel."
+  },
+  {
+   "id": "fs-092",
+   "tier": 4,
+   "answer": "LEBANON",
+   "category": "place",
+   "clues": [
+    "i:tree",
+    "i:mountain",
+    "i:temple",
+    "i:boat"
+   ],
+   "distractors": [
+    "ARABIA",
+    "CRETE",
+    "MOAB"
+   ],
+   "ref": "1 Kings 5:6-10; Psalm 92:12",
+   "why": "Famous cedars floated down to build the temple."
+  },
+  {
+   "id": "fs-093",
+   "tier": 4,
+   "answer": "MALTA",
+   "category": "place",
+   "clues": [
+    "i:boat",
+    "i:serpent",
+    "i:flame",
+    "i:island"
+   ],
+   "distractors": [
+    "CRETE",
+    "CYPRUS",
+    "SICILY"
+   ],
+   "ref": "Acts 28:1-6",
+   "why": "A shipwreck, a campfire, and a snake that did no harm."
+  },
+  {
+   "id": "fs-094",
+   "tier": 4,
+   "answer": "ATHENS",
+   "category": "place",
+   "clues": [
+    "i:altar",
+    "i:pillars",
+    "i:speech",
+    "w:Unknown god"
+   ],
+   "distractors": [
+    "CORINTH",
+    "ROME",
+    "EPHESUS"
+   ],
+   "ref": "Acts 17:16-34",
+   "why": "A sermon at Mars Hill about an inscription."
+  },
+  {
+   "id": "fs-095",
+   "tier": 4,
+   "answer": "MELCHIZEDEK",
+   "category": "person",
+   "clues": [
+    "i:bread",
+    "i:cup",
+    "i:crown",
+    "w:Priest of God Most High"
+   ],
+   "distractors": [
+    "AARON",
+    "ELI",
+    "ZADOK"
+   ],
+   "ref": "Genesis 14:18; Hebrews 7",
+   "why": "A king-priest who blessed Abram with bread and wine."
+  },
+  {
+   "id": "fs-096",
+   "tier": 4,
+   "answer": "ELISHA",
+   "category": "person",
+   "clues": [
+    "i:coat",
+    "i:jar",
+    "i:river",
+    "i:bread"
+   ],
+   "distractors": [
+    "ELIJAH",
+    "GEHAZI",
+    "ISAIAH"
+   ],
+   "ref": "2 Kings 2; 4",
+   "why": "A fallen mantle, a widow's oil jar, and loaves for a hundred."
+  },
+  {
+   "id": "fs-097",
+   "tier": 4,
+   "answer": "CAESAR",
+   "category": "person",
+   "clues": [
+    "i:coins",
+    "i:crown",
+    "i:scroll",
+    "w:Whose image is this?"
+   ],
+   "distractors": [
+    "PILATE",
+    "HEROD",
+    "FELIX"
+   ],
+   "ref": "Matthew 22:17-21; Luke 2:1",
+   "why": "A coin question and a census decree."
+  },
+  {
+   "id": "fs-098",
+   "tier": 4,
+   "answer": "SHEBA",
+   "category": "person",
+   "clues": [
+    "i:crown",
+    "i:gift",
+    "i:scales",
+    "i:flame"
+   ],
+   "distractors": [
+    "ETHIOPIA",
+    "EGYPT",
+    "TYRE"
+   ],
+   "ref": "1 Kings 10",
+   "why": "A queen who tested a wise king with hard questions and gifts."
+  },
+  {
+   "id": "fs-099",
+   "tier": 4,
+   "answer": "JOB",
+   "category": "person",
+   "clues": [
+    "i:storm",
+    "i:sheep",
+    "i:house",
+    "i:scales"
+   ],
+   "distractors": [
+    "ELIPHAZ",
+    "ELIHU",
+    "BILDAD"
+   ],
+   "ref": "Job 1-2; 38",
+   "why": "A man who lost flocks and house and heard God from the whirlwind."
+  },
+  {
+   "id": "fs-100",
+   "tier": 4,
+   "answer": "NINEVEH",
+   "category": "place",
+   "clues": [
+    "i:fish",
+    "i:wall",
+    "i:crown",
+    "i:drop"
+   ],
+   "distractors": [
+    "BABYLON",
+    "SIDON",
+    "TYRE"
+   ],
+   "ref": "Jonah 3",
+   "why": "A great city whose king and people repented."
+  }
+ ]
+}

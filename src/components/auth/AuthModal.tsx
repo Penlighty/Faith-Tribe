@@ -5,7 +5,9 @@ import { Button } from '../ui/Button';
 import { Icon } from '../../design/icons';
 import { useAuth } from '../../engine/auth/AuthContext';
 import { useTheme } from '../../theme/ThemeContext';
-import { TRIBES } from '../../design/tribes/tribes';
+import { TRIBES, TRIBES_BY_ID } from '../../design/tribes/tribes';
+import { TribeAvatar } from '../tribes/TribeAvatar';
+import { TribalAssessmentModal } from '../tribes/TribalAssessmentModal';
 
 export interface AuthModalProps {
   isOpen: boolean;
@@ -50,6 +52,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [username, setUsername] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [selectedTribeId, setSelectedTribeId] = useState('judah');
+  const [showAssessmentModal, setShowAssessmentModal] = useState(false);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -208,8 +211,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {/* Scrollable Form Body */}
           <div className="p-5 sm:p-6 overflow-y-auto flex flex-col gap-4">
             {requiredForHost ? (
-              <div className="text-xs text-amber-800 dark:text-amber-200 font-semibold bg-amber-50 dark:bg-amber-950/40 p-3 rounded-2xl border border-amber-300/40 flex items-start gap-2">
-                <span className="text-base shrink-0">🛡️</span>
+              <div className="text-xs text-amber-800 dark:text-amber-200 font-semibold bg-amber-50 dark:bg-amber-950/40 p-3 rounded-2xl border border-amber-300/40 flex items-start gap-2.5">
+                <div className="shrink-0 text-amber-600 dark:text-amber-400 mt-0.5">
+                  <Icon name="shield" size={16} />
+                </div>
                 <span>
                   <strong>Host Authentication Required:</strong> You must sign in to initiate and manage game rooms for your fellowship.
                 </span>
@@ -295,35 +300,39 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     />
                   </div>
 
-                  {/* Biblical Tribe Emblem Picker */}
-                  <div>
-                    <label className="text-xs font-bold text-[var(--on-container-variant)] mb-1 block">
-                      Select Biblical Tribe Emblem
-                    </label>
-                    <div className="grid grid-cols-4 gap-1.5 max-h-32 overflow-y-auto p-1.5 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)]">
-                      {TRIBES.map((trb) => (
-                        <button
-                          key={trb.id}
-                          type="button"
-                          onClick={() => {
-                            triggerHaptic('light');
-                            setSelectedTribeId(trb.id);
-                          }}
-                          className={`p-1.5 rounded-xl flex flex-col items-center gap-1 text-[10px] font-bold transition-all cursor-pointer border ${
-                            selectedTribeId === trb.id
-                              ? 'border-[var(--primary-action)] bg-[var(--surface-card)] shadow-sm'
-                              : 'border-transparent hover:bg-[var(--surface-container-high)] opacity-75'
-                          }`}
-                        >
-                          <span
-                            className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black"
-                            style={{ backgroundColor: trb.container, color: trb.ink }}
-                          >
-                            {trb.name[0]}
-                          </span>
-                          <span className="truncate w-full text-center">{trb.name}</span>
-                        </button>
-                      ))}
+                  {/* Ancestral Tribe Calling & Assessment Card */}
+                  <div className="p-3 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)] flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[11px] font-black uppercase tracking-wider text-[var(--on-container-variant)] flex items-center gap-1">
+                        <Icon name="tribe" size={13} className="text-[var(--primary-action)]" />
+                        <span>Ancestral Tribe Calling</span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setShowAssessmentModal(true)}
+                        className="text-[11px] font-black text-[var(--primary-action)] underline hover:opacity-80 cursor-pointer"
+                      >
+                        Discover Calling (7 Traits)
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-3 p-2 rounded-xl bg-[var(--surface-card)] border border-[var(--border-tint)]">
+                      <TribeAvatar tribeId={selectedTribeId} size="sm" showGlow />
+                      <div className="flex flex-col min-w-0 flex-1">
+                        <span className="text-xs font-black text-[var(--on-container)] truncate">
+                          Tribe of {TRIBES_BY_ID[selectedTribeId]?.name || 'Judah'}
+                        </span>
+                        <span className="text-[10px] text-[var(--on-container-variant)] truncate">
+                          {TRIBES_BY_ID[selectedTribeId]?.title} &bull; {TRIBES_BY_ID[selectedTribeId]?.source}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowAssessmentModal(true)}
+                        className="px-2.5 py-1 rounded-full bg-[var(--surface-container)] text-[10px] font-bold text-[var(--primary-action)] border border-[var(--border-tint)] hover:bg-[var(--surface-container-high)] cursor-pointer"
+                      >
+                        Assess
+                      </button>
                     </div>
                   </div>
                 </>
@@ -375,5 +384,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     </div>
   );
 
-  return createPortal(modalContent, document.body);
+  return createPortal(
+    <>
+      {modalContent}
+      <TribalAssessmentModal
+        isOpen={showAssessmentModal}
+        onClose={() => setShowAssessmentModal(false)}
+        onAssigned={(tribeId) => {
+          setSelectedTribeId(tribeId);
+          setShowAssessmentModal(false);
+        }}
+      />
+    </>,
+    document.body
+  );
 };

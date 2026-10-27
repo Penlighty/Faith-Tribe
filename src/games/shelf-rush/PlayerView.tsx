@@ -13,6 +13,7 @@ import { ConfigSheet } from './components/ConfigSheet';
 import { ResultsView } from './components/ResultsView';
 import { WavyTimer } from '../../components/ui/WavyTimer';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Icon } from '../../design/icons';
 
 export interface ShelfRushPlayerViewProps extends Partial<GameViewProps<ShelfRushGameState>> {
   onExit?: () => void;
@@ -501,7 +502,10 @@ export const ShelfRushPlayerView: React.FC<ShelfRushPlayerViewProps> = ({
               exit={{ opacity: 0 }}
               className="w-full text-center py-2 px-3 rounded-2xl bg-purple-600 text-white font-black text-sm shadow-md"
             >
-              ⛰️ {stepBanner}
+              <span className="flex items-center justify-center gap-1.5">
+                <Icon name="mountain" size={16} />
+                <span>{stepBanner}</span>
+              </span>
             </motion.div>
           )}
         </AnimatePresence>

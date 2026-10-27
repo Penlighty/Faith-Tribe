@@ -105,7 +105,9 @@ export const FinalLeaderboardScreen: React.FC<FinalLeaderboardScreenProps> = ({
           className="border-2 border-[var(--primary-action)]/40 bg-gradient-to-r from-[var(--primary-action)]/10 to-transparent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-md"
         >
           <div className="flex items-center gap-3">
-            <span className="text-2xl">🏆</span>
+            <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center shrink-0">
+              <Icon name="trophy" size={20} />
+            </div>
             <div className="flex flex-col">
               <span className="text-xs font-black text-[var(--on-container)]">
                 Keep your score on the Faith Tribe Leaderboard!

@@ -1,0 +1,303 @@
+/**
+ * Playful Gamified UI Design Tokens
+ */
+
+:root {
+  /* Semantic Color Palette */
+  --c-green: #58CC02;
+  --c-green-lip: #58A700;
+  --c-green-tint: #D7FFB8;
+  --c-green-border: #A6EB74;
+
+  --c-blue: #1CB0F6;
+  --c-blue-lip: #1899D6;
+  --c-blue-tint: #DDF3FE;
+  --c-blue-soft: #84D7FF;
+  --c-blue-soft-lip: #6AACCC;
+
+  --c-orange: #FF9600;
+  --c-orange-deep: #CE7C00;
+
+  --c-yellow: #FFC800;
+
+  --c-red: #FF4B4B;
+  --c-red-lip: #EA2B2B;
+  --c-red-tint: #FFDFE0;
+
+  --c-purple: #CE82FF;
+  --c-purple-deep: #7B4ECF;
+  --c-purple-tint: #E0D1FC;
+
+  --c-pink: #F28DC9;
+
+  /* Neutral Surface & Typography */
+  --c-canvas: #FFFFFF;
+  --c-text: #4B4B4B;
+  --c-text-2: #777777;
+  --c-text-off: #AFAFAF;
+  --c-border: #E5E5E5;
+  --c-surface-muted: #F7F7F7;
+  --c-shadow-blob: #E5E5E5;
+
+  /* Radii */
+  --r-tile: 12px;
+  --r-card: 16px;
+  --r-button: 16px;
+  --r-banner: 16px;
+  --r-pill: 999px;
+  --r-nav: 14px;
+
+  /* Elevation Lip */
+  --lip: 4px;
+  --lip-tile: 2px;
+  --lip-node: 8px;
+
+  /* Typography */
+  --font-gamified: 'Nunito', 'DIN Round Pro', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+.dark {
+  --c-canvas: #131F24;
+  --c-surface-muted: #202F36;
+  --c-border: #37464F;
+  --c-text: #F1F5F9;
+  --c-text-2: #94A3B8;
+  --c-text-off: #64748B;
+  --c-shadow-blob: #202F36;
+  --c-blue-tint: #183344;
+  --c-green-tint: #16361C;
+  --c-red-tint: #3B1C1D;
+  --c-purple-tint: #2A1D3D;
+}
+
+/* 3D Tactile Lip Buttons */
+.btn-gamified {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 24px;
+  border-radius: var(--r-button);
+  font-family: var(--font-gamified);
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  outline: none;
+}
+
+.btn-gamified:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 transparent !important;
+}
+
+.btn-gamified-green {
+  background: var(--c-green);
+  color: #FFFFFF;
+  box-shadow: 0 4px 0 var(--c-green-lip);
+}
+
+.btn-gamified-blue {
+  background: var(--c-blue);
+  color: #FFFFFF;
+  box-shadow: 0 4px 0 var(--c-blue-lip);
+}
+
+.btn-gamified-red {
+  background: var(--c-red);
+  color: #FFFFFF;
+  box-shadow: 0 4px 0 var(--c-red-lip);
+}
+
+.btn-gamified-yellow {
+  background: var(--c-yellow);
+  color: #4B4B4B;
+  box-shadow: 0 4px 0 var(--c-orange-deep);
+}
+
+.btn-gamified-purple {
+  background: var(--c-purple);
+  color: #FFFFFF;
+  box-shadow: 0 4px 0 var(--c-purple-deep);
+}
+
+.btn-gamified-secondary {
+  background: #FFFFFF;
+  color: var(--c-blue);
+  border: 2px solid var(--c-border);
+  box-shadow: 0 4px 0 var(--c-border);
+}
+
+.btn-gamified-outline {
+  background: transparent;
+  color: var(--c-green-lip);
+  border: 2px solid var(--c-green-border);
+  box-shadow: 0 4px 0 var(--c-green-border);
+}
+
+.btn-gamified:disabled {
+  background: var(--c-border) !important;
+  color: var(--c-text-off) !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Answer Tile */
+.tile-gamified {
+  height: 44px;
+  padding: 0 16px;
+  border-radius: var(--r-tile);
+  background: #FFFFFF;
+  border: 2px solid var(--c-border);
+  box-shadow: 0 2px 0 var(--c-border);
+  font-family: var(--font-gamified);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--c-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.tile-gamified:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 transparent;
+}
+
+.tile-gamified-slot {
+  height: 44px;
+  border-radius: var(--r-tile);
+  background: var(--c-border);
+  opacity: 0.6;
+}
+
+.tile-gamified-correct {
+  background: var(--c-green-tint);
+  border-color: var(--c-green-border);
+  color: var(--c-green-lip);
+  box-shadow: 0 2px 0 var(--c-green-border);
+}
+
+.tile-gamified-incorrect {
+  background: var(--c-red-tint);
+  border-color: var(--c-red);
+  color: var(--c-red-lip);
+  box-shadow: 0 2px 0 var(--c-red-lip);
+}
+
+/* Glossy Tube Progress Bar */
+.progress-gamified {
+  height: 14px;
+  border-radius: var(--r-pill);
+  background: var(--c-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-gamified-fill {
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--c-orange);
+  position: relative;
+  transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.progress-gamified-fill::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 2px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Sine-Wave Journey Path Square Milestone Nodes */
+.path-node-puck {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.12s ease;
+}
+
+.path-node-current {
+  background: var(--c-blue-soft);
+  box-shadow: 0 8px 0 var(--c-blue-soft-lip);
+}
+
+.path-node-current:active {
+  transform: translateY(8px);
+  box-shadow: 0 0 0 transparent;
+}
+
+.path-node-complete {
+  background: var(--c-green);
+  box-shadow: 0 8px 0 var(--c-green-lip);
+}
+
+.path-node-complete:active {
+  transform: translateY(8px);
+  box-shadow: 0 0 0 transparent;
+}
+
+.path-node-gold {
+  background: var(--c-yellow);
+  box-shadow: 0 8px 0 var(--c-orange-deep);
+}
+
+.path-node-gold:active {
+  transform: translateY(8px);
+  box-shadow: 0 0 0 transparent;
+}
+
+.path-node-locked {
+  background: var(--c-border);
+  box-shadow: 0 8px 0 #B8B8B8;
+  cursor: not-allowed;
+}
+
+/* Pulsing Halo for Current Node */
+@keyframes nodePulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.14);
+    opacity: 0.35;
+  }
+}
+
+.node-halo {
+  animation: nodePulse 1.6s ease-in-out infinite;
+}
+
+/* Feedback Sheet Animation */
+@keyframes sheetUp {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-sheet-up {
+  animation: sheetUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}

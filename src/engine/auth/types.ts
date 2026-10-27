@@ -7,6 +7,14 @@ export interface UserStats {
   lastPlayedAt?: number;
 }
 
+export interface TribalAssessmentRecord {
+  biblicalTribeId: string;
+  assessedAt: number;
+  traits: Record<string, number>;
+  matchPercentage: number;
+  secondaryTribeId?: string;
+}
+
 export interface UserProfile {
   uid: string;
   email?: string;
@@ -14,6 +22,7 @@ export interface UserProfile {
   displayName: string; // e.g. "Pastor David"
   avatarSeed: string;
   biblicalTribeId: string; // Selected biblical tribe emblem (e.g. 'judah', 'reuben')
+  tribalAssessment?: TribalAssessmentRecord;
   createdAt: number;
   stats: UserStats;
 }

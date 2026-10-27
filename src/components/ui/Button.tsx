@@ -3,10 +3,11 @@ import { motion, HTMLMotionProps } from 'framer-motion';
 import { useTheme } from '../../theme/ThemeContext';
 
 export interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
-  variant?: 'primary' | 'tonal' | 'outlined' | 'ghost' | 'danger';
+  variant?: 'primary' | 'success' | 'final' | 'amber' | 'warning' | 'tonal' | 'outlined' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg' | 'hero' | 'icon';
   pill?: boolean;
   shapeMorph?: boolean;
+  lip?: boolean | 'green' | 'blue' | 'red' | 'yellow';
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   haptic?: 'light' | 'medium' | 'heavy' | 'selection';
@@ -19,7 +20,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant = 'primary',
       size = 'md',
       pill = true,
-      shapeMorph = true,
+      shapeMorph = false,
+      lip = true, // Default to 3D tactile bevel button style
       leftIcon,
       rightIcon,
       haptic = 'light',
@@ -39,54 +41,71 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       if (onClick) onClick(e);
     };
 
-    // Base sizing
+    // Base sizing with tactile vertical rhythm
     const sizeClasses = {
-      sm: 'h-9 px-4 text-xs font-semibold gap-1.5',
-      md: 'h-12 px-6 text-sm font-bold gap-2',
-      lg: 'h-14 px-8 text-base font-bold gap-2.5',
-      hero: 'h-16 px-9 text-lg font-extrabold gap-3 shadow-expressive',
+      sm: 'h-10 px-4 text-xs font-black tracking-wider gap-1.5',
+      md: 'h-12 px-6 text-sm font-black tracking-wider gap-2',
+      lg: 'h-14 px-8 text-base font-black tracking-wider gap-2.5',
+      hero: 'h-16 px-10 text-lg font-black tracking-wide gap-3',
       icon: 'w-11 h-11 p-0 flex items-center justify-center',
     }[size];
 
-    // Variants with high contrast WCAG AA
-    const variantClasses = {
-      primary:
-        'bg-[var(--primary-action)] text-[var(--primary-action-text)] hover:opacity-95 shadow-md active:shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--primary-action)]',
-      tonal:
-        'bg-[var(--surface-container-high)] text-[var(--on-container)] hover:brightness-95 active:brightness-90',
-      outlined:
-        'border-2 border-[var(--on-container)]/20 text-[var(--on-container)] bg-transparent hover:bg-[var(--surface-container)]/50',
-      ghost:
-        'text-[var(--on-container)] bg-transparent hover:bg-[var(--surface-container)]/60',
-      danger:
-        'bg-red-600 text-white hover:bg-red-700 shadow-md',
-    }[variant];
+    // Tactile 3D button styling with solid bottom bevel & pressed downward push
+    const isFinalOrSuccess = variant === 'success' || variant === 'final';
+    const isAmberOrWarning = variant === 'amber' || variant === 'warning';
 
-    const initialRadius = pill ? '9999px' : '22px';
-    const pressedRadius = shapeMorph ? '20px' : initialRadius;
+    let variantClasses = '';
+    if (isFinalOrSuccess) {
+      // Final steps / gameplay final step: Vibrant Emerald Green with darker green 3D lip
+      variantClasses =
+        'bg-[#58CC02] hover:bg-[#4EBA02] text-white shadow-[0_4px_0_#58A700] active:shadow-none active:translate-y-[4px] border-t border-white/20';
+    } else if (variant === 'primary') {
+      // Standard / preliminary steps: Vibrant Brand Sky Blue / Cyan (Image 3)
+      variantClasses =
+        'bg-[#1CB0F6] hover:bg-[#1899D6] text-white shadow-[0_4px_0_#1899D6] active:shadow-none active:translate-y-[4px] border-t border-white/25';
+    } else if (isAmberOrWarning) {
+      // Rewards, coins, milestones: Warm Gold / Amber
+      variantClasses =
+        'bg-[#FF9600] hover:bg-[#E08500] text-white shadow-[0_4px_0_#CE7C00] active:shadow-none active:translate-y-[4px] border-t border-white/25';
+    } else if (variant === 'danger') {
+      // Destructive / danger actions: Vibrant Crimson
+      variantClasses =
+        'bg-[#FF4B4B] hover:bg-[#E53939] text-white shadow-[0_4px_0_#EA2B2B] active:shadow-none active:translate-y-[4px] border-t border-white/20';
+    } else if (variant === 'tonal') {
+      // Preliminary steps "Back" / "Previous" / Secondary: Tonal with subtle 3D bevel
+      variantClasses =
+        'bg-[var(--surface-container-high)] text-[var(--on-container)] hover:bg-[var(--surface-container)] shadow-[0_4px_0_var(--border-tint)] active:shadow-none active:translate-y-[4px] border border-[var(--border-tint)]/60';
+    } else if (variant === 'outlined') {
+      variantClasses =
+        'border-2 border-[var(--border-tint)] text-[var(--on-container)] bg-transparent hover:bg-[var(--surface-container)]/50 active:translate-y-[2px]';
+    } else if (variant === 'ghost') {
+      variantClasses =
+        'text-[var(--on-container)] bg-transparent hover:bg-[var(--surface-container)]/60 active:translate-y-[1px]';
+    }
+
+    const borderRadius = pill ? '9999px' : '16px';
 
     return (
       <motion.button
         ref={ref}
         disabled={disabled}
         onClick={handleClick}
-        style={{ borderRadius: initialRadius }}
-        whileHover={reducedMotion || disabled ? undefined : { scale: 1.02 }}
+        style={{ borderRadius }}
+        whileHover={reducedMotion || disabled ? undefined : { filter: 'brightness(1.04)' }}
         whileTap={
           reducedMotion || disabled
             ? undefined
             : {
-                scale: 0.96,
-                borderRadius: pressedRadius,
-                transition: { duration: 0.12, ease: 'easeOut' },
+                y: 4,
+                transition: { duration: 0.05, ease: 'easeOut' },
               }
         }
-        className={`inline-flex items-center justify-center select-none cursor-pointer transition-colors outline-none disabled:opacity-40 disabled:cursor-not-allowed ${sizeClasses} ${variantClasses} ${className}`}
+        className={`inline-flex items-center justify-center uppercase select-none cursor-pointer transition-all outline-none disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-y-0 ${sizeClasses} ${variantClasses} ${className}`}
         {...motionProps}
       >
-        {leftIcon && <span className="inline-flex shrink-0 items-center">{leftIcon}</span>}
-        {children && <span className="inline-flex items-center justify-center gap-2">{children}</span>}
-        {rightIcon && <span className="inline-flex shrink-0 items-center">{rightIcon}</span>}
+        {leftIcon && <span className="inline-flex shrink-0 items-center mr-1">{leftIcon}</span>}
+        {children && <span className="inline-flex items-center justify-center gap-1.5">{children}</span>}
+        {rightIcon && <span className="inline-flex shrink-0 items-center ml-1">{rightIcon}</span>}
       </motion.button>
     );
   }

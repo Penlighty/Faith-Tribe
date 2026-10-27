@@ -126,7 +126,10 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
                     : 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200 border border-blue-500/30'
                 }`}
               >
-                <span>{isOnsite ? '📶 Onsite Hotspot P2P' : '🌐 Online Cloud'}</span>
+                <span className="flex items-center gap-1">
+                  <Icon name={isOnsite ? 'host' : 'link'} size={11} />
+                  {isOnsite ? 'Onsite Hotspot P2P' : 'Online Cloud'}
+                </span>
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -181,20 +184,22 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
                 <button
                   type="button"
                   onClick={() => setQrTab('join')}
-                  className={`px-3 py-1 rounded-lg transition-colors cursor-pointer ${
+                  className={`px-3 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${
                     qrTab === 'join' ? 'bg-[var(--surface-card)] text-[var(--on-container)] shadow-xs' : 'opacity-70'
                   }`}
                 >
-                  📱 Game QR
+                  <Icon name="qr" size={13} />
+                  <span>Game QR</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setQrTab('wifi')}
-                  className={`px-3 py-1 rounded-lg transition-colors cursor-pointer ${
+                  className={`px-3 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ${
                     qrTab === 'wifi' ? 'bg-[var(--surface-card)] text-[var(--on-container)] shadow-xs' : 'opacity-70'
                   }`}
                 >
-                  📶 Wi-Fi QR
+                  <Icon name="host" size={13} />
+                  <span>Wi-Fi QR</span>
                 </button>
               </div>
             )}
@@ -224,20 +229,22 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
                   <button
                     type="button"
                     onClick={() => setUseCloudUrl(true)}
-                    className={`px-2 py-0.5 rounded-lg transition-colors cursor-pointer ${
+                    className={`px-2 py-0.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
                       useCloudUrl ? 'bg-white text-gray-900 shadow-xs' : 'hover:text-gray-900'
                     }`}
                   >
-                    📱 Phone (Cloud URL)
+                    <Icon name="link" size={11} />
+                    <span>Phone (Cloud URL)</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setUseCloudUrl(false)}
-                    className={`px-2 py-0.5 rounded-lg transition-colors cursor-pointer ${
+                    className={`px-2 py-0.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1 ${
                       !useCloudUrl ? 'bg-white text-gray-900 shadow-xs' : 'hover:text-gray-900'
                     }`}
                   >
-                    💻 Localhost
+                    <Icon name="code" size={11} />
+                    <span>Localhost</span>
                   </button>
                 </div>
               )}
@@ -353,7 +360,7 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
           <div>
             {isHost ? (
               <Button
-                variant="primary"
+                variant="success"
                 size="hero"
                 pill
                 disabled={!canStart}
@@ -386,8 +393,9 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[var(--surface-card)] text-[var(--on-container-variant)]">
-                  {isOnsite ? '📶 Local P2P Active' : '🌐 Cloud Active'}
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[var(--surface-card)] text-[var(--on-container-variant)] flex items-center gap-1">
+                  <Icon name={isOnsite ? 'host' : 'link'} size={10} />
+                  <span>{isOnsite ? 'Local P2P Active' : 'Cloud Active'}</span>
                 </span>
                 <span className="text-xs font-mono font-bold text-[var(--on-container-variant)] px-2.5 py-1 rounded-full bg-[var(--surface-card)]">
                   Min {minPlayers} {hostCanPlay ? 'Players' : 'Disciples'}
@@ -438,13 +446,14 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
                             </span>
                           )}
                           <span
-                            className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full ${
+                            className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full flex items-center gap-1 ${
                               isPlayerOnsite
                                 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
                                 : 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
                             }`}
                           >
-                            {isPlayerOnsite ? '📶 Hotspot' : '🌐 Online'}
+                            <Icon name={isPlayerOnsite ? 'host' : 'link'} size={9} />
+                            <span>{isPlayerOnsite ? 'Hotspot' : 'Online'}</span>
                           </span>
                         </div>
                       </div>

@@ -8,6 +8,8 @@ import { useTribes } from '../engine/tribes/TribeContext';
 import { useTheme } from '../theme/ThemeContext';
 import { TRIBES, TRIBES_BY_ID } from '../design/tribes/tribes';
 import { AuthModal } from '../components/auth/AuthModal';
+import { CreateTribeModal } from '../components/tribes/CreateTribeModal';
+import { TribeAvatar } from '../components/tribes/TribeAvatar';
 import { InvitePolicy } from '../engine/tribes/types';
 
 export interface TribeScreenProps {
@@ -37,13 +39,6 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
   const [showJoinByCodeModal, setShowJoinByCodeModal] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'members' | 'leaderboard' | 'settings'>('overview');
 
-  // Form states
-  const [newTribeName, setNewTribeName] = useState('');
-  const [newTribeTagline, setNewTribeTagline] = useState('');
-  const [newBiblicalTribe, setNewBiblicalTribe] = useState('judah');
-  const [newInvitePolicy, setNewInvitePolicy] = useState<InvitePolicy>('open');
-  const [isSubmittingTribe, setIsSubmittingTribe] = useState(false);
-
   // Add member by username state
   const [usernameToAdd, setUsernameToAdd] = useState('');
   const [addMemberMsg, setAddMemberMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
@@ -64,7 +59,7 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
       <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-28 pt-4 sm:pt-8 flex flex-col gap-6">
         <div className="text-center flex flex-col items-center gap-3">
           <div className="w-16 h-16 rounded-3xl bg-[var(--surface-container-high)] text-[var(--primary-action)] flex items-center justify-center text-3xl shadow-expressive">
-            🤝
+            <Icon name="tribe" size={32} />
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-[var(--on-container)]">
             Fellowship Tribes
@@ -76,7 +71,7 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card variant="elevated" padding="md" className="flex flex-col gap-2">
-            <span className="text-2xl">⚡</span>
+            <span className="text-2xl text-amber-500"><Icon name="bolt" size={24} /></span>
             <h3 className="font-extrabold text-sm text-[var(--on-container)]">Zero-Friction Start</h3>
             <p className="text-xs text-[var(--on-container-variant)]">
               When an admin or host starts a round, members see a 1-click Join button — no typing room codes or scanning required.
@@ -84,7 +79,7 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
           </Card>
 
           <Card variant="elevated" padding="md" className="flex flex-col gap-2">
-            <span className="text-2xl">📶</span>
+            <span className="text-2xl text-emerald-500"><Icon name="host" size={24} /></span>
             <h3 className="font-extrabold text-sm text-[var(--on-container)]">Online & Onsite</h3>
             <p className="text-xs text-[var(--on-container-variant)]">
               Works both online over cloud and offline via the host’s local hotspot or church Wi-Fi.
@@ -92,7 +87,7 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
           </Card>
 
           <Card variant="elevated" padding="md" className="flex flex-col gap-2">
-            <span className="text-2xl">🏆</span>
+            <span className="text-2xl text-amber-500"><Icon name="trophy" size={24} /></span>
             <h3 className="font-extrabold text-sm text-[var(--on-container)]">Tribe Leaderboards</h3>
             <p className="text-xs text-[var(--on-container-variant)]">
               Keep lifetime scores, victories, and stats across your small group over time.
@@ -124,20 +119,14 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
     );
   }
 
-  // Handle creating a new Tribe
-  const handleCreateTribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTribeName.trim()) return;
-    setIsSubmittingTribe(true);
-    triggerHaptic('medium');
-    try {
-      await createTribe(newTribeName, newTribeTagline, newBiblicalTribe, newInvitePolicy);
-      setShowCreateModal(false);
-      setNewTribeName('');
-      setNewTribeTagline('');
-    } finally {
-      setIsSubmittingTribe(false);
-    }
+  // Handle creating a new Tribe via multi-step wizard
+  const handleCreateTribe = async (
+    name: string,
+    tagline: string,
+    biblicalTribe: string,
+    invitePolicy: InvitePolicy
+  ) => {
+    await createTribe(name, tagline, biblicalTribe, invitePolicy);
   };
 
   // Handle adding member by username
@@ -216,7 +205,9 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
             Fellowship Tribe
           </span>
           <div className="flex items-center gap-2.5">
-            {biblicalEmblem && (
+            {activeTribe?.biblicalTribeId ? (
+              <TribeAvatar tribeId={activeTribe.biblicalTribeId} size="sm" showGlow />
+            ) : biblicalEmblem ? (
               <span
                 className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black shrink-0"
                 style={{ backgroundColor: biblicalEmblem.container, color: biblicalEmblem.ink }}
@@ -224,7 +215,7 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
               >
                 {biblicalEmblem.name[0]}
               </span>
-            )}
+            ) : null}
             <h1 className="text-2xl sm:text-3xl font-black text-[var(--on-container)]">
               {activeTribe ? activeTribe.name : 'Your Tribes'}
             </h1>
@@ -285,7 +276,7 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <span className="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-2xl shrink-0 shadow-md">
-                🎮
+                <Icon name="games" size={24} />
               </span>
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
@@ -293,8 +284,9 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
                   <span className="text-[11px] font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
                     Live Fellowship Session in Progress
                   </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200">
-                    {liveActiveSession.session.connectionMode === 'onsite' ? '📶 Onsite Hotspot' : '🌐 Online Cloud'}
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200 flex items-center gap-1">
+                    <Icon name={liveActiveSession.session.connectionMode === 'onsite' ? 'host' : 'link'} size={10} />
+                    <span>{liveActiveSession.session.connectionMode === 'onsite' ? 'Onsite Hotspot' : 'Online Cloud'}</span>
                   </span>
                 </div>
                 <h3 className="text-lg font-black text-[var(--on-container)]">
@@ -429,7 +421,8 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
                 <Card variant="elevated" padding="md" className="flex flex-col gap-3 border-2 border-amber-400/50 bg-amber-50/30 dark:bg-amber-950/20">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-black uppercase tracking-wider text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
-                      ⏳ Pending Membership Requests ({pendingList.length})
+                      <Icon name="timer" size={14} />
+                      <span>Pending Membership Requests ({pendingList.length})</span>
                     </span>
                     <span className="text-[10px] text-[var(--on-container-variant)]">
                       Vetting required by admin
@@ -492,7 +485,14 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
                       className="p-3 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)] flex items-center justify-between"
                     >
                       <div className="flex items-center gap-2.5">
-                        <Avatar name={m.displayName} size="sm" />
+                        <div className="relative shrink-0">
+                          <Avatar name={m.displayName} size="sm" />
+                          {m.biblicalTribeId && (
+                            <span className="absolute -bottom-1 -right-1 ring-1 ring-white/50 rounded-full">
+                              <TribeAvatar tribeId={m.biblicalTribeId} size="xs" />
+                            </span>
+                          )}
+                        </div>
                         <div className="flex flex-col">
                           <div className="flex items-center gap-1.5">
                             <span className="text-xs font-bold text-[var(--on-container)] truncate max-w-[120px]">
@@ -535,7 +535,14 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
                     className="p-3.5 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-tint)] flex items-center justify-between"
                   >
                     <div className="flex items-center gap-3">
-                      <Avatar name={m.displayName} size="md" />
+                      <div className="relative shrink-0">
+                        <Avatar name={m.displayName} size="md" />
+                        {m.biblicalTribeId && (
+                          <span className="absolute -bottom-1 -right-1 ring-1 ring-white/50 rounded-full">
+                            <TribeAvatar tribeId={m.biblicalTribeId} size="xs" />
+                          </span>
+                        )}
+                      </div>
                       <div className="flex flex-col">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-bold text-[var(--on-container)]">
@@ -601,7 +608,14 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
                       <span className="font-mono text-sm font-black w-6 text-center text-[var(--on-container-variant)]">
                         #{idx + 1}
                       </span>
-                      <Avatar name={m.displayName} size="sm" />
+                      <div className="relative shrink-0">
+                        <Avatar name={m.displayName} size="sm" />
+                        {m.biblicalTribeId && (
+                          <span className="absolute -bottom-1 -right-1 ring-1 ring-white/50 rounded-full">
+                            <TribeAvatar tribeId={m.biblicalTribeId} size="xs" />
+                          </span>
+                        )}
+                      </div>
                       <div className="flex flex-col">
                         <span className="text-sm font-bold text-[var(--on-container)]">
                           {m.displayName}
@@ -617,8 +631,10 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
                         <span className="font-mono text-sm font-black tabular-nums text-[var(--on-container)]">
                           {m.stats?.totalScore || 0} pts
                         </span>
-                        <span className="text-[10px] text-[var(--on-container-variant)]">
-                          {m.stats?.victories || 0} 👑 • {m.stats?.gamesPlayed || 0} played
+                        <span className="text-[10px] text-[var(--on-container-variant)] flex items-center gap-1">
+                          <span>{m.stats?.victories || 0}</span>
+                          <Icon name="crown" size={11} className="text-amber-500" />
+                          <span>• {m.stats?.gamesPlayed || 0} played</span>
                         </span>
                       </div>
                     </div>
@@ -651,7 +667,10 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
                             : 'border-[var(--border-tint)] bg-[var(--surface-container)] opacity-70'
                         }`}
                       >
-                        <span className="text-xs font-black">🔓 Open to All</span>
+                        <span className="text-xs font-black flex items-center gap-1.5">
+                          <Icon name="unlock" size={14} />
+                          <span>Open to All</span>
+                        </span>
                         <span className="text-[11px] text-[var(--on-container-variant)]">
                           Anyone with your invite code/link joins directly into the group.
                         </span>
@@ -666,7 +685,10 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
                             : 'border-[var(--border-tint)] bg-[var(--surface-container)] opacity-70'
                         }`}
                       >
-                        <span className="text-xs font-black">🛡️ Vetting Required</span>
+                        <span className="text-xs font-black flex items-center gap-1.5">
+                          <Icon name="shield" size={14} />
+                          <span>Vetting Required</span>
+                        </span>
                         <span className="text-[11px] text-[var(--on-container-variant)]">
                           People who use the link are placed in a queue for admin review and approval.
                         </span>
@@ -684,7 +706,7 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
         </>
       ) : (
         <Card variant="tonal" padding="lg" className="text-center flex flex-col items-center gap-3 py-10">
-          <span className="text-3xl">🕊️</span>
+          <span className="text-3xl text-[var(--primary-action)]"><Icon name="tribe" size={36} /></span>
           <h3 className="text-lg font-black text-[var(--on-container)]">
             You don't belong to any Tribe yet
           </h3>
@@ -714,127 +736,12 @@ export const TribeScreen: React.FC<TribeScreenProps> = ({ onJoinSession }) => {
         </Card>
       )}
 
-      {/* CREATE TRIBE MODAL */}
-      {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <Card
-            variant="elevated"
-            padding="lg"
-            className="w-full max-w-md bg-[var(--surface-card)] border-2 border-[var(--border-tint)] shadow-2xl rounded-3xl flex flex-col gap-4 max-h-[90vh] overflow-y-auto"
-          >
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-black text-[var(--on-container)]">
-                Create a Fellowship Tribe
-              </h2>
-              <button
-                type="button"
-                onClick={() => setShowCreateModal(false)}
-                className="w-8 h-8 rounded-full bg-[var(--surface-container)] flex items-center justify-center cursor-pointer"
-              >
-                <Icon name="close" size={16} />
-              </button>
-            </div>
-
-            <form onSubmit={handleCreateTribe} className="flex flex-col gap-3">
-              <div>
-                <label className="text-xs font-bold text-[var(--on-container-variant)] mb-1 block">
-                  Fellowship Name
-                </label>
-                <input
-                  type="text"
-                  value={newTribeName}
-                  onChange={(e) => setNewTribeName(e.target.value)}
-                  placeholder="e.g. Grace Fellowship Youth"
-                  required
-                  className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)] text-sm font-bold text-[var(--on-container)] focus:outline-none focus:border-[var(--primary-action)]"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-[var(--on-container-variant)] mb-1 block">
-                  Tagline / Scripture Focus (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={newTribeTagline}
-                  onChange={(e) => setNewTribeTagline(e.target.value)}
-                  placeholder="e.g. Walking in Light • 1 John 1:7"
-                  className="w-full px-4 py-2.5 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)] text-sm font-medium text-[var(--on-container)] focus:outline-none focus:border-[var(--primary-action)]"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-[var(--on-container-variant)] mb-1 block">
-                  Biblical Emblem
-                </label>
-                <div className="grid grid-cols-4 gap-1.5 max-h-32 overflow-y-auto p-1 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)]">
-                  {TRIBES.map((trb) => (
-                    <button
-                      key={trb.id}
-                      type="button"
-                      onClick={() => setNewBiblicalTribe(trb.id)}
-                      className={`p-1.5 rounded-xl flex flex-col items-center gap-1 text-[10px] font-bold cursor-pointer border ${
-                        newBiblicalTribe === trb.id
-                          ? 'border-[var(--primary-action)] bg-[var(--surface-card)]'
-                          : 'border-transparent opacity-75'
-                      }`}
-                    >
-                      <span
-                        className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black"
-                        style={{ backgroundColor: trb.container, color: trb.ink }}
-                      >
-                        {trb.name[0]}
-                      </span>
-                      <span className="truncate w-full text-center">{trb.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-[var(--on-container-variant)] mb-1 block">
-                  Invite Policy
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setNewInvitePolicy('open')}
-                    className={`p-2.5 rounded-xl border text-xs font-bold cursor-pointer ${
-                      newInvitePolicy === 'open'
-                        ? 'border-[var(--primary-action)] bg-[var(--surface-container-high)] text-[var(--primary-action)]'
-                        : 'border-[var(--border-tint)] text-[var(--on-container-variant)]'
-                    }`}
-                  >
-                    Open to All
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNewInvitePolicy('approval_required')}
-                    className={`p-2.5 rounded-xl border text-xs font-bold cursor-pointer ${
-                      newInvitePolicy === 'approval_required'
-                        ? 'border-[var(--primary-action)] bg-[var(--surface-container-high)] text-[var(--primary-action)]'
-                        : 'border-[var(--border-tint)] text-[var(--on-container-variant)]'
-                    }`}
-                  >
-                    Approval Required
-                  </button>
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                variant="primary"
-                size="lg"
-                pill
-                disabled={isSubmittingTribe || !newTribeName.trim()}
-                className="w-full mt-2 font-black shadow-md flex items-center justify-center gap-2"
-              >
-                {isSubmittingTribe ? 'Creating…' : 'Establish Fellowship Tribe'}
-              </Button>
-            </form>
-          </Card>
-        </div>
-      )}
+      {/* MULTI-STEP CREATE TRIBE MODAL */}
+      <CreateTribeModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSubmit={handleCreateTribe}
+      />
 
       {/* JOIN BY INVITE CODE MODAL */}
       {showJoinByCodeModal && (

@@ -15,6 +15,7 @@ import { JoinScreen } from './screens/JoinScreen';
 import { TribeScreen } from './screens/TribeScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { SoloPracticeScreen } from './screens/SoloPracticeScreen';
+import { GamifiedPathScreen } from './screens/GamifiedPathScreen';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { DisconnectedOverlay } from './components/session/DisconnectedOverlay';
 import { PlayMode, ConnectionMode, HotspotInfo } from './engine/types';
@@ -25,6 +26,7 @@ registerLaunchGames();
 
 type AppView =
   | 'home'
+  | 'path'
   | 'games'
   | 'game_detail'
   | 'join'
@@ -82,7 +84,11 @@ const AppContent: React.FC = () => {
     syncAllGamesContent().catch(() => {});
 
     const params = new URLSearchParams(window.location.search);
-    if (params.get('join')) {
+    const pathname = window.location.pathname;
+    if (pathname === '/journey' || pathname === '/path' || params.get('journey') || params.get('path')) {
+      setCurrentView('path');
+      setActiveNavTab('path');
+    } else if (params.get('join')) {
       setCurrentView('join');
       setActiveNavTab('play');
     } else if (params.get('tribeInvite')) {
@@ -96,6 +102,8 @@ const AppContent: React.FC = () => {
     if (tab === 'home') {
       setCurrentView('home');
       setPaletteKey('lavender');
+    } else if (tab === 'path') {
+      setCurrentView('path');
     } else if (tab === 'play') {
       setCurrentView('join');
     } else if (tab === 'games') {
@@ -168,6 +176,8 @@ const AppContent: React.FC = () => {
             title={
               currentView === 'home'
                 ? 'Faith Tribe'
+                : currentView === 'path'
+                ? 'Faith Journey'
                 : currentView === 'settings'
                 ? 'Settings'
                 : currentView === 'join'
@@ -189,10 +199,18 @@ const AppContent: React.FC = () => {
               <HomeScreen
                 onSelectGame={handleSelectGame}
                 onQuickJoin={() => setCurrentView('join')}
+                onOpenJourneyPath={() => {
+                  setCurrentView('path');
+                  setActiveNavTab('path');
+                }}
                 onHostGame={(id) => handleHostSession(id, 'individuals')}
                 onHostSession={handleHostSession}
                 onDirectJoinSession={handleDirectJoinSession}
               />
+            )}
+
+            {currentView === 'path' && (
+              <GamifiedPathScreen onBackToLibrary={() => setCurrentView('home')} />
             )}
 
             {currentView === 'tribe' && (

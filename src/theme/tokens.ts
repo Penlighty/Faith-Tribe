@@ -233,6 +233,41 @@ export const PALETTE_PRESETS: Record<string, { light: TonalPalette; dark: TonalP
       borderTint: 'rgba(255, 255, 255, 0.1)',
     },
   },
+  // Cyan (Bible or Not)
+  cyan: {
+    light: {
+      seed: '#CFFAFE',
+      bgTint: '#F0FDFA',
+      surfaceContainer: '#CFFAFE',
+      surfaceContainerHigh: '#BAE6FD',
+      surfaceCard: '#FFFFFF',
+      primaryAction: '#0E7490',
+      primaryActionHover: '#155E75',
+      primaryActionText: '#FFFFFF',
+      onContainer: '#0E7490',
+      onContainerVariant: '#0369A1',
+      chipBg: '#E0F2FE',
+      chipText: '#0E7490',
+      accentSecondary: '#0284C7',
+      borderTint: 'rgba(14, 116, 144, 0.12)',
+    },
+    dark: {
+      seed: '#164E63',
+      bgTint: '#081A22',
+      surfaceContainer: '#0E2A38',
+      surfaceContainerHigh: '#153E52',
+      surfaceCard: '#0C2430',
+      primaryAction: '#67E8F9',
+      primaryActionHover: '#A5F3FC',
+      primaryActionText: '#083344',
+      onContainer: '#CFFAFE',
+      onContainerVariant: '#7DD3FC',
+      chipBg: '#155E75',
+      chipText: '#E0F2FE',
+      accentSecondary: '#38BDF8',
+      borderTint: 'rgba(255, 255, 255, 0.1)',
+    },
+  },
 };
 
 // Aliases for game IDs
@@ -246,6 +281,7 @@ PALETTE_PRESETS['shelf-rush'] = PALETTE_PRESETS.purple;
 PALETTE_PRESETS['blueprint-from-the-mountain'] = PALETTE_PRESETS.lavender;
 PALETTE_PRESETS['one-accord'] = PALETTE_PRESETS.mint;
 PALETTE_PRESETS['six-degrees-of-abraham'] = PALETTE_PRESETS.butter;
+PALETTE_PRESETS['bible-or-not'] = PALETTE_PRESETS.cyan;
 
 
 export const SHAPE_TOKENS = {

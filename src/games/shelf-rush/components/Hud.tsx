@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Icon } from '../../../design/icons';
 
 export interface HudProps {
   lives: number;
@@ -23,10 +24,10 @@ export const Hud: React.FC<HudProps> = ({
       {/* Leave / Back button */}
       <button
         onClick={onLeave}
-        className="px-2.5 py-1 text-xs font-bold rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-[var(--on-container-variant)] flex items-center gap-1 transition-colors"
+        className="px-2.5 py-1 text-xs font-bold rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-[var(--on-container-variant)] flex items-center gap-1 transition-colors cursor-pointer"
         aria-label={playMode === 'race' ? 'Leave race' : 'Exit to menu'}
       >
-        <span>←</span>
+        <Icon name="arrow-left" size={14} />
         <span>{playMode === 'race' ? 'Leave' : 'Exit'}</span>
       </button>
 
@@ -46,11 +47,11 @@ export const Hud: React.FC<HudProps> = ({
               <motion.span
                 key={idx}
                 animate={{ scale: isFilled ? 1 : 0.85 }}
-                className={`text-base transition-colors ${
+                className={`transition-colors flex items-center justify-center ${
                   isFilled ? 'text-rose-500 drop-shadow-sm' : 'text-gray-300 dark:text-gray-600 opacity-40'
                 }`}
               >
-                ❤️
+                <Icon name="heart" size={16} />
               </motion.span>
             );
           })}
@@ -66,7 +67,7 @@ export const Hud: React.FC<HudProps> = ({
             className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300 text-xs font-black font-mono"
             aria-label={`Streak: ${streak}`}
           >
-            <span>🔥</span>
+            <Icon name="flame" size={14} />
             <span>{streak}</span>
           </motion.div>
         )}

@@ -66,4 +66,16 @@ describe('Faith Tribe Icon Kit Quality Gates', () => {
     expect(ICONS).toHaveProperty('bolt');
     expect(ICONS).toHaveProperty('hint');
   });
+
+  it('contains gamification metrics icons including gem, flame, bolt, and heart', () => {
+    expect(ICONS).toHaveProperty('gem');
+    expect(ICONS).toHaveProperty('flame');
+    expect(ICONS).toHaveProperty('bolt');
+    expect(ICONS).toHaveProperty('heart');
+    expect(getLegacyMappedIcon('Gem')).toBe('gem');
+    expect(getLegacyMappedIcon('gem')).toBe('gem');
+    expect(getLegacyMappedIcon('Diamond')).toBe('gem');
+    expect(getLegacyMappedIcon('Zap')).toBe('bolt');
+    expect(getLegacyMappedIcon('Flame')).toBe('flame');
+  });
 });

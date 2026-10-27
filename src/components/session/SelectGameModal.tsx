@@ -171,8 +171,14 @@ export const SelectGameModal: React.FC<SelectGameModalProps> = ({
                         {g.tagline}
                       </p>
                       <div className="flex items-center gap-3 text-[11px] text-[var(--on-container-variant)]/80 mt-1 font-mono">
-                        <span>👥 {g.minPlayers}–{g.maxPlayers} players</span>
-                        <span>⏱️ ~{g.estimatedMinutes} mins</span>
+                        <span className="flex items-center gap-1">
+                          <Icon name="team" size={12} />
+                          <span>{g.minPlayers}–{g.maxPlayers} players</span>
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Icon name="timer" size={12} />
+                          <span>~{g.estimatedMinutes} mins</span>
+                        </span>
                       </div>
                     </div>
                   </div>

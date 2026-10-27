@@ -151,6 +151,8 @@ icon("flame", ["M12 3c.6 3.2 5 5.2 5 10a5 5 0 0 1-10 0c0-1.8.9-3.2 2-4.3.2 1.4 1
 icon("heart", "M12 20S4 15 4 9.5A4.2 4.2 0 0 1 12 7.8 4.2 4.2 0 0 1 20 9.5C20 15 12 20 12 20z",
      "M12 20S4 15 4 9.5A4.2 4.2 0 0 1 12 7.8 4.2 4.2 0 0 1 20 9.5C20 15 12 20 12 20z", "game", "like favorite")
 icon("bolt", "M13.5 3 5.5 13.5h5.5L10.5 21l8-10.5H13z", "M13.5 3 5.5 13.5h5.5L10.5 21l8-10.5H13z", "game", "power-up fast")
+icon("gem", ["M12 2.5 20 7.5v9l-8 5-8-5v-9z", "M4 7.5 12 9.5 20 7.5", "M12 2.5v19"],
+     "M12 2.5 20 7.5v9l-8 5-8-5v-9z", "game", "currency crystal diamond reward gems")
 icon("shield", "M12 3.5l7 2.5v5.5c0 4.3-2.9 7.8-7 9-4.1-1.2-7-4.7-7-9V6z", "M12 3.5l7 2.5v5.5c0 4.3-2.9 7.8-7 9-4.1-1.2-7-4.7-7-9V6z", "game", "protect power-up")
 icon("fifty", [C(12, 12, 8.5), "M12 3.5v17"], "M12 3.5a8.5 8.5 0 0 0 0 17z", "game", "fifty-fifty power-up half")
 icon("double", ["M4.5 9l4.5 6", "M9 9l-4.5 6", "M13 10.3a2.5 2.5 0 0 1 5 0c0 2.2-5 3.4-5 5.2h5"], None, "game", "double down x2 wager")

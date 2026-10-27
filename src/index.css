@@ -2,6 +2,7 @@
 @import './design/tokens/base.css';
 @import './design/tokens/themes.generated.css';
 @import './design/tokens/tiers.generated.css';
+@import './design/tokens/gamified.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -274,6 +274,24 @@ class SoundManager {
       // AudioContext unavailable
     }
   }
+
+  playLevelUp(enabled: boolean = true) {
+    this.playStreakMilestone(10, enabled);
+  }
+
+  play(type: string = 'tick', enabled: boolean = true) {
+    if (type === 'correct') {
+      this.playCorrect(enabled);
+    } else if (type === 'wrong') {
+      this.playWrong(enabled);
+    } else if (type === 'chime' || type === 'levelup') {
+      this.playLevelUp(enabled);
+    } else if (type === 'buzzer') {
+      this.playBuzzer(enabled);
+    } else {
+      this.playTick(enabled);
+    }
+  }
 }
 
 export const soundManager = new SoundManager();

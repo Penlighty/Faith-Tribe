@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Icon } from '../../../design/icons';
 
 export interface AscentTrackProps {
   currentStep: number;
@@ -20,7 +21,7 @@ export const AscentTrack: React.FC<AscentTrackProps> = ({
     >
       <div className="flex items-center justify-between text-xs font-bold text-[var(--on-container-variant)]">
         <span className="flex items-center gap-1.5">
-          <span className="text-purple-600 dark:text-purple-400">⛰️</span>
+          <Icon name="mountain" size={14} className="text-purple-600 dark:text-purple-400" />
           <span>The Ascent</span>
         </span>
         <span className="font-mono">
@@ -54,11 +55,11 @@ export const AscentTrack: React.FC<AscentTrackProps> = ({
               {isRest && (
                 <span
                   title="Rest stop"
-                  className={`absolute -top-3.5 left-1/2 -translate-x-1/2 text-[10px] leading-none ${
-                    isCleared ? 'opacity-40' : 'opacity-100'
+                  className={`absolute -top-3 left-1/2 -translate-x-1/2 leading-none flex items-center justify-center ${
+                    isCleared ? 'opacity-40' : 'opacity-100 text-rose-500'
                   }`}
                 >
-                  ❤️
+                  <Icon name="heart" size={10} />
                 </span>
               )}
             </motion.div>

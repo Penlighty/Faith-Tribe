@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { StreakMilestone } from '../../engine/services/streakRewards';
 import { Button } from './Button';
+import { Icon } from '../../design/icons';
 
 /**
  * Trigger confetti blast using canvas-confetti
@@ -60,7 +61,9 @@ export interface AnswerFeedbackProps {
   isCorrect: boolean;
   message: string;
   pointsEarned?: number;
-  streakCount: number;
+  streakCount?: number;
+  streak?: number;
+  onDismiss?: () => void;
 }
 
 export const AnswerFeedbackBanner: React.FC<AnswerFeedbackProps> = ({
@@ -68,7 +71,10 @@ export const AnswerFeedbackBanner: React.FC<AnswerFeedbackProps> = ({
   message,
   pointsEarned,
   streakCount,
+  streak,
+  onDismiss,
 }) => {
+  const count = streakCount ?? streak ?? 0;
   return (
     <div
       className={`fixed top-16 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-full shadow-2xl backdrop-blur-md border animate-bounce ${
@@ -80,44 +86,87 @@ export const AnswerFeedbackBanner: React.FC<AnswerFeedbackProps> = ({
         animation: 'bounce 0.8s ease-in-out infinite alternate',
       }}
     >
-      <span className="text-xl">
-        {isCorrect ? (streakCount >= 7 ? '⚡🔥' : streakCount >= 3 ? '🔥' : '✨') : '🤍'}
+      <span className="flex items-center justify-center">
+        {isCorrect ? (
+          count >= 7 ? (
+            <div className="flex items-center gap-0.5 text-amber-300">
+              <Icon name="bolt" size={20} />
+              <Icon name="flame" size={20} />
+            </div>
+          ) : count >= 3 ? (
+            <Icon name="flame" size={20} className="text-amber-400" />
+          ) : (
+            <Icon name="star" size={20} className="text-yellow-300" />
+          )
+        ) : (
+          <Icon name="heart" size={20} className="text-white/60" />
+        )}
       </span>
       <div className="flex flex-col text-left">
         <span className="text-sm font-black tracking-wide leading-tight">{message}</span>
         {isCorrect && pointsEarned !== undefined && pointsEarned > 0 && (
           <span className="text-xs font-semibold text-emerald-100 font-mono">
-            +{pointsEarned} Points {streakCount >= 2 ? `• ${streakCount} in a row!` : ''}
+            +{pointsEarned} Points {count >= 2 ? `• ${count} in a row!` : ''}
           </span>
         )}
       </div>
+      {onDismiss && (
+        <button
+          type="button"
+          onClick={onDismiss}
+          className="ml-2 text-white/70 hover:text-white transition-colors"
+          aria-label="Dismiss feedback"
+        >
+          <Icon name="close" size={16} />
+        </button>
+      )}
     </div>
   );
 };
 
 // -------------------------------------------------------------
-// 2. Duolingo-style Streak Celebration Modal
+// 2. Tactile Gamified Streak Celebration Modal
 // -------------------------------------------------------------
 export interface StreakMilestoneModalProps {
   milestone: StreakMilestone;
-  onDismiss: () => void;
+  onDismiss?: () => void;
+  onClose?: () => void;
 }
 
 export const StreakMilestoneModal: React.FC<StreakMilestoneModalProps> = ({
   milestone,
   onDismiss,
+  onClose,
 }) => {
+  const handleDismiss = onDismiss || onClose;
+
   useEffect(() => {
     fireConfettiBurst('high');
   }, [milestone]);
+
+  // Keyboard dismissal on Escape, Enter, or Space
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleDismiss?.();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleDismiss]);
 
   const isElijah = milestone.count === 7;
   const isSolomon = milestone.count === 10;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+    <div
+      onClick={handleDismiss}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn cursor-pointer"
+    >
       <div
-        className={`w-full max-w-sm rounded-3xl p-6 sm:p-8 text-center flex flex-col items-center gap-4 relative overflow-hidden shadow-2xl border-4 ${
+        onClick={(e) => e.stopPropagation()}
+        className={`w-full max-w-sm rounded-3xl p-6 sm:p-8 text-center flex flex-col items-center gap-4 relative overflow-hidden shadow-2xl border-4 cursor-default ${
           isElijah
             ? 'bg-gradient-to-b from-amber-950 via-zinc-900 to-black border-amber-500 text-white shadow-amber-500/50'
             : isSolomon
@@ -146,9 +195,9 @@ export const StreakMilestoneModal: React.FC<StreakMilestoneModalProps> = ({
         </span>
 
         {/* Big Animated Icon / Badge */}
-        <div className="relative my-1">
-          <div className="text-6xl sm:text-7xl animate-pulse select-none filter drop-shadow-[0_0_20px_rgba(245,158,11,0.6)]">
-            {milestone.badge}
+        <div className="relative my-2">
+          <div className="w-20 h-20 rounded-3xl bg-amber-500/20 text-amber-400 flex items-center justify-center animate-pulse select-none filter drop-shadow-[0_0_20px_rgba(245,158,11,0.6)] border border-amber-400/40">
+            <Icon name={milestone.icon} size={44} />
           </div>
           <div className="absolute -bottom-2 -right-2 px-2.5 py-0.5 rounded-full bg-amber-500 text-zinc-950 font-black text-xs font-mono shadow-md">
             {milestone.count}x
@@ -171,7 +220,7 @@ export const StreakMilestoneModal: React.FC<StreakMilestoneModalProps> = ({
             variant="primary"
             size="lg"
             pill
-            onClick={onDismiss}
+            onClick={handleDismiss}
             className={`w-full font-black tracking-wide shadow-lg ${
               isElijah
                 ? '!bg-gradient-to-r !from-amber-500 !to-rose-500 !text-black !border-none'
@@ -180,7 +229,10 @@ export const StreakMilestoneModal: React.FC<StreakMilestoneModalProps> = ({
                 : '!bg-amber-500 !text-black !border-none'
             }`}
           >
-            Keep Crushing It! 🔥
+            <span className="flex items-center justify-center gap-1.5">
+              <span>Keep Crushing It!</span>
+              <Icon name="flame" size={18} />
+            </span>
           </Button>
         </div>
       </div>

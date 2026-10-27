@@ -98,6 +98,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             displayName: profile.displayName,
             avatarSeed: profile.avatarSeed,
             biblicalTribeId: profile.biblicalTribeId,
+            tribalAssessment: profile.tribalAssessment,
             createdAt: profile.createdAt,
             stats: profile.stats,
           };
@@ -436,6 +437,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             displayName: u.displayName,
             avatarSeed: u.avatarSeed || u.uid,
             biblicalTribeId: u.biblicalTribeId || 'judah',
+            tribalAssessment: u.tribalAssessment,
             createdAt: u.createdAt || Date.now(),
             stats: u.stats || { gamesPlayed: 0, victories: 0, totalScore: 0, highestScore: 0 },
           };
@@ -458,6 +460,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             displayName: indexRecord.displayName,
             avatarSeed: indexRecord.avatarSeed || indexRecord.uid,
             biblicalTribeId: indexRecord.biblicalTribeId || 'judah',
+            tribalAssessment: indexRecord.tribalAssessment,
             createdAt: indexRecord.createdAt || Date.now(),
             stats: { gamesPlayed: 0, victories: 0, totalScore: 0, highestScore: 0 },
           };

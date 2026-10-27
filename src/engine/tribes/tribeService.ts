@@ -79,6 +79,7 @@ export async function createTribeRecord(
     avatarSeed: creator.avatarSeed,
     role: 'admin',
     joinedAt: Date.now(),
+    biblicalTribeId: creator.biblicalTribeId || biblicalTribeId || 'judah',
     stats: {
       gamesPlayed: creator.stats?.gamesPlayed || 0,
       victories: creator.stats?.victories || 0,
@@ -173,6 +174,7 @@ export async function addMemberByUsernameToTribe(
     avatarSeed: targetUser.avatarSeed,
     role: 'member',
     joinedAt: Date.now(),
+    biblicalTribeId: targetUser.biblicalTribeId || 'judah',
     stats: {
       gamesPlayed: targetUser.stats?.gamesPlayed || 0,
       victories: targetUser.stats?.victories || 0,
@@ -289,6 +291,7 @@ export async function joinTribeWithInviteCode(
     avatarSeed: applicant.avatarSeed,
     role: 'member',
     joinedAt: Date.now(),
+    biblicalTribeId: applicant.biblicalTribeId || 'judah',
     stats: {
       gamesPlayed: applicant.stats?.gamesPlayed || 0,
       victories: applicant.stats?.victories || 0,
@@ -332,6 +335,7 @@ export async function approveTribeRequest(
     avatarSeed: applicant.avatarSeed,
     role: 'member',
     joinedAt: Date.now(),
+    biblicalTribeId: (applicant as any).biblicalTribeId || 'judah',
   };
 
   const cached = getCachedTribes();

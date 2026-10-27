@@ -90,8 +90,9 @@ export const HotCoalHostView: React.FC<GameViewProps<HotCoalState>> = ({
         )}
 
         {currentPhaseId === 'burn' && burnedPlayer && (
-          <div className="mt-2 p-3 rounded-2xl bg-red-600 text-white font-extrabold text-base shadow-md">
-            🔥 {burnedPlayer.name} Took a Burn!
+          <div className="mt-2 p-3 rounded-2xl bg-red-600 text-white font-extrabold text-base shadow-md flex items-center justify-center gap-2">
+            <Icon name="flame" size={18} />
+            <span>{burnedPlayer.name} Took a Burn!</span>
           </div>
         )}
       </Card>
@@ -167,8 +168,9 @@ export const HotCoalHostView: React.FC<GameViewProps<HotCoalState>> = ({
                     {isHolding ? (
                       <Icon name="flame" size={16} className="text-rose-600 animate-bounce" />
                     ) : (
-                      <span className="text-[10px] font-mono text-[var(--on-container-variant)]">
-                        {burns} 🔥
+                      <span className="text-[10px] font-mono text-[var(--on-container-variant)] flex items-center gap-1">
+                        <span>{burns}</span>
+                        <Icon name="flame" size={12} className="text-amber-500" />
                       </span>
                     )}
                   </div>

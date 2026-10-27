@@ -86,7 +86,10 @@ export const WhoSaidHostView: React.FC<GameViewProps<WhoSaidState>> = ({
             {/* Wavy Timer */}
             <div className="w-full max-w-md mt-2">
               <div className="flex justify-between text-xs text-[var(--on-container-variant)] mb-1">
-                <span>{isCloseCall ? '⚡ CLOSE CALL!' : 'Time Remaining'}</span>
+                <span className="flex items-center gap-1">
+                  {isCloseCall && <Icon name="bolt" size={12} className="text-amber-500" />}
+                  <span>{isCloseCall ? 'CLOSE CALL!' : 'Time Remaining'}</span>
+                </span>
                 <span className="font-mono font-bold">{state.phaseTimeRemaining}s</span>
               </div>
               <div className="w-full h-3 rounded-full bg-[var(--surface-container)] overflow-hidden">
@@ -202,8 +205,9 @@ export const WhoSaidHostView: React.FC<GameViewProps<WhoSaidState>> = ({
                         <div className="text-sm font-bold text-[var(--on-container)] flex items-center gap-1">
                           <span>{p.name}</span>
                           {isFirst && (
-                            <span className="px-1.5 py-0.2 rounded text-[10px] font-black bg-amber-400 text-amber-950">
-                              ⚡ 1st
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-black bg-amber-400 text-amber-950 flex items-center gap-0.5">
+                              <Icon name="bolt" size={10} />
+                              <span>1st</span>
                             </span>
                           )}
                         </div>

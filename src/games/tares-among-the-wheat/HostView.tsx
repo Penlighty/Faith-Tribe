@@ -188,8 +188,17 @@ export const TaresHostView: React.FC<GameViewProps<TaresState>> = ({
             </div>
 
             {isTareCaught && isStealSuccessful !== undefined && (
-              <div className="mt-2 p-2.5 rounded-xl bg-[var(--surface-card)] text-xs font-bold">
-                {isStealSuccessful ? '🎯 Tare successfully stole the passage (+1)!' : '❌ Tare failed the steal guess.'}
+              <div className="mt-2 p-2.5 rounded-xl bg-[var(--surface-card)] text-xs font-bold flex items-center gap-2">
+                <Icon
+                  name={isStealSuccessful ? 'target' : 'close'}
+                  size={14}
+                  className={isStealSuccessful ? 'text-emerald-600' : 'text-rose-600'}
+                />
+                <span>
+                  {isStealSuccessful
+                    ? 'Tare successfully stole the passage (+1)!'
+                    : 'Tare failed the steal guess.'}
+                </span>
               </div>
             )}
           </Card>

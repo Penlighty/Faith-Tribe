@@ -2,6 +2,7 @@ import React from 'react';
 import { MasteryMap, BookAccuracy } from './MasteryMap';
 import { ShelfRushRunLog, ShelfRushConfig } from '../engine/types';
 import { getBook, getScheme } from '../engine/loader';
+import { Icon } from '../../../design/icons';
 
 export interface LeaderboardEntry {
   playerId: string;
@@ -111,7 +112,9 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
     <div className="w-full max-w-xl mx-auto flex flex-col gap-6 py-4 px-2 select-none animate-in fade-in">
       {/* Hero Headline */}
       <div className="text-center flex flex-col items-center gap-1.5 bg-gradient-to-b from-purple-500/10 to-transparent p-6 rounded-3xl border border-purple-500/20">
-        <span className="text-4xl">{isWin ? '🏆' : '🏁'}</span>
+        <div className="w-16 h-16 rounded-3xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-1">
+          <Icon name={isWin ? 'trophy' : 'flag'} size={36} />
+        </div>
         <h1 className="text-3xl font-black text-[var(--on-surface)] tracking-tight">
           {headline}
         </h1>
@@ -128,9 +131,10 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
             {badges.map((b) => (
               <span
                 key={b}
-                className="px-3 py-1 rounded-full text-xs font-black bg-amber-400 text-amber-950 shadow-sm"
+                className="px-3 py-1 rounded-full text-xs font-black bg-amber-400 text-amber-950 shadow-sm flex items-center gap-1"
               >
-                ★ {b}
+                <Icon name="star" size={12} />
+                <span>{b}</span>
               </span>
             ))}
           </div>
@@ -159,8 +163,9 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
           <span className="text-[11px] font-bold text-[var(--on-container-variant)] uppercase">
             Best Streak
           </span>
-          <div className="text-xl font-mono font-black text-amber-500 mt-0.5">
-            {bestStreak} 🔥
+          <div className="text-xl font-mono font-black text-amber-500 mt-0.5 flex items-center justify-center gap-1">
+            <span>{bestStreak}</span>
+            <Icon name="flame" size={16} />
           </div>
         </div>
         <div className="p-3 rounded-2xl bg-[var(--surface-container)] border border-[var(--border-tint)] text-center">
@@ -192,8 +197,16 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="font-mono font-black w-5 text-center">
-                      {entry.rank === 1 ? '🥇' : entry.rank === 2 ? '🥈' : entry.rank === 3 ? '🥉' : `#${entry.rank}`}
+                    <span className="font-mono font-black w-5 text-center flex items-center justify-center">
+                      {entry.rank === 1 ? (
+                        <Icon name="trophy" size={14} className="text-amber-500" />
+                      ) : entry.rank === 2 ? (
+                        <Icon name="medal" size={14} className="text-slate-400" />
+                      ) : entry.rank === 3 ? (
+                        <Icon name="medal" size={14} className="text-amber-700" />
+                      ) : (
+                        `#${entry.rank}`
+                      )}
                     </span>
                     <span>{entry.name} {isMe ? '(You)' : ''}</span>
                   </div>
@@ -244,9 +257,10 @@ export const ResultsView: React.FC<ResultsViewProps> = ({
       <div className="flex flex-col sm:flex-row gap-3 pt-2">
         <button
           onClick={onPlayAgain}
-          className="flex-1 py-3.5 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-black text-sm shadow-lg transition-all active:scale-[0.98]"
+          className="flex-1 py-3.5 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-black text-sm shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-1.5 cursor-pointer"
         >
-          Play Again ⚡
+          <span>Play Again</span>
+          <Icon name="bolt" size={16} />
         </button>
         <button
           onClick={onChangeSettings}

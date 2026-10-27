@@ -1,4 +1,4 @@
-import { WhoSaidItem, TestamentSortItem } from '../content/schemas';
+import { WhoSaidItem, TestamentSortItem, FourSignsPuzzle, ScribesTilesWord, BibleOrNotItem } from '../content/schemas';
 
 export interface SeenRecord {
   id: string;
@@ -51,6 +51,20 @@ class LocalDeviceLedger {
 export const deviceLedger = new LocalDeviceLedger();
 
 /**
+ * Modern Fisher-Yates shuffle that produces an unbiased random permutation.
+ */
+export function shuffle<T>(array: readonly T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+  }
+  return arr;
+}
+
+/**
  * Host Question Selection Algorithm
  * Selects an item from a pool while balancing freshness across all room participants.
  */
@@ -96,10 +110,7 @@ export function selectFreshItem<T extends { id: string }>(
     });
   } else {
     // Prefer items seen by fewest players
-    candidatesWithMetrics.sort((a, b) => {
-      if (a.seenCount !== b.seenCount) return a.seenCount - b.seenCount;
-      return Math.random() - 0.5;
-    });
+    candidatesWithMetrics.sort((a, b) => a.seenCount - b.seenCount);
   }
 
   // Get the best candidates (tied for minimum seenCount)
@@ -149,7 +160,7 @@ export function planWhoSaidSession(
     }
 
     // Shuffle pool for maximum variety across games
-    tierPool = [...tierPool].sort(() => 0.5 - Math.random());
+    tierPool = shuffle(tierPool);
 
     let tierCount = 0;
     let attempts = 0;
@@ -206,7 +217,7 @@ export function planTestamentSortSession(
       tierPool = tierPool.filter((item) => item.type === filterType);
     }
 
-    tierPool = [...tierPool].sort(() => 0.5 - Math.random());
+    tierPool = shuffle(tierPool);
 
     let tierCount = 0;
     let attempts = 0;
@@ -247,4 +258,204 @@ function isNewTestamentRef(ref: string): boolean {
     if (lower.startsWith(book)) return true;
   }
   return false;
+}
+
+export interface FourSignsPlannerOptions {
+  sessionLength: number;
+  roomSeenData?: PlayerSeenData[];
+}
+
+export function planFourSignsSession(
+  fullPool: FourSignsPuzzle[],
+  options: FourSignsPlannerOptions
+): FourSignsPuzzle[] {
+  const { sessionLength, roomSeenData = [] } = options;
+  const questionsPerTier = Math.max(1, Math.round(sessionLength / 4));
+  const planned: FourSignsPuzzle[] = [];
+  const usedIds = new Set<string>();
+
+  for (let tier = 1; tier <= 4; tier++) {
+    let tierPool = fullPool.filter((item) => item.tier === tier);
+    tierPool = shuffle(tierPool);
+
+    let tierCount = 0;
+    let attempts = 0;
+
+    while (tierCount < questionsPerTier && attempts < 150 && planned.length < sessionLength) {
+      attempts++;
+      const candidate = selectFreshItem(tierPool, roomSeenData, usedIds);
+      if (!candidate) break;
+
+      usedIds.add(candidate.id);
+      planned.push(candidate);
+      tierCount++;
+    }
+  }
+
+  // Fallback if not enough reached
+  if (planned.length < sessionLength) {
+    const remaining = shuffle(fullPool.filter((p) => !usedIds.has(p.id)));
+    for (const item of remaining) {
+      if (planned.length >= sessionLength) break;
+      planned.push(item);
+      usedIds.add(item.id);
+    }
+  }
+
+  return planned;
+}
+
+export interface ScribesTilesPlannerOptions {
+  sessionLength: number;
+  roomSeenData?: PlayerSeenData[];
+}
+
+export function planScribesTilesSession(
+  fullPool: ScribesTilesWord[],
+  options: ScribesTilesPlannerOptions
+): ScribesTilesWord[] {
+  const { sessionLength, roomSeenData = [] } = options;
+  const questionsPerTier = Math.max(1, Math.round(sessionLength / 4));
+  const planned: ScribesTilesWord[] = [];
+  const usedIds = new Set<string>();
+
+  for (let tier = 1; tier <= 4; tier++) {
+    let tierPool = fullPool.filter((item) => item.tier === tier);
+    tierPool = shuffle(tierPool);
+
+    let tierCount = 0;
+    let attempts = 0;
+
+    while (tierCount < questionsPerTier && attempts < 150 && planned.length < sessionLength) {
+      attempts++;
+      const candidate = selectFreshItem(tierPool, roomSeenData, usedIds);
+      if (!candidate) break;
+
+      usedIds.add(candidate.id);
+      planned.push(candidate);
+      tierCount++;
+    }
+  }
+
+  // Fallback if not enough reached
+  if (planned.length < sessionLength) {
+    const remaining = shuffle(fullPool.filter((p) => !usedIds.has(p.id)));
+    for (const item of remaining) {
+      if (planned.length >= sessionLength) break;
+      planned.push(item);
+      usedIds.add(item.id);
+    }
+  }
+
+  return planned;
+}
+
+export interface BibleOrNotPlannerOptions {
+  sessionLength: number;
+  roomSeenData?: PlayerSeenData[];
+}
+
+/**
+ * Intelligent Session Planner for "Bible or Not"
+ * Enforces:
+ * 1. 50/50 balance between IN_BIBLE and NOT_IN_BIBLE across the session
+ * 2. Anti-clustering: never more than 2 consecutive identical answers
+ * 3. Category diversity: avoids consecutive identical categories
+ * 4. Tier distribution ramp across rounds
+ * 5. Unbiased Fisher-Yates shuffling with anti-repeat ledger integration
+ */
+export function planBibleOrNotSession(
+  fullPool: BibleOrNotItem[],
+  options: BibleOrNotPlannerOptions
+): BibleOrNotItem[] {
+  const { sessionLength, roomSeenData = [] } = options;
+  const questionsPerTier = Math.max(1, Math.round(sessionLength / 4));
+  const planned: BibleOrNotItem[] = [];
+  const usedIds = new Set<string>();
+
+  const maxInBible = Math.ceil(sessionLength / 2);
+  const maxNotInBible = Math.ceil(sessionLength / 2);
+  let inBibleCount = 0;
+  let notInBibleCount = 0;
+
+  for (let tier = 1; tier <= 4; tier++) {
+    const tierItems = fullPool.filter((item) => item.tier === tier);
+    const tierPool = shuffle(tierItems);
+
+    let tierCount = 0;
+    let attempts = 0;
+
+    while (tierCount < questionsPerTier && attempts < 200 && planned.length < sessionLength) {
+      attempts++;
+      const candidate = selectFreshItem(tierPool, roomSeenData, usedIds);
+      if (!candidate) break;
+
+      // 1. Avoid more than 2 consecutive same answers
+      const n = planned.length;
+      if (
+        n >= 2 &&
+        planned[n - 1].answer === candidate.answer &&
+        planned[n - 2].answer === candidate.answer
+      ) {
+        continue;
+      }
+
+      // 2. Prevent exceeding overall session answer quotas
+      if (candidate.answer === 'IN_BIBLE' && inBibleCount >= maxInBible && notInBibleCount < maxNotInBible) {
+        continue;
+      }
+      if (candidate.answer === 'NOT_IN_BIBLE' && notInBibleCount >= maxNotInBible && inBibleCount < maxInBible) {
+        continue;
+      }
+
+      // 3. Category variety: prefer different category from previous card
+      if (attempts < 100 && n >= 1 && planned[n - 1].category === candidate.category) {
+        continue;
+      }
+
+      usedIds.add(candidate.id);
+      planned.push(candidate);
+      if (candidate.answer === 'IN_BIBLE') inBibleCount++;
+      if (candidate.answer === 'NOT_IN_BIBLE') notInBibleCount++;
+      tierCount++;
+    }
+  }
+
+  // Fallback with anti-clustering constraints if quota not reached
+  if (planned.length < sessionLength) {
+    const remaining = shuffle(fullPool.filter((p) => !usedIds.has(p.id)));
+    for (const item of remaining) {
+      if (planned.length >= sessionLength) break;
+      const n = planned.length;
+      if (
+        n >= 2 &&
+        planned[n - 1].answer === item.answer &&
+        planned[n - 2].answer === item.answer
+      ) {
+        continue;
+      }
+      if (item.answer === 'IN_BIBLE' && inBibleCount >= maxInBible && notInBibleCount < maxNotInBible) {
+        continue;
+      }
+      if (item.answer === 'NOT_IN_BIBLE' && notInBibleCount >= maxNotInBible && inBibleCount < maxInBible) {
+        continue;
+      }
+      planned.push(item);
+      usedIds.add(item.id);
+      if (item.answer === 'IN_BIBLE') inBibleCount++;
+      if (item.answer === 'NOT_IN_BIBLE') notInBibleCount++;
+    }
+  }
+
+  // Absolute fallback if pool was tiny
+  if (planned.length < sessionLength) {
+    const remaining = fullPool.filter((p) => !usedIds.has(p.id));
+    for (const item of remaining) {
+      if (planned.length >= sessionLength) break;
+      planned.push(item);
+      usedIds.add(item.id);
+    }
+  }
+
+  return planned;
 }

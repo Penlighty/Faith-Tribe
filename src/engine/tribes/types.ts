@@ -9,6 +9,7 @@ export interface TribeMember {
   avatarSeed: string;
   role: 'admin' | 'member';
   joinedAt: number;
+  biblicalTribeId?: string;
   stats?: {
     gamesPlayed: number;
     victories: number;

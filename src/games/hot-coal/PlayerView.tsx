@@ -100,8 +100,9 @@ export const HotCoalPlayerView: React.FC<GameViewProps<HotCoalState>> = ({
         </h2>
 
         {/* Burns counter badge */}
-        <div className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-[var(--surface-container-high)] text-[var(--on-container)]">
-          Your Burns: {myBurns} 🔥
+        <div className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-[var(--surface-container-high)] text-[var(--on-container)] flex items-center gap-1.5">
+          <span>Your Burns: {myBurns}</span>
+          <Icon name="flame" size={12} className="text-amber-500" />
         </div>
       </Card>
 
@@ -229,7 +230,9 @@ export const HotCoalPlayerView: React.FC<GameViewProps<HotCoalState>> = ({
             isITheBurned ? 'bg-red-500/10 border-red-500/30' : ''
           }`}
         >
-          <div className="text-4xl">🔥</div>
+          <div className="w-14 h-14 rounded-2xl bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+            <Icon name="flame" size={32} />
+          </div>
           <h3 className="text-2xl font-black">
             {isITheBurned ? 'Ouch! You Took a Burn!' : 'The Coal Burned Out!'}
           </h3>

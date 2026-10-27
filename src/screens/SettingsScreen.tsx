@@ -6,7 +6,12 @@ import { Button } from '../components/ui/Button';
 import { Chip } from '../components/ui/Chip';
 import { useTheme } from '../theme/ThemeContext';
 import { useSession } from '../engine/session/SessionContext';
+import { useAuth } from '../engine/auth/AuthContext';
 import { soundManager } from '../engine/services/audio';
+import { TRIBES_BY_ID, canRetakeAssessment } from '../design/tribes/tribes';
+import { TribeAvatar } from '../components/tribes/TribeAvatar';
+import { TribalAssessmentModal } from '../components/tribes/TribalAssessmentModal';
+import { MaterialSlider } from '../components/ui/MaterialSlider';
 
 export const SettingsScreen: React.FC = () => {
   const {
@@ -28,6 +33,11 @@ export const SettingsScreen: React.FC = () => {
   } = useTheme();
 
   const { transportName, currentUser } = useSession();
+  const { user } = useAuth();
+  const [showAssessmentModal, setShowAssessmentModal] = useState(false);
+
+  const assignedTribe = TRIBES_BY_ID[user?.biblicalTribeId || 'judah'] || TRIBES_BY_ID['judah'];
+  const cooldown = canRetakeAssessment(user?.tribalAssessment?.assessedAt);
 
   // PWA install prompt deferred event
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -73,7 +83,7 @@ export const SettingsScreen: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-        {/* Left Column: Profile & Appearance */}
+        {/* Left Column: Profile, Ancestral Tribe Calling & Appearance */}
         <div className="flex flex-col gap-5">
           {/* Profile Card */}
           <Card variant="tonal" padding="md" className="flex items-center justify-between shadow-sm">
@@ -81,13 +91,74 @@ export const SettingsScreen: React.FC = () => {
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
                 Active Disciple
               </span>
-              <span className="text-base sm:text-lg font-extrabold">{currentUser?.name}</span>
+              <span className="text-base sm:text-lg font-extrabold">{user?.displayName || currentUser?.name || 'Disciple'}</span>
               <span className="text-[11px] font-mono text-[var(--on-container-variant)]">
-                Session ID: {currentUser?.id}
+                {user?.username ? `@${user.username}` : `Session ID: ${currentUser?.id}`}
               </span>
             </div>
-            <div className="w-10 h-10 rounded-full bg-[var(--surface-container-high)] flex items-center justify-center font-bold text-base">
-              🕊️
+            <TribeAvatar tribeId={assignedTribe.id} size="md" />
+          </Card>
+
+          {/* Ancestral Tribe Calling Card */}
+          <Card variant="hero" padding="md" className="flex flex-col gap-3 shadow-md border-2 border-[var(--primary-action)]/30">
+            <div className="flex items-center justify-between border-b border-[var(--border-tint)] pb-2.5">
+              <span className="text-xs font-black uppercase tracking-wider text-[var(--primary-action)] flex items-center gap-1.5">
+                <Icon name="tribe" size={14} /> Ancestral Tribe Calling
+              </span>
+              {user?.tribalAssessment ? (
+                <span className="text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                  <Icon name="check" size={10} />
+                  <span>{user.tribalAssessment.matchPercentage}% Alignment</span>
+                </span>
+              ) : (
+                <span className="text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 px-2 py-0.5 rounded-full">
+                  Unassessed
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-3.5">
+              <TribeAvatar tribeId={assignedTribe.id} size="lg" showGlow />
+              <div className="flex flex-col min-w-0 flex-1">
+                <h4 className="text-base sm:text-lg font-black text-[var(--on-container)] leading-tight truncate">
+                  Tribe of {assignedTribe.name}
+                </h4>
+                <div className="text-xs font-bold text-[var(--primary-action)] truncate">
+                  {assignedTribe.title}
+                </div>
+                <div className="text-[11px] font-serif italic text-[var(--on-container-variant)] line-clamp-2 mt-0.5">
+                  “{assignedTribe.verseText}”
+                </div>
+              </div>
+            </div>
+
+            {/* Assessment Cooldown & Action */}
+            <div className="pt-2 border-t border-[var(--border-tint)] flex items-center justify-between gap-2 flex-wrap">
+              <div className="text-[11px] text-[var(--on-container-variant)] flex items-center gap-1">
+                {cooldown.canRetake ? (
+                  <span className="text-emerald-700 dark:text-emerald-300 font-bold flex items-center gap-1">
+                    <Icon name="bolt" size={12} /> Calling Assessment Ready
+                  </span>
+                ) : (
+                  <span className="text-amber-700 dark:text-amber-300 font-medium flex items-center gap-1">
+                    <Icon name="lock" size={12} /> Locked &bull; Retake in {cooldown.daysRemaining} days
+                  </span>
+                )}
+              </div>
+
+              <Button
+                variant={cooldown.canRetake ? 'primary' : 'tonal'}
+                size="sm"
+                pill
+                disabled={!cooldown.canRetake}
+                onClick={() => {
+                  triggerHaptic('light');
+                  setShowAssessmentModal(true);
+                }}
+                className="font-black text-xs px-3 shadow-xs"
+              >
+                {user?.tribalAssessment ? 'Retake Assessment' : 'Take 7-Trait Assessment'}
+              </Button>
             </div>
           </Card>
 
@@ -140,9 +211,10 @@ export const SettingsScreen: React.FC = () => {
                   soundManager.playChime(soundEnabled);
                   triggerHaptic('light');
                 }}
-                className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[var(--surface-container-high)] hover:bg-[var(--primary-action)] hover:text-white transition-colors cursor-pointer border border-[var(--border-tint)]"
+                className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[var(--surface-container-high)] hover:bg-[var(--primary-action)] hover:text-white transition-colors cursor-pointer border border-[var(--border-tint)] flex items-center gap-1"
               >
-                Test Chime 🔔
+                <span>Test Chime</span>
+                <Icon name="sound-on" size={13} />
               </button>
             </div>
 
@@ -155,14 +227,13 @@ export const SettingsScreen: React.FC = () => {
                 </span>
                 <span className="font-mono text-[var(--primary-action)]">{Math.round(masterVolume * 100)}%</span>
               </div>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.05"
-                value={masterVolume}
-                onChange={(e) => setMasterVolume(parseFloat(e.target.value))}
-                className="w-full accent-[var(--primary-action)] cursor-pointer h-2 bg-[var(--surface-container-high)] rounded-lg appearance-none"
+              <MaterialSlider
+                value={Math.round(masterVolume * 100)}
+                min={0}
+                max={100}
+                step={5}
+                onChange={(val) => setMasterVolume(val / 100)}
+                ariaLabel="Master Volume"
               />
             </div>
 
@@ -175,14 +246,13 @@ export const SettingsScreen: React.FC = () => {
                 </span>
                 <span className="font-mono text-[var(--primary-action)]">{Math.round(sfxVolume * 100)}%</span>
               </div>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.05"
-                value={sfxVolume}
-                onChange={(e) => setSfxVolume(parseFloat(e.target.value))}
-                className="w-full accent-[var(--primary-action)] cursor-pointer h-2 bg-[var(--surface-container-high)] rounded-lg appearance-none"
+              <MaterialSlider
+                value={Math.round(sfxVolume * 100)}
+                min={0}
+                max={100}
+                step={5}
+                onChange={(val) => setSfxVolume(val / 100)}
+                ariaLabel="Sound Effects Volume"
               />
             </div>
 
@@ -195,14 +265,13 @@ export const SettingsScreen: React.FC = () => {
                 </span>
                 <span className="font-mono text-[var(--primary-action)]">{Math.round(ambientVolume * 100)}%</span>
               </div>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.05"
-                value={ambientVolume}
-                onChange={(e) => setAmbientVolume(parseFloat(e.target.value))}
-                className="w-full accent-[var(--primary-action)] cursor-pointer h-2 bg-[var(--surface-container-high)] rounded-lg appearance-none"
+              <MaterialSlider
+                value={Math.round(ambientVolume * 100)}
+                min={0}
+                max={100}
+                step={5}
+                onChange={(val) => setAmbientVolume(val / 100)}
+                ariaLabel="Ambient Volume"
               />
             </div>
           </Card>
@@ -325,6 +394,11 @@ export const SettingsScreen: React.FC = () => {
           </Card>
         </div>
       </div>
+
+      <TribalAssessmentModal
+        isOpen={showAssessmentModal}
+        onClose={() => setShowAssessmentModal(false)}
+      />
     </div>
   );
 };

@@ -1,0 +1,1753 @@
+{
+ "version": 1,
+ "name": "Scribe's Tiles",
+ "notes": "Rack = answer letters + decoys, scrambled by the engine. A word may contain repeated letters. Answers use A-Z only.",
+ "decoysByTier": {
+  "1": 2,
+  "2": 3,
+  "3": 4,
+  "4": 5
+ },
+ "words": [
+  {
+   "id": "st-001",
+   "tier": 1,
+   "answer": "ADAM",
+   "length": 4,
+   "category": "person",
+   "clue": "The first man, formed from the dust of the ground",
+   "ref": "Genesis 2:7",
+   "decoys": [
+    "E",
+    "H"
+   ]
+  },
+  {
+   "id": "st-002",
+   "tier": 1,
+   "answer": "EVE",
+   "length": 3,
+   "category": "person",
+   "clue": "Named 'the mother of all the living'",
+   "ref": "Genesis 3:20",
+   "decoys": [
+    "O",
+    "W"
+   ]
+  },
+  {
+   "id": "st-003",
+   "tier": 1,
+   "answer": "NOAH",
+   "length": 4,
+   "category": "person",
+   "clue": "He built an ark at God's command",
+   "ref": "Genesis 6:14-22",
+   "decoys": [
+    "E",
+    "L"
+   ]
+  },
+  {
+   "id": "st-004",
+   "tier": 1,
+   "answer": "CAIN",
+   "length": 4,
+   "category": "person",
+   "clue": "Adam and Eve's firstborn son",
+   "ref": "Genesis 4:1",
+   "decoys": [
+    "E",
+    "S"
+   ]
+  },
+  {
+   "id": "st-005",
+   "tier": 1,
+   "answer": "ABEL",
+   "length": 4,
+   "category": "person",
+   "clue": "A keeper of sheep whose offering God accepted",
+   "ref": "Genesis 4:2-4",
+   "decoys": [
+    "C",
+    "I"
+   ]
+  },
+  {
+   "id": "st-006",
+   "tier": 1,
+   "answer": "ISAAC",
+   "length": 5,
+   "category": "person",
+   "clue": "The son Abraham was told to offer on a mountain",
+   "ref": "Genesis 22:2",
+   "decoys": [
+    "O",
+    "P"
+   ]
+  },
+  {
+   "id": "st-007",
+   "tier": 1,
+   "answer": "JACOB",
+   "length": 5,
+   "category": "person",
+   "clue": "He wrestled until daybreak and was renamed Israel",
+   "ref": "Genesis 32:24-28",
+   "decoys": [
+    "E",
+    "S"
+   ]
+  },
+  {
+   "id": "st-008",
+   "tier": 1,
+   "answer": "MOSES",
+   "length": 5,
+   "category": "person",
+   "clue": "He led Israel out of Egypt",
+   "ref": "Exodus 12-14",
+   "decoys": [
+    "A",
+    "B"
+   ]
+  },
+  {
+   "id": "st-009",
+   "tier": 1,
+   "answer": "DAVID",
+   "length": 5,
+   "category": "person",
+   "clue": "A shepherd boy who became Israel's king",
+   "ref": "1 Samuel 16; 2 Samuel 5",
+   "decoys": [
+    "E",
+    "W"
+   ]
+  },
+  {
+   "id": "st-010",
+   "tier": 1,
+   "answer": "RUTH",
+   "length": 4,
+   "category": "person",
+   "clue": "A Moabite who told her mother-in-law, 'Your people shall be my people'",
+   "ref": "Ruth 1:16",
+   "decoys": [
+    "O",
+    "W"
+   ]
+  },
+  {
+   "id": "st-011",
+   "tier": 1,
+   "answer": "JONAH",
+   "length": 5,
+   "category": "person",
+   "clue": "A prophet who spent three days inside a great fish",
+   "ref": "Jonah 1:17",
+   "decoys": [
+    "B",
+    "I"
+   ]
+  },
+  {
+   "id": "st-012",
+   "tier": 1,
+   "answer": "PAUL",
+   "length": 4,
+   "category": "person",
+   "clue": "Apostle to the Gentiles, formerly named Saul",
+   "ref": "Acts 13:9",
+   "decoys": [
+    "D",
+    "O"
+   ]
+  },
+  {
+   "id": "st-013",
+   "tier": 1,
+   "answer": "PETER",
+   "length": 5,
+   "category": "person",
+   "clue": "The fisherman Jesus called 'the rock'",
+   "ref": "Matthew 16:18",
+   "decoys": [
+    "F",
+    "O"
+   ]
+  },
+  {
+   "id": "st-014",
+   "tier": 1,
+   "answer": "MARY",
+   "length": 4,
+   "category": "person",
+   "clue": "The mother of Jesus",
+   "ref": "Luke 1:30-31",
+   "decoys": [
+    "B",
+    "O"
+   ]
+  },
+  {
+   "id": "st-015",
+   "tier": 1,
+   "answer": "JESUS",
+   "length": 5,
+   "category": "person",
+   "clue": "The name given at birth, meaning 'the LORD saves'",
+   "ref": "Matthew 1:21",
+   "decoys": [
+    "A",
+    "T"
+   ]
+  },
+  {
+   "id": "st-016",
+   "tier": 1,
+   "answer": "EDEN",
+   "length": 4,
+   "category": "place",
+   "clue": "The garden where the first couple lived",
+   "ref": "Genesis 2:8",
+   "decoys": [
+    "O",
+    "V"
+   ]
+  },
+  {
+   "id": "st-017",
+   "tier": 1,
+   "answer": "EGYPT",
+   "length": 5,
+   "category": "place",
+   "clue": "Land where Israel was enslaved before the Exodus",
+   "ref": "Exodus 1:8-14",
+   "decoys": [
+    "A",
+    "H"
+   ]
+  },
+  {
+   "id": "st-018",
+   "tier": 1,
+   "answer": "SINAI",
+   "length": 5,
+   "category": "place",
+   "clue": "The mountain where Moses received the law",
+   "ref": "Exodus 19-20",
+   "decoys": [
+    "B",
+    "E"
+   ]
+  },
+  {
+   "id": "st-019",
+   "tier": 1,
+   "answer": "JORDAN",
+   "length": 6,
+   "category": "place",
+   "clue": "The river where Jesus was baptized",
+   "ref": "Matthew 3:13",
+   "decoys": [
+    "S",
+    "U"
+   ]
+  },
+  {
+   "id": "st-020",
+   "tier": 1,
+   "answer": "FAITH",
+   "length": 5,
+   "category": "concept",
+   "clue": "Being sure of what we hope for",
+   "ref": "Hebrews 11:1",
+   "decoys": [
+    "N",
+    "U"
+   ]
+  },
+  {
+   "id": "st-021",
+   "tier": 1,
+   "answer": "LOVE",
+   "length": 4,
+   "category": "concept",
+   "clue": "The greatest of faith, hope, and this",
+   "ref": "1 Corinthians 13:13",
+   "decoys": [
+    "P",
+    "U"
+   ]
+  },
+  {
+   "id": "st-022",
+   "tier": 1,
+   "answer": "HOPE",
+   "length": 4,
+   "category": "concept",
+   "clue": "An anchor for the soul",
+   "ref": "Hebrews 6:19",
+   "decoys": [
+    "D",
+    "I"
+   ]
+  },
+  {
+   "id": "st-023",
+   "tier": 1,
+   "answer": "GRACE",
+   "length": 5,
+   "category": "concept",
+   "clue": "God's unearned favor",
+   "ref": "Ephesians 2:8",
+   "decoys": [
+    "U",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-024",
+   "tier": 1,
+   "answer": "PRAYER",
+   "length": 6,
+   "category": "concept",
+   "clue": "Speaking with God",
+   "ref": "Matthew 6:9",
+   "decoys": [
+    "I",
+    "K"
+   ]
+  },
+  {
+   "id": "st-025",
+   "tier": 1,
+   "answer": "MANNA",
+   "length": 5,
+   "category": "thing",
+   "clue": "Bread-like food that fell in the wilderness",
+   "ref": "Exodus 16:31",
+   "decoys": [
+    "E",
+    "H"
+   ]
+  },
+  {
+   "id": "st-026",
+   "tier": 1,
+   "answer": "PSALMS",
+   "length": 6,
+   "category": "book",
+   "clue": "The book of one hundred fifty songs and prayers",
+   "ref": "Psalms",
+   "decoys": [
+    "B",
+    "U"
+   ]
+  },
+  {
+   "id": "st-027",
+   "tier": 1,
+   "answer": "GENESIS",
+   "length": 7,
+   "category": "book",
+   "clue": "The first book of the Bible",
+   "ref": "Genesis 1:1",
+   "decoys": [
+    "H",
+    "O"
+   ]
+  },
+  {
+   "id": "st-028",
+   "tier": 1,
+   "answer": "ANGEL",
+   "length": 5,
+   "category": "thing",
+   "clue": "A messenger from God, such as Gabriel",
+   "ref": "Luke 1:26",
+   "decoys": [
+    "C",
+    "I"
+   ]
+  },
+  {
+   "id": "st-029",
+   "tier": 1,
+   "answer": "CROSS",
+   "length": 5,
+   "category": "thing",
+   "clue": "The instrument used for Jesus' crucifixion",
+   "ref": "Luke 23:33",
+   "decoys": [
+    "A",
+    "B"
+   ]
+  },
+  {
+   "id": "st-030",
+   "tier": 1,
+   "answer": "BREAD",
+   "length": 5,
+   "category": "thing",
+   "clue": "Jesus called himself the ___ of life",
+   "ref": "John 6:35",
+   "decoys": [
+    "T",
+    "U"
+   ]
+  },
+  {
+   "id": "st-031",
+   "tier": 2,
+   "answer": "ABRAHAM",
+   "length": 7,
+   "category": "person",
+   "clue": "God changed his name from Abram, meaning 'father of many'",
+   "ref": "Genesis 17:5",
+   "decoys": [
+    "E",
+    "L",
+    "S"
+   ]
+  },
+  {
+   "id": "st-032",
+   "tier": 2,
+   "answer": "SOLOMON",
+   "length": 7,
+   "category": "person",
+   "clue": "A wise king who built the temple in Jerusalem",
+   "ref": "1 Kings 3; 6",
+   "decoys": [
+    "T",
+    "U",
+    "V"
+   ]
+  },
+  {
+   "id": "st-033",
+   "tier": 2,
+   "answer": "ELIJAH",
+   "length": 6,
+   "category": "person",
+   "clue": "The prophet who called down fire on Mount Carmel",
+   "ref": "1 Kings 18:38",
+   "decoys": [
+    "U",
+    "V",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-034",
+   "tier": 2,
+   "answer": "ELISHA",
+   "length": 6,
+   "category": "person",
+   "clue": "He succeeded Elijah as prophet",
+   "ref": "1 Kings 19:16",
+   "decoys": [
+    "K",
+    "U",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-035",
+   "tier": 2,
+   "answer": "JOSHUA",
+   "length": 6,
+   "category": "person",
+   "clue": "He led Israel across the Jordan into Canaan",
+   "ref": "Joshua 3",
+   "decoys": [
+    "G",
+    "I",
+    "N"
+   ]
+  },
+  {
+   "id": "st-036",
+   "tier": 2,
+   "answer": "GIDEON",
+   "length": 6,
+   "category": "person",
+   "clue": "A judge who defeated Midian with three hundred men",
+   "ref": "Judges 7",
+   "decoys": [
+    "A",
+    "F",
+    "P"
+   ]
+  },
+  {
+   "id": "st-037",
+   "tier": 2,
+   "answer": "SAMSON",
+   "length": 6,
+   "category": "person",
+   "clue": "A judge whose great strength was linked to his uncut hair",
+   "ref": "Judges 16:17",
+   "decoys": [
+    "C",
+    "I",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-038",
+   "tier": 2,
+   "answer": "DANIEL",
+   "length": 6,
+   "category": "person",
+   "clue": "An exile in Babylon who survived the lions' den",
+   "ref": "Daniel 6",
+   "decoys": [
+    "C",
+    "O",
+    "V"
+   ]
+  },
+  {
+   "id": "st-039",
+   "tier": 2,
+   "answer": "ESTHER",
+   "length": 6,
+   "category": "person",
+   "clue": "The queen who risked her life to save her people",
+   "ref": "Esther 4:16",
+   "decoys": [
+    "A",
+    "D",
+    "M"
+   ]
+  },
+  {
+   "id": "st-040",
+   "tier": 2,
+   "answer": "NEHEMIAH",
+   "length": 8,
+   "category": "person",
+   "clue": "He led the rebuilding of Jerusalem's walls",
+   "ref": "Nehemiah 2-6",
+   "decoys": [
+    "O",
+    "S",
+    "T"
+   ]
+  },
+  {
+   "id": "st-041",
+   "tier": 2,
+   "answer": "TIMOTHY",
+   "length": 7,
+   "category": "person",
+   "clue": "A young coworker of Paul from Lystra",
+   "ref": "Acts 16:1-3",
+   "decoys": [
+    "E",
+    "K",
+    "L"
+   ]
+  },
+  {
+   "id": "st-042",
+   "tier": 2,
+   "answer": "BARNABAS",
+   "length": 8,
+   "category": "person",
+   "clue": "His name means 'son of encouragement'",
+   "ref": "Acts 4:36",
+   "decoys": [
+    "G",
+    "O",
+    "T"
+   ]
+  },
+  {
+   "id": "st-043",
+   "tier": 2,
+   "answer": "LAZARUS",
+   "length": 7,
+   "category": "person",
+   "clue": "Brother of Mary and Martha, raised after four days",
+   "ref": "John 11:43-44",
+   "decoys": [
+    "G",
+    "I",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-044",
+   "tier": 2,
+   "answer": "JERICHO",
+   "length": 7,
+   "category": "place",
+   "clue": "City whose walls fell after Israel marched around it",
+   "ref": "Joshua 6",
+   "decoys": [
+    "A",
+    "L",
+    "P"
+   ]
+  },
+  {
+   "id": "st-045",
+   "tier": 2,
+   "answer": "GALILEE",
+   "length": 7,
+   "category": "place",
+   "clue": "Region and sea where Jesus called fishermen",
+   "ref": "Matthew 4:18",
+   "decoys": [
+    "C",
+    "N",
+    "O"
+   ]
+  },
+  {
+   "id": "st-046",
+   "tier": 2,
+   "answer": "CANAAN",
+   "length": 6,
+   "category": "place",
+   "clue": "The land promised to Abraham's descendants",
+   "ref": "Genesis 12:5-7",
+   "decoys": [
+    "S",
+    "U",
+    "V"
+   ]
+  },
+  {
+   "id": "st-047",
+   "tier": 2,
+   "answer": "BABYLON",
+   "length": 7,
+   "category": "place",
+   "clue": "The great city where Judah's people were exiled",
+   "ref": "2 Kings 25",
+   "decoys": [
+    "C",
+    "E",
+    "R"
+   ]
+  },
+  {
+   "id": "st-048",
+   "tier": 2,
+   "answer": "CARMEL",
+   "length": 6,
+   "category": "place",
+   "clue": "Mountain of Elijah's showdown with Baal's prophets",
+   "ref": "1 Kings 18:19",
+   "decoys": [
+    "D",
+    "H",
+    "O"
+   ]
+  },
+  {
+   "id": "st-049",
+   "tier": 2,
+   "answer": "ARARAT",
+   "length": 6,
+   "category": "place",
+   "clue": "The mountains where the ark came to rest",
+   "ref": "Genesis 8:4",
+   "decoys": [
+    "D",
+    "I",
+    "V"
+   ]
+  },
+  {
+   "id": "st-050",
+   "tier": 2,
+   "answer": "PATMOS",
+   "length": 6,
+   "category": "place",
+   "clue": "The island where John received the Revelation",
+   "ref": "Revelation 1:9",
+   "decoys": [
+    "E",
+    "L",
+    "R"
+   ]
+  },
+  {
+   "id": "st-051",
+   "tier": 2,
+   "answer": "SABBATH",
+   "length": 7,
+   "category": "concept",
+   "clue": "The seventh day, set apart for rest",
+   "ref": "Exodus 20:8-11",
+   "decoys": [
+    "C",
+    "I",
+    "W"
+   ]
+  },
+  {
+   "id": "st-052",
+   "tier": 2,
+   "answer": "PASSOVER",
+   "length": 8,
+   "category": "concept",
+   "clue": "The feast remembering the night the destroyer passed over",
+   "ref": "Exodus 12:11-13",
+   "decoys": [
+    "B",
+    "G",
+    "I"
+   ]
+  },
+  {
+   "id": "st-053",
+   "tier": 2,
+   "answer": "COVENANT",
+   "length": 8,
+   "category": "concept",
+   "clue": "A binding agreement, like the one marked by a rainbow",
+   "ref": "Genesis 9:12-16",
+   "decoys": [
+    "F",
+    "I",
+    "K"
+   ]
+  },
+  {
+   "id": "st-054",
+   "tier": 2,
+   "answer": "PARABLE",
+   "length": 7,
+   "category": "concept",
+   "clue": "A story Jesus told to teach a spiritual truth",
+   "ref": "Matthew 13:34",
+   "decoys": [
+    "O",
+    "T",
+    "V"
+   ]
+  },
+  {
+   "id": "st-055",
+   "tier": 2,
+   "answer": "PROPHET",
+   "length": 7,
+   "category": "concept",
+   "clue": "One who speaks for God",
+   "ref": "Deuteronomy 18:18",
+   "decoys": [
+    "C",
+    "I",
+    "L"
+   ]
+  },
+  {
+   "id": "st-056",
+   "tier": 2,
+   "answer": "MESSIAH",
+   "length": 7,
+   "category": "concept",
+   "clue": "The 'anointed one'",
+   "ref": "John 1:41",
+   "decoys": [
+    "C",
+    "R",
+    "U"
+   ]
+  },
+  {
+   "id": "st-057",
+   "tier": 2,
+   "answer": "GOSPEL",
+   "length": 6,
+   "category": "concept",
+   "clue": "The 'good news' about Jesus",
+   "ref": "Mark 1:1",
+   "decoys": [
+    "I",
+    "K",
+    "V"
+   ]
+  },
+  {
+   "id": "st-058",
+   "tier": 2,
+   "answer": "TEMPLE",
+   "length": 6,
+   "category": "thing",
+   "clue": "The house Solomon built for the LORD",
+   "ref": "1 Kings 6:1",
+   "decoys": [
+    "C",
+    "O",
+    "S"
+   ]
+  },
+  {
+   "id": "st-059",
+   "tier": 2,
+   "answer": "SHEPHERD",
+   "length": 8,
+   "category": "thing",
+   "clue": "How Psalm 23 describes the LORD",
+   "ref": "Psalm 23:1",
+   "decoys": [
+    "K",
+    "U",
+    "V"
+   ]
+  },
+  {
+   "id": "st-060",
+   "tier": 2,
+   "answer": "ALTAR",
+   "length": 5,
+   "category": "thing",
+   "clue": "A place where sacrifices were offered",
+   "ref": "Genesis 8:20",
+   "decoys": [
+    "H",
+    "U",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-061",
+   "tier": 3,
+   "answer": "BETHLEHEM",
+   "length": 9,
+   "category": "place",
+   "clue": "The town of David where Jesus was born",
+   "ref": "Luke 2:4-7; Micah 5:2",
+   "decoys": [
+    "D",
+    "O",
+    "P",
+    "W"
+   ]
+  },
+  {
+   "id": "st-062",
+   "tier": 3,
+   "answer": "JERUSALEM",
+   "length": 9,
+   "category": "place",
+   "clue": "The city David made his capital",
+   "ref": "2 Samuel 5:6-9",
+   "decoys": [
+    "B",
+    "C",
+    "I",
+    "V"
+   ]
+  },
+  {
+   "id": "st-063",
+   "tier": 3,
+   "answer": "NAZARETH",
+   "length": 8,
+   "category": "place",
+   "clue": "The Galilean town where Jesus grew up",
+   "ref": "Luke 2:51; 4:16",
+   "decoys": [
+    "P",
+    "U",
+    "V",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-064",
+   "tier": 3,
+   "answer": "CAPERNAUM",
+   "length": 9,
+   "category": "place",
+   "clue": "The lakeside town Jesus made his base",
+   "ref": "Matthew 4:13",
+   "decoys": [
+    "H",
+    "O",
+    "T",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-065",
+   "tier": 3,
+   "answer": "DAMASCUS",
+   "length": 8,
+   "category": "place",
+   "clue": "The city on the road where Saul met the risen Lord",
+   "ref": "Acts 9:3",
+   "decoys": [
+    "G",
+    "H",
+    "I",
+    "K"
+   ]
+  },
+  {
+   "id": "st-066",
+   "tier": 3,
+   "answer": "GETHSEMANE",
+   "length": 10,
+   "category": "place",
+   "clue": "The garden where Jesus prayed before his arrest",
+   "ref": "Matthew 26:36",
+   "decoys": [
+    "B",
+    "R",
+    "U",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-067",
+   "tier": 3,
+   "answer": "GOLGOTHA",
+   "length": 8,
+   "category": "place",
+   "clue": "'The place of the skull'",
+   "ref": "Matthew 27:33",
+   "decoys": [
+    "C",
+    "I",
+    "P",
+    "R"
+   ]
+  },
+  {
+   "id": "st-068",
+   "tier": 3,
+   "answer": "ZACCHAEUS",
+   "length": 9,
+   "category": "person",
+   "clue": "The chief tax collector of Jericho who welcomed Jesus to his house",
+   "ref": "Luke 19:2-6",
+   "decoys": [
+    "G",
+    "I",
+    "P",
+    "W"
+   ]
+  },
+  {
+   "id": "st-069",
+   "tier": 3,
+   "answer": "NICODEMUS",
+   "length": 9,
+   "category": "person",
+   "clue": "A Pharisee who came to Jesus by night",
+   "ref": "John 3:1-2",
+   "decoys": [
+    "A",
+    "F",
+    "K",
+    "W"
+   ]
+  },
+  {
+   "id": "st-070",
+   "tier": 3,
+   "answer": "JEREMIAH",
+   "length": 8,
+   "category": "person",
+   "clue": "The weeping prophet before the exile",
+   "ref": "Jeremiah 1:1-5; 9:1",
+   "decoys": [
+    "C",
+    "G",
+    "P",
+    "U"
+   ]
+  },
+  {
+   "id": "st-071",
+   "tier": 3,
+   "answer": "EZEKIEL",
+   "length": 7,
+   "category": "person",
+   "clue": "A priest-prophet who saw a valley of dry bones",
+   "ref": "Ezekiel 37:1-10",
+   "decoys": [
+    "F",
+    "S",
+    "U",
+    "W"
+   ]
+  },
+  {
+   "id": "st-072",
+   "tier": 3,
+   "answer": "PENTECOST",
+   "length": 9,
+   "category": "concept",
+   "clue": "The feast when the Spirit came upon the disciples",
+   "ref": "Acts 2:1-4",
+   "decoys": [
+    "B",
+    "D",
+    "I",
+    "R"
+   ]
+  },
+  {
+   "id": "st-073",
+   "tier": 3,
+   "answer": "TABERNACLE",
+   "length": 10,
+   "category": "thing",
+   "clue": "The portable tent of meeting in the wilderness",
+   "ref": "Exodus 25:8-9",
+   "decoys": [
+    "G",
+    "S",
+    "U",
+    "W"
+   ]
+  },
+  {
+   "id": "st-074",
+   "tier": 3,
+   "answer": "RESURRECTION",
+   "length": 12,
+   "category": "concept",
+   "clue": "Jesus rising from the dead",
+   "ref": "Luke 24:6",
+   "decoys": [
+    "A",
+    "D",
+    "V",
+    "W"
+   ]
+  },
+  {
+   "id": "st-075",
+   "tier": 3,
+   "answer": "SALVATION",
+   "length": 9,
+   "category": "concept",
+   "clue": "Deliverance from sin and death",
+   "ref": "Titus 3:5",
+   "decoys": [
+    "E",
+    "M",
+    "W",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-076",
+   "tier": 3,
+   "answer": "REDEMPTION",
+   "length": 10,
+   "category": "concept",
+   "clue": "Being bought back and set free by a price",
+   "ref": "Ephesians 1:7",
+   "decoys": [
+    "F",
+    "G",
+    "K",
+    "U"
+   ]
+  },
+  {
+   "id": "st-077",
+   "tier": 3,
+   "answer": "REPENTANCE",
+   "length": 10,
+   "category": "concept",
+   "clue": "Turning from sin to God",
+   "ref": "Acts 3:19",
+   "decoys": [
+    "I",
+    "K",
+    "W",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-078",
+   "tier": 3,
+   "answer": "FORGIVENESS",
+   "length": 11,
+   "category": "concept",
+   "clue": "Having sins pardoned",
+   "ref": "Ephesians 4:32",
+   "decoys": [
+    "A",
+    "C",
+    "D",
+    "K"
+   ]
+  },
+  {
+   "id": "st-079",
+   "tier": 3,
+   "answer": "SCRIPTURE",
+   "length": 9,
+   "category": "concept",
+   "clue": "Writings described as God-breathed",
+   "ref": "2 Timothy 3:16",
+   "decoys": [
+    "H",
+    "O",
+    "V",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-080",
+   "tier": 3,
+   "answer": "DISCIPLE",
+   "length": 8,
+   "category": "concept",
+   "clue": "A follower and learner of Jesus",
+   "ref": "Matthew 28:19",
+   "decoys": [
+    "A",
+    "F",
+    "G",
+    "T"
+   ]
+  },
+  {
+   "id": "st-081",
+   "tier": 3,
+   "answer": "BAPTISM",
+   "length": 7,
+   "category": "concept",
+   "clue": "Immersion in water as a sign of new life",
+   "ref": "Romans 6:4",
+   "decoys": [
+    "C",
+    "E",
+    "H",
+    "W"
+   ]
+  },
+  {
+   "id": "st-082",
+   "tier": 3,
+   "answer": "COMMUNION",
+   "length": 9,
+   "category": "concept",
+   "clue": "Sharing the bread and the cup in remembrance",
+   "ref": "1 Corinthians 11:23-26",
+   "decoys": [
+    "A",
+    "B",
+    "H",
+    "K"
+   ]
+  },
+  {
+   "id": "st-083",
+   "tier": 3,
+   "answer": "EPHESIANS",
+   "length": 9,
+   "category": "book",
+   "clue": "Paul's letter describing the church as Christ's body",
+   "ref": "Ephesians 1:22-23",
+   "decoys": [
+    "B",
+    "K",
+    "O",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-084",
+   "tier": 3,
+   "answer": "REVELATION",
+   "length": 10,
+   "category": "book",
+   "clue": "The last book of the Bible",
+   "ref": "Revelation 1:1",
+   "decoys": [
+    "G",
+    "M",
+    "S",
+    "U"
+   ]
+  },
+  {
+   "id": "st-085",
+   "tier": 3,
+   "answer": "LEVITICUS",
+   "length": 9,
+   "category": "book",
+   "clue": "The third book of the Bible, full of priestly laws",
+   "ref": "Leviticus 1:1",
+   "decoys": [
+    "A",
+    "G",
+    "M",
+    "R"
+   ]
+  },
+  {
+   "id": "st-086",
+   "tier": 3,
+   "answer": "PROVERBS",
+   "length": 8,
+   "category": "book",
+   "clue": "The book of wise sayings, many by Solomon",
+   "ref": "Proverbs 1:1",
+   "decoys": [
+    "C",
+    "H",
+    "L",
+    "U"
+   ]
+  },
+  {
+   "id": "st-087",
+   "tier": 3,
+   "answer": "PHARAOH",
+   "length": 7,
+   "category": "person",
+   "clue": "The ruler who refused to let Israel go",
+   "ref": "Exodus 5:2",
+   "decoys": [
+    "B",
+    "F",
+    "U",
+    "V"
+   ]
+  },
+  {
+   "id": "st-088",
+   "tier": 3,
+   "answer": "SAMARITAN",
+   "length": 9,
+   "category": "person",
+   "clue": "The traveler who helped the wounded man on the road",
+   "ref": "Luke 10:33",
+   "decoys": [
+    "E",
+    "G",
+    "L",
+    "W"
+   ]
+  },
+  {
+   "id": "st-089",
+   "tier": 3,
+   "answer": "PRODIGAL",
+   "length": 8,
+   "category": "person",
+   "clue": "The parable's son who wasted his inheritance",
+   "ref": "Luke 15:13",
+   "decoys": [
+    "C",
+    "E",
+    "M",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-090",
+   "tier": 3,
+   "answer": "SYCAMORE",
+   "length": 8,
+   "category": "thing",
+   "clue": "A tree climbed by a short tax collector",
+   "ref": "Luke 19:4",
+   "decoys": [
+    "H",
+    "I",
+    "V",
+    "W"
+   ]
+  },
+  {
+   "id": "st-091",
+   "tier": 4,
+   "answer": "NEBUCHADNEZZAR",
+   "length": 14,
+   "category": "person",
+   "clue": "The Babylonian king who set up a golden image",
+   "ref": "Daniel 3:1",
+   "decoys": [
+    "L",
+    "M",
+    "O",
+    "P",
+    "V"
+   ]
+  },
+  {
+   "id": "st-092",
+   "tier": 4,
+   "answer": "BELSHAZZAR",
+   "length": 10,
+   "category": "person",
+   "clue": "The king who saw writing appear on the wall",
+   "ref": "Daniel 5:5",
+   "decoys": [
+    "G",
+    "K",
+    "M",
+    "O",
+    "V"
+   ]
+  },
+  {
+   "id": "st-093",
+   "tier": 4,
+   "answer": "DEUTERONOMY",
+   "length": 11,
+   "category": "book",
+   "clue": "The fifth book, containing Moses' farewell speeches",
+   "ref": "Deuteronomy 1:1",
+   "decoys": [
+    "C",
+    "G",
+    "I",
+    "L",
+    "V"
+   ]
+  },
+  {
+   "id": "st-094",
+   "tier": 4,
+   "answer": "ECCLESIASTES",
+   "length": 12,
+   "category": "book",
+   "clue": "The Preacher's search for meaning under the sun",
+   "ref": "Ecclesiastes 1:2-3",
+   "decoys": [
+    "B",
+    "H",
+    "R",
+    "U",
+    "W"
+   ]
+  },
+  {
+   "id": "st-095",
+   "tier": 4,
+   "answer": "LAMENTATIONS",
+   "length": 12,
+   "category": "book",
+   "clue": "The book of poems mourning Jerusalem's fall",
+   "ref": "Lamentations 1:1",
+   "decoys": [
+    "H",
+    "R",
+    "U",
+    "V",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-096",
+   "tier": 4,
+   "answer": "HABAKKUK",
+   "length": 8,
+   "category": "person",
+   "clue": "The prophet who wrote, 'The just shall live by his faith'",
+   "ref": "Habakkuk 2:4",
+   "decoys": [
+    "D",
+    "E",
+    "N",
+    "R",
+    "V"
+   ]
+  },
+  {
+   "id": "st-097",
+   "tier": 4,
+   "answer": "ZEPHANIAH",
+   "length": 9,
+   "category": "person",
+   "clue": "The prophet who wrote in the days of King Josiah",
+   "ref": "Zephaniah 1:1",
+   "decoys": [
+    "B",
+    "L",
+    "S",
+    "U",
+    "V"
+   ]
+  },
+  {
+   "id": "st-098",
+   "tier": 4,
+   "answer": "MEPHIBOSHETH",
+   "length": 12,
+   "category": "person",
+   "clue": "Jonathan's son, who ate at David's table",
+   "ref": "2 Samuel 9:6-7",
+   "decoys": [
+    "F",
+    "K",
+    "L",
+    "R",
+    "U"
+   ]
+  },
+  {
+   "id": "st-099",
+   "tier": 4,
+   "answer": "JEHOSHAPHAT",
+   "length": 11,
+   "category": "person",
+   "clue": "The king of Judah who sent singers ahead of his army",
+   "ref": "2 Chronicles 20:21",
+   "decoys": [
+    "B",
+    "L",
+    "N",
+    "R",
+    "U"
+   ]
+  },
+  {
+   "id": "st-100",
+   "tier": 4,
+   "answer": "HEZEKIAH",
+   "length": 8,
+   "category": "person",
+   "clue": "The king of Judah who prayed and received fifteen more years",
+   "ref": "2 Kings 20:6",
+   "decoys": [
+    "G",
+    "L",
+    "N",
+    "O",
+    "V"
+   ]
+  },
+  {
+   "id": "st-101",
+   "tier": 4,
+   "answer": "MELCHIZEDEK",
+   "length": 11,
+   "category": "person",
+   "clue": "The king of Salem who blessed Abram",
+   "ref": "Genesis 14:18-19",
+   "decoys": [
+    "F",
+    "N",
+    "P",
+    "S",
+    "U"
+   ]
+  },
+  {
+   "id": "st-102",
+   "tier": 4,
+   "answer": "ARMAGEDDON",
+   "length": 10,
+   "category": "place",
+   "clue": "The place named in Revelation for a final battle",
+   "ref": "Revelation 16:16",
+   "decoys": [
+    "B",
+    "I",
+    "K",
+    "P",
+    "T"
+   ]
+  },
+  {
+   "id": "st-103",
+   "tier": 4,
+   "answer": "BETHESDA",
+   "length": 8,
+   "category": "place",
+   "clue": "The Jerusalem pool where a lame man waited for healing",
+   "ref": "John 5:2-9",
+   "decoys": [
+    "C",
+    "G",
+    "O",
+    "P",
+    "R"
+   ]
+  },
+  {
+   "id": "st-104",
+   "tier": 4,
+   "answer": "CAESAREA",
+   "length": 8,
+   "category": "place",
+   "clue": "The coastal city where Cornelius lived",
+   "ref": "Acts 10:1",
+   "decoys": [
+    "H",
+    "I",
+    "L",
+    "V",
+    "W"
+   ]
+  },
+  {
+   "id": "st-105",
+   "tier": 4,
+   "answer": "ONESIMUS",
+   "length": 8,
+   "category": "person",
+   "clue": "The slave for whom Paul appealed to Philemon",
+   "ref": "Philemon 1:10",
+   "decoys": [
+    "A",
+    "B",
+    "C",
+    "G",
+    "R"
+   ]
+  },
+  {
+   "id": "st-106",
+   "tier": 4,
+   "answer": "GAMALIEL",
+   "length": 8,
+   "category": "person",
+   "clue": "The Pharisee teacher who advised the council to leave the apostles alone",
+   "ref": "Acts 5:34-39",
+   "decoys": [
+    "C",
+    "D",
+    "F",
+    "K",
+    "U"
+   ]
+  },
+  {
+   "id": "st-107",
+   "tier": 4,
+   "answer": "PRISCILLA",
+   "length": 9,
+   "category": "person",
+   "clue": "A tentmaker who, with Aquila, taught Apollos",
+   "ref": "Acts 18:2, 26",
+   "decoys": [
+    "F",
+    "M",
+    "N",
+    "O",
+    "V"
+   ]
+  },
+  {
+   "id": "st-108",
+   "tier": 4,
+   "answer": "APOLLOS",
+   "length": 7,
+   "category": "person",
+   "clue": "An eloquent Alexandrian who at first knew only John's baptism",
+   "ref": "Acts 18:24-25",
+   "decoys": [
+    "D",
+    "E",
+    "K",
+    "N",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-109",
+   "tier": 4,
+   "answer": "PROPITIATION",
+   "length": 12,
+   "category": "concept",
+   "clue": "A sacrifice that turns aside wrath",
+   "ref": "1 John 2:2 (KJV)",
+   "decoys": [
+    "D",
+    "K",
+    "U",
+    "V",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-110",
+   "tier": 4,
+   "answer": "SANCTIFICATION",
+   "length": 14,
+   "category": "concept",
+   "clue": "Being made holy",
+   "ref": "1 Thessalonians 4:3 (KJV)",
+   "decoys": [
+    "B",
+    "E",
+    "V",
+    "W",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-111",
+   "tier": 4,
+   "answer": "JUSTIFICATION",
+   "length": 13,
+   "category": "concept",
+   "clue": "Being declared righteous before God",
+   "ref": "Romans 4:25 (KJV)",
+   "decoys": [
+    "E",
+    "M",
+    "P",
+    "R",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-112",
+   "tier": 4,
+   "answer": "INTERCESSION",
+   "length": 12,
+   "category": "concept",
+   "clue": "Praying on behalf of others",
+   "ref": "1 Timothy 2:1; Hebrews 7:25",
+   "decoys": [
+    "A",
+    "D",
+    "F",
+    "G",
+    "P"
+   ]
+  },
+  {
+   "id": "st-113",
+   "tier": 4,
+   "answer": "TRANSFIGURATION",
+   "length": 15,
+   "category": "concept",
+   "clue": "The event on a mountain when Jesus' face shone like the sun",
+   "ref": "Matthew 17:1-8",
+   "decoys": [
+    "B",
+    "D",
+    "E",
+    "H",
+    "L"
+   ]
+  },
+  {
+   "id": "st-114",
+   "tier": 4,
+   "answer": "ARIMATHEA",
+   "length": 9,
+   "category": "place",
+   "clue": "The hometown of the man who buried Jesus",
+   "ref": "Matthew 27:57-60",
+   "decoys": [
+    "B",
+    "D",
+    "F",
+    "O",
+    "S"
+   ]
+  },
+  {
+   "id": "st-115",
+   "tier": 4,
+   "answer": "THESSALONICA",
+   "length": 12,
+   "category": "place",
+   "clue": "The Macedonian city where Paul reasoned in the synagogue",
+   "ref": "Acts 17:1-2",
+   "decoys": [
+    "G",
+    "R",
+    "U",
+    "V",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-116",
+   "tier": 4,
+   "answer": "PHILEMON",
+   "length": 8,
+   "category": "book",
+   "clue": "A short letter from Paul pleading for Onesimus",
+   "ref": "Philemon 1:10-16",
+   "decoys": [
+    "C",
+    "D",
+    "G",
+    "K",
+    "U"
+   ]
+  },
+  {
+   "id": "st-117",
+   "tier": 4,
+   "answer": "PHILISTINES",
+   "length": 11,
+   "category": "concept",
+   "clue": "The enemy people of Samson and Goliath",
+   "ref": "Judges 13:1; 1 Samuel 17:4",
+   "decoys": [
+    "A",
+    "B",
+    "D",
+    "M",
+    "W"
+   ]
+  },
+  {
+   "id": "st-118",
+   "tier": 4,
+   "answer": "LEVITE",
+   "length": 6,
+   "category": "person",
+   "clue": "A member of the tribe set apart to serve at the tabernacle",
+   "ref": "Numbers 1:50-53",
+   "decoys": [
+    "A",
+    "C",
+    "K",
+    "P",
+    "W"
+   ]
+  },
+  {
+   "id": "st-119",
+   "tier": 4,
+   "answer": "CORNELIUS",
+   "length": 9,
+   "category": "person",
+   "clue": "A Roman centurion who feared God, whose household received the Spirit",
+   "ref": "Acts 10:1-2, 44",
+   "decoys": [
+    "A",
+    "K",
+    "M",
+    "V",
+    "Y"
+   ]
+  },
+  {
+   "id": "st-120",
+   "tier": 4,
+   "answer": "BARABBAS",
+   "length": 8,
+   "category": "person",
+   "clue": "The prisoner released instead of Jesus",
+   "ref": "Matthew 27:21",
+   "decoys": [
+    "D",
+    "I",
+    "M",
+    "P",
+    "W"
+   ]
+  }
+ ]
+}

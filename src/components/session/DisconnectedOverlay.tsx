@@ -50,7 +50,7 @@ export const DisconnectedOverlay: React.FC<DisconnectedOverlayProps> = ({
           {isReconnecting ? (
             <Icon name="bolt" size={32} />
           ) : isGameStarted ? (
-            <span>🎮</span>
+            <Icon name="games" size={32} />
           ) : (
             <Icon name="close" size={32} />
           )}

@@ -7,6 +7,7 @@ import { Icon } from '@design/icons';
 import { soundManager } from '../../engine/services/audio';
 import { fireConfettiBurst, StreakMilestoneModal } from '../../components/ui/StreakCelebration';
 import { getStreakMilestone, StreakMilestone } from '../../engine/services/streakRewards';
+import { OptionCard } from '../../components/ui/OptionCard';
 
 const TIER_THEMES: Record<1 | 2 | 3 | 4, { label: string; badgeClass: string; borderClass: string }> = {
   1: { label: 'Tier 1: Iconic Scripture', badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300', borderClass: 'border-emerald-300/40' },
@@ -160,8 +161,9 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
             {/* Timer bar */}
             <div className="w-full max-w-xs mt-1">
               <div className="flex justify-between text-xs text-[var(--on-container-variant)] mb-1">
-                <span className={isCloseCall ? 'font-bold text-amber-600 animate-pulse' : ''}>
-                  {isCloseCall ? '⚡ CLOSE CALL!' : 'Time Remaining'}
+                <span className={`flex items-center gap-1 ${isCloseCall ? 'font-bold text-amber-600 animate-pulse' : ''}`}>
+                  {isCloseCall && <Icon name="bolt" size={12} />}
+                  <span>{isCloseCall ? 'CLOSE CALL!' : 'Time Remaining'}</span>
                 </span>
                 <span className="font-mono font-bold">{state.phaseTimeRemaining}s</span>
               </div>
@@ -254,24 +256,13 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
               }
 
               return (
-                <button
+                <OptionCard
                   key={speaker}
-                  type="button"
+                  label={speaker}
+                  isSelected={isSelected}
                   disabled={isLocked}
                   onClick={() => handleSelectSpeaker(speaker)}
-                  className={`w-full p-4 rounded-3xl border-2 flex items-center justify-between transition-all ${
-                    isSelected
-                      ? 'border-[var(--primary-action)] bg-[var(--primary-action)]/10 font-bold shadow-md scale-[1.01]'
-                      : 'border-[var(--border-tint)] bg-[var(--surface-card)] hover:bg-[var(--surface-container)] font-semibold'
-                  } ${isLocked ? 'opacity-80 cursor-not-allowed' : 'active:scale-98'}`}
-                >
-                  <span className="text-base sm:text-lg text-[var(--on-container)] text-left">{speaker}</span>
-                  {isSelected && (
-                    <div className="w-6 h-6 rounded-full bg-[var(--primary-action)] text-[var(--primary-action-text)] flex items-center justify-center text-xs font-bold">
-                      <Icon name="check" size={12} />
-                    </div>
-                  )}
-                </button>
+                />
               );
             })}
           </div>
@@ -304,8 +295,9 @@ export const WhoSaidPlayerView: React.FC<GameViewProps<WhoSaidState>> = ({
                 {pState.isCorrect ? 'Spot On!' : 'Incorrect!'}
               </h2>
               {isFirstCorrect && (
-                <span className="px-2 py-0.5 rounded-full text-xs font-black bg-amber-400 text-amber-950">
-                  ⚡ First Correct! (+20%)
+                <span className="px-2 py-0.5 rounded-full text-xs font-black bg-amber-400 text-amber-950 flex items-center gap-1">
+                  <Icon name="bolt" size={12} />
+                  <span>First Correct! (+20%)</span>
                 </span>
               )}
             </div>

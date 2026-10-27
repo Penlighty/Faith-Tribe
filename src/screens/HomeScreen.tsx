@@ -14,10 +14,12 @@ import { AuthModal } from '../components/auth/AuthModal';
 import { fetchFellowshipStats, getCachedFellowshipStats, getEmptyFellowshipStats, FellowshipStats } from '../engine/services/gameDataService';
 import { useAuth } from '../engine/auth/AuthContext';
 import { useTribes } from '../engine/tribes/TribeContext';
+import { GamifiedMascot } from '../components/gamified/GamifiedMascot';
 
 export interface HomeScreenProps {
   onSelectGame: (gameId: string) => void;
   onQuickJoin: () => void;
+  onOpenJourneyPath?: () => void;
   onHostGame?: (gameId: string) => void;
   onHostSession?: (
     gameId: string,
@@ -81,12 +83,18 @@ export const GAME_SEARCH_KEYWORDS: Record<string, string[]> = {
   'who-said-it': ['who said', 'quote', 'quotes', 'prophet', 'apostle', 'trivia', 'knowledge', 'king', 'disciple', 'speaker', 'said', 'said it'],
   'testament-sort': ['testament', 'sort', 'old', 'new', 'canon', 'books', 'speed', 'order', 'bible books', 'timeline', 'sorting'],
   'shelf-rush': ['shelf', 'shelf rush', 'rush', 'ascent', 'books', 'sort', 'sorting', 'canon', 'bible books', 'speed', 'order', 'scheme', 'hebrew canon', 'testament'],
+  'four-signs': ['four signs', 'four', 'signs', 'clue', 'pictogram', 'icon', 'symbols', 'puzzle', 'riddle', 'guess'],
+  'scribes-tiles': ['scribe', 'scribes', 'tiles', 'letters', 'anagram', 'word', 'spelling', 'unscramble', 'crossword', 'parchment'],
+  'bible-or-not': ['bible or not', 'bible', 'scripture', 'flashcard', 'swipe', 'myth', 'proverb', 'saying', 'in the bible', 'not in the bible', 'cards', 'quote'],
   'blueprint-from-the-mountain': ['blueprint', 'mountain', 'tabernacle', 'architecture', 'dimensions', 'exodus', 'ark'],
   'one-accord': ['accord', 'unity', 'harmony', 'acts', 'scripture', 'co-op', 'team'],
   'six-degrees-of-abraham': ['abraham', 'genealogy', 'degrees', 'covenant', 'generations', 'lineage', 'family tree'],
 };
 
 export const AUTO_POPULATE_PILLS: Array<{ label: string; query: string; icon: IconName }> = [
+  { label: 'Bible or Not', query: 'Bible or Not', icon: 'book-open' },
+  { label: 'Four Signs', query: 'Four Signs', icon: 'star' },
+  { label: "Scribe's Tiles", query: 'Tiles', icon: 'scroll' },
   { label: 'Shelf Rush', query: 'Shelf Rush', icon: 'book-open' },
   { label: 'Proverb', query: 'Proverb', icon: 'scroll' },
   { label: 'Hot Coal', query: 'Hot Coal', icon: 'flame' },
@@ -116,6 +124,7 @@ export function matchesGameSearch(
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   onSelectGame,
   onQuickJoin,
+  onOpenJourneyPath,
   onHostGame,
   onHostSession,
   onDirectJoinSession,
@@ -233,8 +242,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           className="border-2 border-emerald-500 bg-gradient-to-r from-emerald-500/15 via-emerald-500/5 to-transparent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-md animate-pulse"
         >
           <div className="flex items-center gap-3">
-            <span className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xl shrink-0 shadow-sm">
-              🎮
+            <span className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+              <Icon name="games" size={20} />
             </span>
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
@@ -242,8 +251,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
                   {liveActiveSession.tribe.name} • Active Session
                 </span>
-                <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200">
-                  {liveActiveSession.session.connectionMode === 'onsite' ? '📶 Onsite Hotspot' : '🌐 Online Cloud'}
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200 flex items-center gap-1">
+                  <Icon name={liveActiveSession.session.connectionMode === 'onsite' ? 'host' : 'link'} size={11} />
+                  <span>{liveActiveSession.session.connectionMode === 'onsite' ? 'Onsite Hotspot' : 'Online Cloud'}</span>
                 </span>
               </div>
               <span className="text-sm font-black text-[var(--on-container)]">
@@ -274,6 +284,43 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             Join Fellowship Game
           </Button>
         </Card>
+      )}
+
+      {/* 🌟 Playful Gamified Faith Journey Path Banner */}
+      {onOpenJourneyPath && (
+        <div
+          onClick={onOpenJourneyPath}
+          className="w-full p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-blue-500/10 via-amber-500/10 to-emerald-500/10 border-2 border-[var(--c-blue)]/30 hover:border-[var(--c-blue)] shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col sm:flex-row items-center justify-between gap-4 select-none animate-fadeIn"
+        >
+          <div className="flex items-center gap-4">
+            <GamifiedMascot character="david" pose="cheer" size={80} showGroundShadow={false} />
+            <div className="flex flex-col text-left">
+              <span className="text-xs font-black uppercase tracking-wider text-[var(--c-blue)]">
+                Daily Scripture Journey • Dāvīd's Faith Path
+              </span>
+              <h3 className="text-lg sm:text-xl font-black text-[var(--c-text)] leading-snug">
+                Step onto the Faith Path
+              </h3>
+              <p className="text-xs font-bold text-[var(--c-text-2)]">
+                Join Dāvīd, Debōrāh, and Mōshē: complete quests, earn gems, and build your holy streak!
+              </p>
+            </div>
+          </div>
+          <Button
+            type="button"
+            variant="primary"
+            size="md"
+            pill
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenJourneyPath?.();
+            }}
+            className="shrink-0 w-full sm:w-auto font-black px-6"
+            rightIcon={<Icon name="bolt" size={16} />}
+          >
+            START JOURNEY
+          </Button>
+        </div>
       )}
 
       {/* Top Section: Responsive Grid on Desktop (Stats Card + Quick Play Hub) */}

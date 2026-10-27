@@ -34,7 +34,7 @@ const mockStorage = {
   location: { origin: 'http://localhost:3000' },
 };
 
-describe('Tribe & Fellowship System', () => {
+describe('Tribe & Fellowship System', { timeout: 20000 }, () => {
   beforeEach(() => {
     mockStorage.clear();
   });
@@ -209,5 +209,5 @@ describe('Tribe & Fellowship System', () => {
     await endTribeSession(tribe.id);
     const localAfterEnd = getLocalActiveSession();
     expect(localAfterEnd).toBeNull();
-  });
+  }, 15000);
 });

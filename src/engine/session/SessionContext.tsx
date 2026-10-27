@@ -378,6 +378,50 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
               'HOST'
             );
           }
+        } else if (current.gameId === 'four-signs') {
+          if (nextPhase.id === 'clues') {
+            nextGameState = game.reduce(
+              nextGameState,
+              {
+                type: 'START_PUZZLE',
+                playerId: 'HOST',
+                timestamp: Date.now(),
+              },
+              'HOST'
+            );
+          } else if (nextPhase.id === 'reveal') {
+            nextGameState = game.reduce(
+              nextGameState,
+              {
+                type: 'TRIGGER_REVEAL',
+                playerId: 'HOST',
+                timestamp: Date.now(),
+              },
+              'HOST'
+            );
+          }
+        } else if (current.gameId === 'scribes-tiles') {
+          if (nextPhase.id === 'solve') {
+            nextGameState = game.reduce(
+              nextGameState,
+              {
+                type: 'START_WORD',
+                playerId: 'HOST',
+                timestamp: Date.now(),
+              },
+              'HOST'
+            );
+          } else if (nextPhase.id === 'reveal') {
+            nextGameState = game.reduce(
+              nextGameState,
+              {
+                type: 'TRIGGER_REVEAL',
+                playerId: 'HOST',
+                timestamp: Date.now(),
+              },
+              'HOST'
+            );
+          }
         }
 
         // Re-verify phaseIndex and duration alignment
@@ -462,6 +506,26 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
               nextRoundState,
               {
                 type: 'NEXT_CARD',
+                playerId: 'HOST',
+                timestamp: Date.now(),
+              },
+              'HOST'
+            );
+          } else if (current.gameId === 'four-signs') {
+            nextRoundState = game.reduce(
+              nextRoundState,
+              {
+                type: 'NEXT_PUZZLE',
+                playerId: 'HOST',
+                timestamp: Date.now(),
+              },
+              'HOST'
+            );
+          } else if (current.gameId === 'scribes-tiles') {
+            nextRoundState = game.reduce(
+              nextRoundState,
+              {
+                type: 'NEXT_WORD',
                 playerId: 'HOST',
                 timestamp: Date.now(),
               },
@@ -568,6 +632,38 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
             const cardStatesList = Object.values(nextState.playerCardStates || {});
             const allLocked = cardStatesList.length > 0 && cardStatesList.every((p: any) => p.locked);
             if (allLocked && cardStatesList.length >= activeCount) {
+              const updatedSnapshot: SessionSnapshot = {
+                ...current,
+                version: current.version + 1,
+                gameState: nextState,
+              };
+              snapshotRef.current = updatedSnapshot;
+              setSnapshot(updatedSnapshot);
+              advanceHostPhase();
+              return;
+            }
+          }
+        } else if (current.gameId === 'four-signs') {
+          if (nextState.currentPhaseId === 'clues') {
+            const playerStatesList = Object.values(nextState.playerStates || {});
+            const allLocked = playerStatesList.length > 0 && playerStatesList.every((p: any) => p.locked);
+            if (allLocked && playerStatesList.length >= activeCount) {
+              const updatedSnapshot: SessionSnapshot = {
+                ...current,
+                version: current.version + 1,
+                gameState: nextState,
+              };
+              snapshotRef.current = updatedSnapshot;
+              setSnapshot(updatedSnapshot);
+              advanceHostPhase();
+              return;
+            }
+          }
+        } else if (current.gameId === 'scribes-tiles') {
+          if (nextState.currentPhaseId === 'solve') {
+            const playerStatesList = Object.values(nextState.playerStates || {});
+            const allLocked = playerStatesList.length > 0 && playerStatesList.every((p: any) => p.locked);
+            if (allLocked && playerStatesList.length >= activeCount) {
               const updatedSnapshot: SessionSnapshot = {
                 ...current,
                 version: current.version + 1,

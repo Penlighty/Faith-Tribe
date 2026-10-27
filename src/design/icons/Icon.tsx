@@ -1,8 +1,9 @@
 import type { SVGProps } from 'react';
 import { ICONS, type IconName } from './icons';
+import { LEGACY_ICON_MAP } from './legacy-map';
 
 export interface IconProps extends Omit<SVGProps<SVGSVGElement>, 'name'> {
-  name: IconName;
+  name: IconName | string;
   /** 'tonal' adds a soft fill behind the line; use it for active/selected states. */
   variant?: 'line' | 'tonal';
   size?: number | string;
@@ -13,7 +14,10 @@ export interface IconProps extends Omit<SVGProps<SVGSVGElement>, 'name'> {
 }
 
 export function Icon({ name, variant = 'line', size = 24, strokeWidth = 2, title, ...rest }: IconProps) {
-  const def = ICONS[name];
+  const mappedName = (name in ICONS ? name : LEGACY_ICON_MAP[name]) as IconName | undefined;
+  const def = (mappedName && ICONS[mappedName]) || ICONS[name as IconName] || ICONS['info'];
+  if (!def) return null;
+
   return (
     <svg
       viewBox="0 0 24 24"
