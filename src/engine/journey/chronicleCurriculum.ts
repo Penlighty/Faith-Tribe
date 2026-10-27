@@ -10,6 +10,13 @@ export type JourneyGameStyle =
   | 'chest'
   | 'trophy';
 
+export type ChronicleQuestionType =
+  | 'trivia'
+  | 'who-said'
+  | 'bible-or-not'
+  | 'four-signs'
+  | 'scribes-tiles';
+
 export interface ChronicleQuestion {
   prompt: string;
   speechText: string;
@@ -18,7 +25,9 @@ export interface ChronicleQuestion {
   answer: string;
   ref: string;
   why?: string;
+  questionType?: ChronicleQuestionType;
   fourSignsClues?: string[];
+  wordLength?: number;
 }
 
 export interface ChronicleDay {
@@ -1916,6 +1925,130 @@ function buildTenChronicleQuestions(
     }
   }
 
+  // Enrich with diverse game styles: Who Said That, Bible or Not, Four Signs, Scribe's Tiles
+
+  // 1. Who Said That generator
+  const quotesByAct: Record<number, { quote: string; speaker: string; decoys: string[]; ref: string }> = {
+    1: { quote: 'Let there be light!', speaker: 'God (The Creator)', decoys: ['Adam', 'Noah', 'Abraham'], ref: 'Genesis 1:3' },
+    2: { quote: 'The Lord will fight for you; you need only to be still.', speaker: 'Moses', decoys: ['Aaron', 'Pharaoh', 'Joshua'], ref: 'Exodus 14:14' },
+    3: { quote: 'As for me and my household, we will serve the Lord.', speaker: 'Joshua', decoys: ['Gideon', 'Samson', 'Caleb'], ref: 'Joshua 24:15' },
+    4: { quote: 'People look at outward appearance, but the Lord looks at the heart.', speaker: 'The Lord to Samuel', decoys: ['King Saul', 'Jesse', 'Eli'], ref: '1 Samuel 16:7' },
+    5: { quote: 'Trust in the Lord with all your heart and lean not on your own understanding.', speaker: 'Solomon (Proverbs)', decoys: ['David', 'Rehoboam', 'Job'], ref: 'Proverbs 3:5' },
+    6: { quote: 'The God who answers by fire, He is God!', speaker: 'Elijah the Prophet', decoys: ['King Ahab', 'Jezebel', 'Elisha'], ref: '1 Kings 18:24' },
+    7: { quote: 'For I know the plans I have for you, plans to give you hope and a future.', speaker: 'Jeremiah (Word of the Lord)', decoys: ['Baruch', 'Nebuchadnezzar', 'Zedekiah'], ref: 'Jeremiah 29:11' },
+    8: { quote: 'Do not be afraid, Mary; you have found favor with God.', speaker: 'Angel Gabriel', decoys: ['Zechariah', 'Joseph', 'Simeon'], ref: 'Luke 1:30' },
+    9: { quote: 'Blessed are the peacemakers, for they shall be called children of God.', speaker: 'Jesus Christ', decoys: ['John the Baptist', 'Peter', 'Nicodemus'], ref: 'Matthew 5:9' },
+    10: { quote: 'Father, forgive them, for they know not what they do.', speaker: 'Jesus Christ upon the Cross', decoys: ['Centurion', 'Joseph of Arimathea', 'John'], ref: 'Luke 23:34' },
+    11: { quote: 'I can do all things through Christ who strengthens me.', speaker: 'Apostle Paul', decoys: ['Barnabas', 'Silas', 'Timothy'], ref: 'Philippians 4:13' },
+    12: { quote: 'I am the Alpha and the Omega, the First and the Last.', speaker: 'Jesus Christ (The Risen King)', decoys: ['Apostle John', 'Archangel Michael', 'The 24 Elders'], ref: 'Revelation 22:13' },
+  };
+
+  const whoSaidItem = quotesByAct[act.actIndex] || quotesByAct[1];
+  addUnique({
+    prompt: `Who Said That? Who spoke these words in ${chapter.title}?`,
+    speechText: `"${whoSaidItem.quote}"`,
+    category: 'Who Said That?',
+    questionType: 'who-said',
+    options: [whoSaidItem.speaker, ...whoSaidItem.decoys].sort(() => 0.5 - Math.random()),
+    answer: whoSaidItem.speaker,
+    ref: whoSaidItem.ref,
+    why: `${whoSaidItem.speaker} proclaimed this in ${whoSaidItem.ref}.`,
+  });
+
+  // 2. Bible or Not generator
+  const mythPairs = [
+    { quote: 'God helps those who help themselves.', isBible: false, ref: 'Popular cultural idiom (NOT in Scripture)', why: 'Scripture teaches that God helps the helpless who trust in Him (Romans 5:6).' },
+    { quote: 'The love of money is a root of all kinds of evil.', isBible: true, ref: '1 Timothy 6:10', why: 'Often misquoted as "money is the root", 1 Timothy 6:10 specifies the *love* of money is the root of evil.' },
+    { quote: 'Pride goes before destruction, a haughty spirit before a fall.', isBible: true, ref: 'Proverbs 16:18', why: 'Proverbs 16:18 warns against arrogance.' },
+    { quote: 'Cleanliness is next to godliness.', isBible: false, ref: 'Cultural quote from John Wesley in 1778', why: 'This phrase is from an 18th-century sermon by John Wesley, not Scripture!' },
+    { quote: 'God will not give you more than you can handle.', isBible: false, ref: 'Common misinterpretation of 1 Corinthians 10:13', why: 'Scripture says God will not let you be *tempted* beyond what you can bear, not that life won’t exceed your human strength.' },
+    { quote: 'The joy of the Lord is your strength.', isBible: true, ref: 'Nehemiah 8:10', why: 'Proclaimed by Nehemiah and Ezra in Nehemiah 8:10.' },
+    { quote: 'This too shall pass.', isBible: false, ref: 'Ancient Persian adage, not in the Bible', why: 'While a popular comforting saying, "this too shall pass" appears nowhere in Scripture.' },
+    { quote: 'I am fearfully and wonderfully made.', isBible: true, ref: 'Psalm 139:14', why: 'King David declares this sacred truth in Psalm 139:14.' },
+  ];
+
+  const pick1 = mythPairs[(dayNumber * 2) % mythPairs.length];
+  addUnique({
+    prompt: 'Bible or Not? Is this quote actually found in the Holy Bible?',
+    speechText: `"${pick1.quote}"`,
+    category: 'Bible or Not',
+    questionType: 'bible-or-not',
+    options: ['In the Bible', 'Not in the Bible'],
+    answer: pick1.isBible ? 'In the Bible' : 'Not in the Bible',
+    ref: pick1.ref,
+    why: pick1.why,
+  });
+
+  const pick2 = mythPairs[(dayNumber * 2 + 1) % mythPairs.length];
+  addUnique({
+    prompt: 'Bible or Not? Is this phrase written in the Word of God?',
+    speechText: `"${pick2.quote}"`,
+    category: 'Bible or Not',
+    questionType: 'bible-or-not',
+    options: ['In the Bible', 'Not in the Bible'],
+    answer: pick2.isBible ? 'In the Bible' : 'Not in the Bible',
+    ref: pick2.ref,
+    why: pick2.why,
+  });
+
+  // 3. Four Signs generator
+  const signsByAct: Record<number, { clues: string[]; answer: string; distractors: string[]; ref: string }> = {
+    1: { clues: ['earth', 'tree', 'sun', 'star'], answer: 'The Creation of Eden', distractors: ['The Tower of Babel', 'The Great Flood', 'The Golden Altar'], ref: 'Genesis 1–2' },
+    2: { clues: ['fire', 'sand', 'water', 'scroll'], answer: 'The Exodus & Sinai Covenant', distractors: ['The Walls of Jericho', 'Solomon’s Temple', 'The Exile in Babylon'], ref: 'Exodus 19–20' },
+    3: { clues: ['horn', 'wall', 'sword', 'shield'], answer: 'The Battle of Jericho', distractors: ['David & Goliath', 'Gideon’s Fleece', 'Samson in Gaza'], ref: 'Joshua 6' },
+    4: { clues: ['crown', 'stone', 'harp', 'shepherd'], answer: 'David Anointed King of Israel', distractors: ['King Saul', 'Absalom', 'Jonathan'], ref: '1 Samuel 16–17' },
+    5: { clues: ['temple', 'crown', 'scroll', 'wheat'], answer: 'Solomon’s Temple & Wisdom', distractors: ['The Tabernacle', 'Nehemiah’s Wall', 'Herod’s Court'], ref: '1 Kings 6–8' },
+    6: { clues: ['fire', 'raven', 'cloud', 'mountain'], answer: 'Elijah & The Fire on Mount Carmel', distractors: ['Elisha & Naaman', 'Jonah at Nineveh', 'Isaiah’s Vision'], ref: '1 Kings 18' },
+    7: { clues: ['scroll', 'chain', 'wall', 'clay'], answer: 'Jeremiah & The Babylonian Exile', distractors: ['The Exodus', 'The Maccabees', 'The Conquest'], ref: 'Jeremiah 25–29' },
+    8: { clues: ['star', 'manger', 'shepherd', 'dove'], answer: 'The Nativity of Jesus Christ', distractors: ['The Wedding at Cana', 'Feeding of 5000', 'Transfiguration'], ref: 'Luke 2:1-20' },
+    9: { clues: ['bread', 'fish', 'wave', 'light'], answer: 'The Kingdom Miracles of Jesus', distractors: ['Wilderness Temptation', 'Trial before Pilate', 'Paul’s Shipwreck'], ref: 'Matthew 14' },
+    10: { clues: ['cross', 'cup', 'stone', 'sunrise'], answer: 'The Resurrection of Jesus Christ', distractors: ['Burial of Moses', 'Stoning of Stephen', 'Peter’s Vision'], ref: 'Matthew 28:1-10' },
+    11: { clues: ['ship', 'chain', 'quill', 'torch'], answer: 'Paul’s Apostolic Missionary Journeys', distractors: ['Pentecost Fire', 'Philip in Samaria', 'John on Patmos'], ref: 'Acts 13–28' },
+    12: { clues: ['crown', 'throne', 'scroll', 'river'], answer: 'The New Jerusalem & River of Life', distractors: ['The Tower of Babel', 'Babylon Citadel', 'Solomon Palace'], ref: 'Revelation 21–22' },
+  };
+
+  const sign = signsByAct[act.actIndex] || signsByAct[1];
+  addUnique({
+    prompt: `Four Signs: What sacred event in ${chapter.title} do these four symbols reveal?`,
+    speechText: 'Decipher the four prophetic clues!',
+    category: 'Four Signs',
+    questionType: 'four-signs',
+    fourSignsClues: sign.clues,
+    options: [sign.answer, ...sign.distractors].sort(() => 0.5 - Math.random()),
+    answer: sign.answer,
+    ref: sign.ref,
+    why: `The four signs signify ${sign.answer} in ${sign.ref}.`,
+  });
+
+  // 4. Scribe's Tiles generator
+  const wordsByAct: Record<number, { word: string; clue: string; distractors: string[]; ref: string }> = {
+    1: { word: 'COVENANT', clue: 'God’s solemn, eternal promise pledged to humanity', distractors: ['KINGDOM', 'OFFERING', 'BLESSING'], ref: 'Genesis 9:11; 15:18' },
+    2: { word: 'PASSOVER', clue: 'The feast celebrating deliverance under the blood of the lamb', distractors: ['TABERNACLE', 'PENTECOST', 'SABBATH'], ref: 'Exodus 12:11' },
+    3: { word: 'JOSHUA', clue: 'The courageous commander who led Israel across the Jordan', distractors: ['GIDEON', 'SAMUEL', 'CALEB'], ref: 'Joshua 1:1' },
+    4: { word: 'SHEPHERD', clue: 'David’s early calling and sacred Psalm 23 title: "The Lord is my..."', distractors: ['WARRIOR', 'PROPHET', 'MONARCH'], ref: 'Psalm 23:1' },
+    5: { word: 'WISDOM', clue: 'The supreme gift Solomon asked of God to govern with justice', distractors: ['HONOR', 'VICTORY', 'WEALTH'], ref: '1 Kings 3:9' },
+    6: { word: 'PROPHET', clue: 'A consecrated messenger who proclaims the living word of God', distractors: ['SCRIBE', 'PRIEST', 'HERALD'], ref: '1 Kings 18:22' },
+    7: { word: 'REMNANT', clue: 'The faithful believers preserved through exile to rebuild', distractors: ['NATION', 'PEOPLE', 'TRIBE'], ref: 'Isaiah 10:20' },
+    8: { word: 'MESSIAH', clue: 'The Anointed Savior promised throughout the ancient prophets', distractors: ['TEACHER', 'DELIVERER', 'COUNSELOR'], ref: 'John 1:41' },
+    9: { word: 'BEATITUDE', clue: 'The kingdom declarations of blessedness spoken on the mount', distractors: ['PARABLE', 'MIRACLE', 'COMMAND'], ref: 'Matthew 5:3' },
+    10: { word: 'RESURRECTION', clue: 'Christ’s triumph over the grave on the third day at dawn', distractors: ['ASCENSION', 'CRUCIFIXION', 'SALVATION'], ref: '1 Corinthians 15:20' },
+    11: { word: 'GRACE', clue: 'God’s unmerited gift of love and redemption through faith', distractors: ['FAITH', 'MERCY', 'PEACE'], ref: 'Ephesians 2:8' },
+    12: { word: 'SHALOM', clue: 'The holy fullness of divine peace and harmony in the New Creation', distractors: ['VICTORY', 'MAJESTY', 'GLORY'], ref: 'Revelation 21:3' },
+  };
+
+  const scribeWord = wordsByAct[act.actIndex] || wordsByAct[1];
+  addUnique({
+    prompt: `Scribe’s Tiles: Identify the sacred ${scribeWord.word.length}-letter word from the clue:`,
+    speechText: `"${scribeWord.clue}"`,
+    category: "Scribe's Tiles",
+    questionType: 'scribes-tiles',
+    wordLength: scribeWord.word.length,
+    options: [scribeWord.word, ...scribeWord.distractors].sort(() => 0.5 - Math.random()),
+    answer: scribeWord.word,
+    ref: scribeWord.ref,
+    why: `${scribeWord.word} (${scribeWord.word.length} letters): ${scribeWord.clue}.`,
+  });
+
   // Ensure list has strictly at least 10 questions for every single day
   let fillerIdx = 1;
   while (list.length < 10) {
@@ -1924,6 +2057,7 @@ function buildTenChronicleQuestions(
       prompt: `Key Insight #${qNum} for ${storyTitle}: What does ${scriptureRef} teach believers?`,
       speechText: `Reflect upon ${chapter.title}!`,
       category: 'Scripture Understanding',
+      questionType: 'trivia',
       options: [
         `God’s enduring covenant truth in ${chapter.title}`,
         `Relying on human strength alone`,
@@ -1937,7 +2071,30 @@ function buildTenChronicleQuestions(
     fillerIdx++;
   }
 
-  return list;
+  // Tag all questions with an appropriate questionType if missing
+  return list.map((q) => {
+    if (q.questionType) return q;
+    const p = q.prompt.toLowerCase();
+    const c = q.category.toLowerCase();
+    if (p.includes('who said') || p.includes('who spoke') || c.includes('voice') || c.includes('speaker')) {
+      return { ...q, questionType: 'who-said' as const };
+    }
+    if (p.includes('true or false') || p.includes('bible or not') || c.includes('bible or not')) {
+      return {
+        ...q,
+        questionType: 'bible-or-not' as const,
+        options: ['In the Bible', 'Not in the Bible'],
+        answer: q.answer === 'True' ? 'In the Bible' : q.answer === 'False' ? 'Not in the Bible' : q.answer,
+      };
+    }
+    if (q.fourSignsClues && q.fourSignsClues.length >= 4) {
+      return { ...q, questionType: 'four-signs' as const };
+    }
+    if (c.includes('scribe') || p.includes('letters') || p.includes('vocabulary') || q.wordLength) {
+      return { ...q, questionType: 'scribes-tiles' as const, wordLength: q.wordLength || q.answer.length };
+    }
+    return { ...q, questionType: 'trivia' as const };
+  });
 }
 
 /**

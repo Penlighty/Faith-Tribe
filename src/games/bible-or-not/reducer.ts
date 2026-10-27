@@ -392,6 +392,7 @@ export function scoreBibleOrNot(state: BibleOrNotState): LeaderboardEntry[] {
   for (const [id, score] of Object.entries(state.scores)) {
     entries.push({
       id,
+      playerId: id,
       name: id,
       score,
       rank: 1,

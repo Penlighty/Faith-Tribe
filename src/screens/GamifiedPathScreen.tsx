@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { GamifiedTopBar } from '../components/gamified/GamifiedTopBar';
 import { GamifiedPathNode, PathNodeData, PathNodeState } from '../components/gamified/GamifiedPathNode';
 import { GamifiedMascot, BiblicalCharacter } from '../components/gamified/GamifiedMascot';
@@ -20,7 +20,7 @@ import {
 } from '../engine/journey/chronicleCurriculum';
 import { DailyCompletionNotice } from '../components/gamified/DailyCompletionNotice';
 import { JourneyOverviewModal } from '../components/gamified/JourneyOverviewModal';
-import { Calendar, ChevronLeft, ChevronRight, Sparkles, BookOpen, Clock, ArrowRight } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, Sparkles, BookOpen, Clock, ArrowRight, Play, Compass, Crosshair } from 'lucide-react';
 import { useTheme } from '../theme/ThemeContext';
 
 export interface GamifiedPathScreenProps {
@@ -135,11 +135,41 @@ export const GamifiedPathScreen: React.FC<GamifiedPathScreenProps> = ({ onBackTo
     setShowChestModal(false);
   };
 
-  // Sine-wave X-Offsets
-  const xOffsets = [-44, 0, 44, 0, -44, 0, 44];
+  // Sine-wave undulating Y-Offsets for horizontal path
+  const yOffsets = [-18, 12, -12, 18, 0, -14, 14];
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const todayNodeRef = useRef<HTMLDivElement>(null);
+
+  // Automatically scroll to the current day by default
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (todayNodeRef.current) {
+        todayNodeRef.current.scrollIntoView({
+          behavior: 'smooth',
+          inline: 'center',
+          block: 'nearest',
+        });
+      }
+    }, 120);
+    return () => clearTimeout(timer);
+  }, [selectedActIndex]);
+
+  const handleScrollToToday = () => {
+    if (selectedActIndex !== todayChronicle.actIndex) {
+      setSelectedActIndex(todayChronicle.actIndex);
+    }
+    setTimeout(() => {
+      todayNodeRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+        block: 'nearest',
+      });
+    }, 100);
+  };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-950 text-[var(--c-text)] flex flex-col items-center pb-28 animate-fadeIn">
+    <div className="min-h-screen bg-white dark:bg-zinc-950 text-[var(--c-text)] flex flex-col items-center pb-28 animate-fadeIn relative">
       {/* Top Stat Bar */}
       <GamifiedTopBar
         streak={stats.streak}
@@ -150,7 +180,7 @@ export const GamifiedPathScreen: React.FC<GamifiedPathScreenProps> = ({ onBackTo
       />
 
       {/* Main Content Column */}
-      <div className="w-full max-w-md px-4 flex flex-col items-center">
+      <div className="w-full max-w-xl px-4 flex flex-col items-center">
         {/* 365 Days Chronicle Header Bar */}
         <div className="w-full mt-3 p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border-2 border-[var(--c-border)] flex items-center justify-between shadow-xs">
           <div className="flex items-center gap-2.5">
@@ -167,20 +197,34 @@ export const GamifiedPathScreen: React.FC<GamifiedPathScreenProps> = ({ onBackTo
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={() => {
-              triggerHaptic('light');
-              setShowOverviewModal(true);
-            }}
-            className="px-3 py-1.5 rounded-xl bg-[var(--c-blue)] text-white text-xs font-black uppercase tracking-wide hover:bg-[var(--c-blue-lip)] active:scale-95 transition-all shadow-xs flex items-center gap-1 cursor-pointer"
-          >
-            <span>Overview</span>
-            <ArrowRight size={13} />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                handleScrollToToday();
+              }}
+              className="px-2.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-black uppercase tracking-wide active:scale-95 transition-all shadow-xs flex items-center gap-1 cursor-pointer"
+            >
+              <Compass size={13} />
+              <span>Today</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                setShowOverviewModal(true);
+              }}
+              className="px-3 py-1.5 rounded-xl bg-[var(--c-blue)] text-white text-xs font-black uppercase tracking-wide hover:bg-[var(--c-blue-lip)] active:scale-95 transition-all shadow-xs flex items-center gap-1 cursor-pointer"
+            >
+              <span>Index</span>
+              <ArrowRight size={13} />
+            </button>
+          </div>
         </div>
 
-        {/* Daily Completion Notice: "Thank you! See you tomorrow!" */}
+        {/* Daily Completion Notice: Broken-down airy cards */}
         {isTodayCompleted ? (
           <div className="w-full mt-3">
             <DailyCompletionNotice
@@ -217,7 +261,7 @@ export const GamifiedPathScreen: React.FC<GamifiedPathScreenProps> = ({ onBackTo
                 triggerHaptic('medium');
                 handleJumpToToday();
               }}
-              className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-black uppercase tracking-wider active:scale-95 transition-all shadow-xs shrink-0 cursor-pointer"
+              className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-black uppercase tracking-wider active:scale-95 transition-all shadow-xs shrink-0 cursor-pointer"
             >
               Start
             </button>
@@ -238,9 +282,18 @@ export const GamifiedPathScreen: React.FC<GamifiedPathScreenProps> = ({ onBackTo
             <ChevronLeft size={18} />
           </button>
 
-          <span className="text-[11px] font-black uppercase tracking-wider text-zinc-500">
-            Act {activeAct.actIndex} of {allActs.length}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-black uppercase tracking-wider text-zinc-500">
+              Act {activeAct.actIndex} of {allActs.length}
+            </span>
+            <button
+              type="button"
+              onClick={handleScrollToToday}
+              className="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full hover:bg-emerald-200 cursor-pointer"
+            >
+              Day {todayDayOfYear} • Today
+            </button>
+          </div>
 
           <button
             type="button"
@@ -255,9 +308,9 @@ export const GamifiedPathScreen: React.FC<GamifiedPathScreenProps> = ({ onBackTo
           </button>
         </div>
 
-        {/* Sticky Section / Act Banner */}
+        {/* Section / Act Banner */}
         <div
-          className="w-full mt-2 p-4 rounded-3xl text-white select-none sticky top-14 z-20 shadow-md transition-all"
+          className="w-full mt-2 p-4 rounded-3xl text-white select-none shadow-md transition-all"
           style={{
             backgroundColor: activeAct.color,
             boxShadow: `0 6px 0 ${activeAct.lipColor}`,
@@ -279,78 +332,106 @@ export const GamifiedPathScreen: React.FC<GamifiedPathScreenProps> = ({ onBackTo
           </p>
         </div>
 
-        {/* Learning Sine-Wave Path for Active Act */}
-        <div className="relative w-full py-8 flex flex-col items-center">
-          {/* Subtle curved track line in background */}
-          <div className="absolute top-12 bottom-12 w-2.5 bg-[var(--c-border)] rounded-full -z-0 opacity-60" />
+        {/* Horizontal Scrolling Journey Path */}
+        <div className="w-full relative py-6 my-2">
+          {/* Scroll instruction indicator */}
+          <div className="flex items-center justify-between px-1 mb-2 text-zinc-400 text-[10px] font-bold uppercase tracking-wider">
+            <span>Scroll Horizontally →</span>
+            <span>{activeActDays.length} Days in this Act</span>
+          </div>
 
-          {activeActDays.map((day, index) => {
-            const status = getChronicleDayStatus(day.dayNumber, stats.completedDays, todayDayOfYear);
-            const isCompleted = status === 'completed';
-            const isCurrent = status === 'today';
-            const isMissed = status === 'missed';
-            const state: PathNodeState = isCompleted
-              ? 'complete'
-              : isCurrent
-              ? 'current'
-              : 'locked';
+          <div
+            ref={scrollContainerRef}
+            className="w-full overflow-x-auto overflow-y-visible py-12 px-6 flex items-center gap-10 no-scrollbar scroll-smooth relative rounded-2xl bg-zinc-50/50 dark:bg-zinc-900/30 border border-zinc-200/60 dark:border-zinc-800/60"
+            style={{ WebkitOverflowScrolling: 'touch' }}
+          >
+            {/* Horizontal Track Line */}
+            <div className="absolute top-1/2 left-4 right-4 h-2.5 bg-[var(--c-border)] -translate-y-1/2 -z-0 rounded-full" />
 
-            const xOffset = xOffsets[index % xOffsets.length];
+            {activeActDays.map((day, index) => {
+              const status = getChronicleDayStatus(day.dayNumber, stats.completedDays, todayDayOfYear);
+              const isCompleted = status === 'completed';
+              const isCurrent = status === 'today';
+              const isMissed = status === 'missed';
+              const state: PathNodeState = isCompleted
+                ? 'complete'
+                : isCurrent
+                ? 'current'
+                : 'locked';
 
-            // Render biblical character milestone at the 1st day of Act and every 10 days
-            const showCharacter = index === 0 || index % 10 === 0;
+              const yOffset = yOffsets[index % yOffsets.length];
+              const showCharacter = index === 0 || index % 10 === 0;
 
-            const nodeData: PathNodeData = {
-              id: `day-${day.dayNumber}`,
-              title: `Day ${day.dayNumber}: ${day.storyTitle}`,
-              subtitle: day.scriptureRef,
-              glyph: day.glyph,
-              xpReward: day.xpReward,
-              gameId: day.gameStyle,
-            };
+              const nodeData: PathNodeData = {
+                id: `day-${day.dayNumber}`,
+                title: `Day ${day.dayNumber}: ${day.storyTitle}`,
+                subtitle: day.scriptureRef,
+                glyph: day.glyph,
+                xpReward: day.xpReward,
+                gameId: day.gameStyle,
+              };
 
-            return (
-              <div key={day.dayNumber} className="relative w-full flex flex-col items-center">
-                {/* Character Milestone illustration */}
-                {showCharacter && (
-                  <div
-                    className={`absolute ${
-                      index % 2 === 0 ? '-left-4' : '-right-4'
-                    } top-0 flex flex-col items-center pointer-events-none opacity-95 hidden sm:flex`}
-                  >
-                    <BiblicalCharacter character={day.characterId} pose="idle" size={76} showGroundShadow={false} />
-                    <span
-                      className="text-[9px] font-black uppercase text-white px-2 py-0.5 rounded-full shadow-xs mt-[-4px]"
-                      style={{ backgroundColor: activeAct.color }}
-                    >
-                      {day.characterName}
+              return (
+                <div
+                  key={day.dayNumber}
+                  ref={isCurrent ? todayNodeRef : undefined}
+                  className="relative flex flex-col items-center shrink-0 w-32 z-10 select-none"
+                >
+                  {/* Character Milestone illustration */}
+                  {showCharacter && (
+                    <div className="absolute -top-16 flex flex-col items-center pointer-events-none opacity-95">
+                      <BiblicalCharacter character={day.characterId} pose="idle" size={60} showGroundShadow={false} />
+                      <span
+                        className="text-[8px] font-black uppercase text-white px-2 py-0.5 rounded-full shadow-xs -mt-1"
+                        style={{ backgroundColor: activeAct.color }}
+                      >
+                        {day.characterName}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Status Badge */}
+                  {isCurrent ? (
+                    <div className="mb-2 flex items-center gap-1 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-md animate-pulse">
+                      <span>⭐ TODAY</span>
+                    </div>
+                  ) : isMissed ? (
+                    <div className="mb-2 flex items-center gap-1 bg-amber-500 text-white text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shadow-xs">
+                      <span>⚡ CATCH UP</span>
+                    </div>
+                  ) : isCompleted ? (
+                    <div className="mb-2 text-[10px] font-black text-emerald-600 dark:text-emerald-400 font-mono">
+                      ✓ DAY {day.dayNumber}
+                    </div>
+                  ) : (
+                    <div className="mb-2 text-[10px] font-black text-zinc-400 font-mono">
+                      DAY {day.dayNumber}
+                    </div>
+                  )}
+
+                  {/* Node Puck */}
+                  <GamifiedPathNode
+                    node={nodeData}
+                    state={state}
+                    yOffset={yOffset}
+                    onClick={() => handleDayNodeClick(day)}
+                    showTooltip={isCurrent || isMissed}
+                    onStartClick={() => handleDayNodeClick(day)}
+                  />
+
+                  {/* Date & Scripture Below Node */}
+                  <div className="mt-3 text-center flex flex-col items-center max-w-[120px]">
+                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wide">
+                      {formatDayDate(day.dayNumber)}
+                    </span>
+                    <span className="text-[10px] font-medium text-zinc-400 truncate w-full" title={day.storyTitle}>
+                      {day.scriptureRef}
                     </span>
                   </div>
-                )}
-
-                {/* Missed Day Catch-Up Pill Badge */}
-                {isMissed && (
-                  <div className="mb-[-14px] z-10 flex items-center gap-1 bg-amber-500 text-white text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shadow-xs">
-                    <span>⚡ Catch Up</span>
-                  </div>
-                )}
-
-                <GamifiedPathNode
-                  node={nodeData}
-                  state={state}
-                  xOffset={xOffset}
-                  onClick={() => handleDayNodeClick(day)}
-                  showTooltip={isCurrent || isMissed}
-                  onStartClick={() => handleDayNodeClick(day)}
-                />
-
-                {/* Day label beneath node */}
-                <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400 font-mono mt-[-14px] mb-2">
-                  Day {day.dayNumber} • {formatDayDate(day.dayNumber)}
-                </span>
-              </div>
-            );
-          })}
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Daily Quests Card */}
@@ -363,6 +444,30 @@ export const GamifiedPathScreen: React.FC<GamifiedPathScreenProps> = ({ onBackTo
             }}
           />
         </div>
+      </div>
+
+      {/* Floating Action Button (FAB) Play Button */}
+      <div className="fixed bottom-6 right-6 sm:right-8 z-40">
+        <button
+          type="button"
+          onClick={() => {
+            triggerHaptic('heavy');
+            handleDayNodeClick(todayChronicle);
+          }}
+          className="flex items-center gap-3 px-5 py-3.5 rounded-full bg-emerald-500 hover:bg-emerald-600 active:translate-y-1 text-white font-black text-sm uppercase tracking-wider shadow-[0_6px_0_#047857] hover:shadow-[0_4px_0_#047857] transition-all cursor-pointer group"
+        >
+          <span className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-xs">
+            <Play size={20} fill="currentColor" stroke="none" />
+          </span>
+          <div className="flex flex-col text-left">
+            <span className="text-[10px] text-emerald-100 font-extrabold tracking-widest block leading-none">
+              {isTodayCompleted ? 'PRACTICE TODAY' : 'PLAY TODAY'}
+            </span>
+            <span className="text-xs font-black block leading-tight mt-0.5 max-w-[160px] truncate">
+              Day {todayDayOfYear} • {todayChronicle.storyTitle}
+            </span>
+          </div>
+        </button>
       </div>
 
       {/* Lesson Screen Modal for selected Day */}

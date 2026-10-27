@@ -339,11 +339,12 @@ export const ICONS: Record<IconName, IconDef> = {
  },
  "gem": {
   "d": [
-   "M12 2.5 20 7.5v9l-8 5-8-5v-9z",
-   "M4 7.5 12 9.5 20 7.5",
-   "M12 2.5v19"
+   "M6 3h12l4 6-10 12L2 9z",
+   "M2 9h20",
+   "M6 3l4 6-2 12",
+   "M18 3l-4 6 2 12"
   ],
-  "tone": "M12 2.5 20 7.5v9l-8 5-8-5v-9z"
+  "tone": "M6 3h12l4 6-10 12L2 9z"
  },
  "shield": {
   "d": [

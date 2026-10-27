@@ -369,91 +369,82 @@ export function planBibleOrNotSession(
   options: BibleOrNotPlannerOptions
 ): BibleOrNotItem[] {
   const { sessionLength, roomSeenData = [] } = options;
-  const questionsPerTier = Math.max(1, Math.round(sessionLength / 4));
-  const planned: BibleOrNotItem[] = [];
+  const targetIn = Math.floor(sessionLength / 2);
+  const targetNot = sessionLength - targetIn;
+
+  const inPool = fullPool.filter((item) => item.answer === 'IN_BIBLE');
+  const notPool = fullPool.filter((item) => item.answer === 'NOT_IN_BIBLE');
+
+  const selectedIn: BibleOrNotItem[] = [];
+  const selectedNot: BibleOrNotItem[] = [];
   const usedIds = new Set<string>();
 
-  const maxInBible = Math.ceil(sessionLength / 2);
-  const maxNotInBible = Math.ceil(sessionLength / 2);
-  let inBibleCount = 0;
-  let notInBibleCount = 0;
-
-  for (let tier = 1; tier <= 4; tier++) {
-    const tierItems = fullPool.filter((item) => item.tier === tier);
-    const tierPool = shuffle(tierItems);
-
-    let tierCount = 0;
-    let attempts = 0;
-
-    while (tierCount < questionsPerTier && attempts < 200 && planned.length < sessionLength) {
-      attempts++;
-      const candidate = selectFreshItem(tierPool, roomSeenData, usedIds);
-      if (!candidate) break;
-
-      // 1. Avoid more than 2 consecutive same answers
-      const n = planned.length;
-      if (
-        n >= 2 &&
-        planned[n - 1].answer === candidate.answer &&
-        planned[n - 2].answer === candidate.answer
-      ) {
-        continue;
+  // Pick targetIn from inPool using tiers & freshness
+  for (let tier = 1; tier <= 4 && selectedIn.length < targetIn; tier++) {
+    const tierIn = inPool.filter((item) => item.tier === tier);
+    const count = Math.ceil((targetIn - selectedIn.length) / (5 - tier));
+    for (let i = 0; i < count && selectedIn.length < targetIn; i++) {
+      const item = selectFreshItem(tierIn, roomSeenData, usedIds);
+      if (item) {
+        usedIds.add(item.id);
+        selectedIn.push(item);
       }
-
-      // 2. Prevent exceeding overall session answer quotas
-      if (candidate.answer === 'IN_BIBLE' && inBibleCount >= maxInBible && notInBibleCount < maxNotInBible) {
-        continue;
-      }
-      if (candidate.answer === 'NOT_IN_BIBLE' && notInBibleCount >= maxNotInBible && inBibleCount < maxInBible) {
-        continue;
-      }
-
-      // 3. Category variety: prefer different category from previous card
-      if (attempts < 100 && n >= 1 && planned[n - 1].category === candidate.category) {
-        continue;
-      }
-
-      usedIds.add(candidate.id);
-      planned.push(candidate);
-      if (candidate.answer === 'IN_BIBLE') inBibleCount++;
-      if (candidate.answer === 'NOT_IN_BIBLE') notInBibleCount++;
-      tierCount++;
+    }
+  }
+  // Fallback for IN_BIBLE
+  if (selectedIn.length < targetIn) {
+    for (const item of shuffle(inPool.filter((p) => !usedIds.has(p.id)))) {
+      if (selectedIn.length >= targetIn) break;
+      usedIds.add(item.id);
+      selectedIn.push(item);
     }
   }
 
-  // Fallback with anti-clustering constraints if quota not reached
-  if (planned.length < sessionLength) {
-    const remaining = shuffle(fullPool.filter((p) => !usedIds.has(p.id)));
-    for (const item of remaining) {
-      if (planned.length >= sessionLength) break;
-      const n = planned.length;
-      if (
-        n >= 2 &&
-        planned[n - 1].answer === item.answer &&
-        planned[n - 2].answer === item.answer
-      ) {
-        continue;
+  // Pick targetNot from notPool using tiers & freshness
+  for (let tier = 1; tier <= 4 && selectedNot.length < targetNot; tier++) {
+    const tierNot = notPool.filter((item) => item.tier === tier);
+    const count = Math.ceil((targetNot - selectedNot.length) / (5 - tier));
+    for (let i = 0; i < count && selectedNot.length < targetNot; i++) {
+      const item = selectFreshItem(tierNot, roomSeenData, usedIds);
+      if (item) {
+        usedIds.add(item.id);
+        selectedNot.push(item);
       }
-      if (item.answer === 'IN_BIBLE' && inBibleCount >= maxInBible && notInBibleCount < maxNotInBible) {
-        continue;
-      }
-      if (item.answer === 'NOT_IN_BIBLE' && notInBibleCount >= maxNotInBible && inBibleCount < maxInBible) {
-        continue;
-      }
-      planned.push(item);
+    }
+  }
+  // Fallback for NOT_IN_BIBLE
+  if (selectedNot.length < targetNot) {
+    for (const item of shuffle(notPool.filter((p) => !usedIds.has(p.id)))) {
+      if (selectedNot.length >= targetNot) break;
       usedIds.add(item.id);
-      if (item.answer === 'IN_BIBLE') inBibleCount++;
-      if (item.answer === 'NOT_IN_BIBLE') notInBibleCount++;
+      selectedNot.push(item);
     }
   }
 
-  // Absolute fallback if pool was tiny
-  if (planned.length < sessionLength) {
-    const remaining = fullPool.filter((p) => !usedIds.has(p.id));
-    for (const item of remaining) {
-      if (planned.length >= sessionLength) break;
-      planned.push(item);
-      usedIds.add(item.id);
+  // Interleave and shuffle selectedIn and selectedNot enforcing anti-clustering (< 3 in a row)
+  const remainingCards = [...selectedIn, ...selectedNot];
+  const planned: BibleOrNotItem[] = [];
+
+  while (remainingCards.length > 0) {
+    const n = planned.length;
+    let allowedAnswer: 'IN_BIBLE' | 'NOT_IN_BIBLE' | null = null;
+    if (n >= 2 && planned[n - 1].answer === planned[n - 2].answer) {
+      // Must not match previous two
+      allowedAnswer = planned[n - 1].answer === 'IN_BIBLE' ? 'NOT_IN_BIBLE' : 'IN_BIBLE';
+    }
+
+    const available = allowedAnswer
+      ? remainingCards.filter((c) => c.answer === allowedAnswer)
+      : remainingCards;
+
+    const pickPool = available.length > 0 ? available : remainingCards;
+    const pickIndex = Math.floor(Math.random() * pickPool.length);
+    const picked = pickPool[pickIndex];
+
+    planned.push(picked);
+    const originalIndex = remainingCards.indexOf(picked);
+    if (originalIndex !== -1) {
+      remainingCards.splice(originalIndex, 1);
     }
   }
 

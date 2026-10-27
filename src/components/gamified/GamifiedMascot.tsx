@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from '../../design/icons/Icon';
 
 export type MascotPose = 'idle' | 'cheer' | 'thinking' | 'sad';
 
@@ -853,30 +854,18 @@ const RuthSVG: React.FC<{ pose: MascotPose }> = ({ pose }) => (
 // Gamified Vector Tokens (Gems, Flames, Lightning Bolts, Hearts, Chests)
 // ============================================================================
 
-export const GamifiedGem: React.FC<{ size?: number; className?: string }> = ({ size = 28, className = '' }) => (
-  <svg width={size} height={size} viewBox="0 0 40 40" fill="none" className={`inline-block ${className}`}>
-    {/* Left body flank */}
-    <polygon points="5,9 13,14 13,33 5,27" fill="#0D7EB6" />
-    
-    {/* Right body flank */}
-    <polygon points="27,14 35,9 35,27 27,33" fill="#148BC4" />
-    
-    {/* Front center main facet */}
-    <polygon points="13,14 27,14 20,38" fill="#1899D6" />
-    
-    {/* Lower bevels for 3D depth */}
-    <polygon points="13,14 20,38 13,33" fill="#1086BF" />
-    <polygon points="27,14 20,38 27,33" fill="#1282BA" />
-
-    {/* Top crown facets */}
-    <polygon points="5,9 20,2 13,14" fill="#84D7FF" />
-    <polygon points="20,2 35,9 27,14" fill="#5DC5F8" />
-    <polygon points="20,2 27,14 13,14" fill="#38BDF8" />
-    
-    {/* Specular Apex Highlight (Gleaming crystal triangle & reflection at top peak) */}
-    <polygon points="20,3 23,8 17,8" fill="#FFFFFF" opacity="0.95" />
-    <circle cx="20" cy="5.5" r="1.2" fill="#FFFFFF" />
-  </svg>
+export const GamifiedGem: React.FC<{ size?: number; className?: string; variant?: 'line' | 'tonal' }> = ({
+  size = 24,
+  className = '',
+  variant = 'tonal',
+}) => (
+  <Icon
+    name="gem"
+    size={size}
+    variant={variant}
+    strokeWidth={2}
+    className={`text-cyan-500 fill-cyan-400/20 inline-block shrink-0 ${className}`}
+  />
 );
 
 export const GamifiedFlame: React.FC<{ size?: number; className?: string }> = ({ size = 28, className = '' }) => (

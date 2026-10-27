@@ -13,7 +13,7 @@ import proverbsData from '../../games/fake-a-proverb/content.json';
 import { allWhoSaidItems, allTestamentSortItems, allFourSignsPuzzles, allScribesTilesWords } from '../../engine/content/loader';
 import { FourSignClueCard } from '../../games/four-signs/icons';
 import { PathNodeData } from './GamifiedPathNode';
-import { getChronicleDay, ChronicleDay } from '../../engine/journey/chronicleCurriculum';
+import { getChronicleDay, ChronicleDay, ChronicleQuestionType } from '../../engine/journey/chronicleCurriculum';
 
 export interface GamifiedLessonScreenProps {
   node?: PathNodeData;
@@ -31,7 +31,9 @@ interface QuestionItem {
   answer: string;
   ref: string;
   why?: string;
+  questionType?: ChronicleQuestionType;
   fourSignsClues?: string[];
+  wordLength?: number;
 }
 
 export const GamifiedLessonScreen: React.FC<GamifiedLessonScreenProps> = ({
@@ -49,15 +51,23 @@ export const GamifiedLessonScreen: React.FC<GamifiedLessonScreenProps> = ({
     return null;
   }, [dayNumber]);
 
-  // Build 3 mini-questions tailored to this day or node
+  // Build questions tailored to this day or node, randomized across game types
   const questions: QuestionItem[] = useMemo(() => {
     if (chronicleDay) {
-      return chronicleDay.questions.map((q) => ({
-        ...q,
-        characterId: chronicleDay.characterId,
-        // Ensure options are shuffled
-        options: [...q.options].sort(() => 0.5 - Math.random()),
-      }));
+      // Fisher-Yates shuffle the 10 questions so each session has a randomized order of game types!
+      const shuffled = [...chronicleDay.questions].sort(() => 0.5 - Math.random());
+      return shuffled.map((q) => {
+        const isBibleOrNot = q.questionType === 'bible-or-not' || q.options.includes('In the Bible');
+        const opts = isBibleOrNot
+          ? ['In the Bible', 'Not in the Bible']
+          : [...q.options].sort(() => 0.5 - Math.random());
+
+        return {
+          ...q,
+          characterId: chronicleDay.characterId,
+          options: opts,
+        };
+      });
     }
 
     if (!node) {
@@ -279,6 +289,43 @@ export const GamifiedLessonScreen: React.FC<GamifiedLessonScreenProps> = ({
           </div>
         )}
 
+        {/* Game Mode Pill Badge */}
+        <div className="flex items-center gap-2 mb-1">
+          {currentQ.questionType === 'who-said' && (
+            <span className="px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-800 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-xs">
+              <span>🎙️</span>
+              <span>Who Said That?</span>
+            </span>
+          )}
+          {currentQ.questionType === 'bible-or-not' && (
+            <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-xs">
+              <span>📖</span>
+              <span>Bible or Not?</span>
+            </span>
+          )}
+          {currentQ.questionType === 'four-signs' && (
+            <span className="px-2.5 py-0.5 rounded-full bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-300 dark:border-sky-800 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-xs">
+              <span>🔍</span>
+              <span>Four Signs</span>
+            </span>
+          )}
+          {currentQ.questionType === 'scribes-tiles' && (
+            <span className="px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-xs">
+              <span>📜</span>
+              <span>Scribe's Tiles</span>
+            </span>
+          )}
+          {(!currentQ.questionType || currentQ.questionType === 'trivia') && (
+            <span className="px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-800 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-xs">
+              <span>💡</span>
+              <span>Scripture Understanding</span>
+            </span>
+          )}
+          <span className="text-[11px] font-bold text-zinc-400">
+            • {currentQ.category}
+          </span>
+        </div>
+
         {/* Instruction Headline */}
         <h2 className="text-xl sm:text-2xl font-black text-[var(--c-text)] tracking-tight text-left leading-snug">
           {currentQ.prompt}
@@ -290,6 +337,26 @@ export const GamifiedLessonScreen: React.FC<GamifiedLessonScreenProps> = ({
             {currentQ.fourSignsClues.map((clue, idx) => (
               <FourSignClueCard key={idx} clue={clue} index={idx} revealed={true} size="sm" />
             ))}
+          </div>
+        )}
+
+        {/* Scribe's Tiles Letter Boxes (if applicable) */}
+        {currentQ.questionType === 'scribes-tiles' && currentQ.wordLength && (
+          <div className="flex items-center gap-1.5 my-1">
+            <span className="text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 mr-1">
+              Length:
+            </span>
+            {Array.from({ length: currentQ.wordLength }).map((_, i) => (
+              <div
+                key={i}
+                className="w-7 h-8 rounded-lg border-2 border-dashed border-amber-400 dark:border-amber-600 bg-amber-50 dark:bg-amber-950/40 flex items-center justify-center font-mono font-black text-xs text-amber-700 dark:text-amber-300 shadow-xs"
+              >
+                _
+              </div>
+            ))}
+            <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 ml-1.5">
+              ({currentQ.wordLength} letters)
+            </span>
           </div>
         )}
 
@@ -324,29 +391,59 @@ export const GamifiedLessonScreen: React.FC<GamifiedLessonScreenProps> = ({
         </div>
 
         {/* Answer Choice Tiles */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
-          {currentQ.options.map((opt) => {
-            const isSelected = selectedOption === opt;
-            let tileClass = 'p-4 rounded-2xl font-bold text-base transition-all border-2 cursor-pointer text-left ';
-            if (isSelected) {
-              tileClass += 'bg-[var(--c-blue-tint)] border-[var(--c-blue)] text-[var(--c-blue)] shadow-[0_4px_0_var(--c-blue-lip)] translate-y-[-2px]';
-            } else {
-              tileClass += 'bg-white dark:bg-zinc-900 border-[var(--c-border)] text-[var(--c-text)] shadow-[0_4px_0_var(--c-border)] hover:bg-[var(--c-surface-muted)] active:translate-y-[2px] active:shadow-none';
-            }
+        {currentQ.questionType === 'bible-or-not' ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mt-2">
+            {currentQ.options.map((opt) => {
+              const isSelected = selectedOption === opt;
+              const isBible = opt.toLowerCase().includes('in the bible') && !opt.toLowerCase().includes('not');
+              let tileClass = 'p-5 rounded-2xl font-black text-lg transition-all border-2 cursor-pointer flex items-center justify-center gap-2.5 shadow-sm ';
+              if (isSelected) {
+                tileClass += isBible
+                  ? 'bg-emerald-500 text-white border-emerald-600 shadow-[0_5px_0_#047857] translate-y-[-2px]'
+                  : 'bg-rose-500 text-white border-rose-600 shadow-[0_5px_0_#BE123C] translate-y-[-2px]';
+              } else {
+                tileClass += 'bg-white dark:bg-zinc-900 border-[var(--c-border)] text-[var(--c-text)] shadow-[0_4px_0_var(--c-border)] hover:bg-[var(--c-surface-muted)] active:translate-y-[2px] active:shadow-none';
+              }
 
-            return (
-              <button
-                key={opt}
-                type="button"
-                onClick={() => handleSelectOption(opt)}
-                disabled={feedbackState !== 'idle'}
-                className={tileClass}
-              >
-                {opt}
-              </button>
-            );
-          })}
-        </div>
+              return (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => handleSelectOption(opt)}
+                  disabled={feedbackState !== 'idle'}
+                  className={tileClass}
+                >
+                  <span className="text-2xl">{isBible ? '📖' : '🚫'}</span>
+                  <span>{opt}</span>
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+            {currentQ.options.map((opt) => {
+              const isSelected = selectedOption === opt;
+              let tileClass = 'p-4 rounded-2xl font-bold text-base transition-all border-2 cursor-pointer text-left ';
+              if (isSelected) {
+                tileClass += 'bg-[var(--c-blue-tint)] border-[var(--c-blue)] text-[var(--c-blue)] shadow-[0_4px_0_var(--c-blue-lip)] translate-y-[-2px]';
+              } else {
+                tileClass += 'bg-white dark:bg-zinc-900 border-[var(--c-border)] text-[var(--c-text)] shadow-[0_4px_0_var(--c-border)] hover:bg-[var(--c-surface-muted)] active:translate-y-[2px] active:shadow-none';
+              }
+
+              return (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => handleSelectOption(opt)}
+                  disabled={feedbackState !== 'idle'}
+                  className={tileClass}
+                >
+                  {opt}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Pinned Bottom CTA (Replaced by feedback sheet upon check) */}

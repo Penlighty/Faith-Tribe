@@ -18,7 +18,8 @@ export interface PathNodeData {
 export interface GamifiedPathNodeProps {
   node: PathNodeData;
   state: PathNodeState;
-  xOffset: number; // in pixels, e.g. -45, 0, 45
+  xOffset?: number; // in pixels
+  yOffset?: number; // in pixels
   onClick?: () => void;
   showTooltip?: boolean;
   onStartClick?: () => void;
@@ -27,7 +28,8 @@ export interface GamifiedPathNodeProps {
 export const GamifiedPathNode: React.FC<GamifiedPathNodeProps> = ({
   node,
   state,
-  xOffset,
+  xOffset = 0,
+  yOffset = 0,
   onClick,
   showTooltip = false,
   onStartClick,
@@ -69,8 +71,8 @@ export const GamifiedPathNode: React.FC<GamifiedPathNodeProps> = ({
 
   return (
     <div
-      className="relative flex flex-col items-center my-6 select-none"
-      style={{ transform: `translateX(${xOffset}px)` }}
+      className="relative flex flex-col items-center select-none shrink-0"
+      style={{ transform: `translate(${xOffset}px, ${yOffset}px)` }}
     >
       {/* Floating Tooltip above current node */}
       {state === 'current' && showTooltip && (

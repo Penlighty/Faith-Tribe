@@ -52,6 +52,7 @@ export interface SessionConfig {
 
 export interface LeaderboardEntry {
   id: string; // playerId or teamId
+  playerId?: string;
   name: string;
   score: number;
   secondaryScore?: number;
