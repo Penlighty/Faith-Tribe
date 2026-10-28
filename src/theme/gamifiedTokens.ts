@@ -120,3 +120,51 @@ export function saveGamifiedStats(stats: GamifiedStats): void {
     // ignore
   }
 }
+
+/**
+ * Awards solo practice points to the player's XP and Fellowship profile stats
+ * so they rank higher on both the gamified leaderboard and tribe rankings.
+ */
+export function recordSoloPracticeScore(gameId: string, earnedScore: number): GamifiedStats {
+  const currentStats = getStoredGamifiedStats();
+  const validScore = Math.max(0, Math.round(earnedScore));
+  const nextStats: GamifiedStats = {
+    ...currentStats,
+    xp: (currentStats.xp || 0) + validScore,
+  };
+  saveGamifiedStats(nextStats);
+
+  // Dispatch global event for live reactive UI updates
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('faith_tribe_stats_updated', { detail: nextStats }));
+
+    // Also update disciple profile stats in local storage for fellowship ranking
+    try {
+      const pStr = localStorage.getItem('faith_tribe_user_profile');
+      if (pStr) {
+        const profile = JSON.parse(pStr);
+        if (profile) {
+          const stats = profile.stats || {
+            gamesPlayed: 0,
+            victories: 0,
+            totalScore: 0,
+            highestScore: 0,
+          };
+          stats.totalScore = (stats.totalScore || 0) + validScore;
+          stats.highestScore = Math.max(stats.highestScore || 0, validScore);
+          stats.gamesPlayed = (stats.gamesPlayed || 0) + 1;
+          stats.favoriteGame = gameId;
+          stats.lastPlayedAt = Date.now();
+          profile.stats = stats;
+          localStorage.setItem('faith_tribe_user_profile', JSON.stringify(profile));
+          window.dispatchEvent(new CustomEvent('faith_tribe_profile_updated', { detail: profile }));
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  return nextStats;
+}
+

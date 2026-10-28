@@ -1,0 +1,182 @@
+[
+  {
+    "level": 1,
+    "theme": "Fruits of the Spirit",
+    "scripture": "Galatians 5:22-23",
+    "clue": "The fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, self-control.",
+    "words": [
+      "LOVE",
+      "JOY",
+      "PEACE",
+      "PATIENCE",
+      "KINDNESS",
+      "GOODNESS",
+      "FAITH",
+      "GENTLE"
+    ],
+    "targetScore": 500,
+    "gridSize": 10
+  },
+  {
+    "level": 2,
+    "theme": "Apostles of the Lamb",
+    "scripture": "Matthew 10:2-4",
+    "clue": "Now the names of the twelve apostles are these; The first, Simon, who is called Peter, and Andrew his brother...",
+    "words": [
+      "PETER",
+      "ANDREW",
+      "JAMES",
+      "JOHN",
+      "PHILIP",
+      "THOMAS",
+      "MATTHEW",
+      "SIMON"
+    ],
+    "targetScore": 550,
+    "gridSize": 10
+  },
+  {
+    "level": 3,
+    "theme": "Old Testament Prophets",
+    "scripture": "Hebrews 1:1",
+    "clue": "God, who at sundry times and in divers manners spake in time past unto the fathers by the prophets...",
+    "words": [
+      "ELIJAH",
+      "ELISHA",
+      "ISAIAH",
+      "JEREMIAH",
+      "EZEKIEL",
+      "DANIEL",
+      "SAMUEL",
+      "HOSEA"
+    ],
+    "targetScore": 600,
+    "gridSize": 11
+  },
+  {
+    "level": 4,
+    "theme": "Names & Titles of Jesus",
+    "scripture": "Revelation 19:16",
+    "clue": "He is the King of kings, Lord of lords, Good Shepherd, and True Vine.",
+    "words": [
+      "MESSIAH",
+      "IMMANUEL",
+      "REDEEMER",
+      "SHEPHERD",
+      "LIGHT",
+      "SAVIOR",
+      "ADVOCATE",
+      "LAMB"
+    ],
+    "targetScore": 650,
+    "gridSize": 11
+  },
+  {
+    "level": 5,
+    "theme": "Whole Armor of God",
+    "scripture": "Ephesians 6:13-18",
+    "clue": "Put on the whole armor of God, that ye may be able to stand against the wiles of the devil.",
+    "words": [
+      "TRUTH",
+      "PEACE",
+      "FAITH",
+      "SALVATION",
+      "SWORD",
+      "SPIRIT",
+      "PRAYER",
+      "HELMET"
+    ],
+    "targetScore": 600,
+    "gridSize": 11
+  },
+  {
+    "level": 6,
+    "theme": "Sacred Mountains",
+    "scripture": "Psalm 125:1-2",
+    "clue": "As the mountains are round about Jerusalem, so the Lord is round about his people.",
+    "words": [
+      "SINAI",
+      "ZION",
+      "CARMEL",
+      "ARARAT",
+      "OLIVES",
+      "TABOR",
+      "MORIAH",
+      "HERMON"
+    ],
+    "targetScore": 600,
+    "gridSize": 11
+  },
+  {
+    "level": 7,
+    "theme": "Miracles & Wonders",
+    "scripture": "John 20:30-31",
+    "clue": "Many other signs truly did Jesus in the presence of his disciples...",
+    "words": [
+      "CANA",
+      "LAZARUS",
+      "MANNA",
+      "PARTING",
+      "HEALING",
+      "STORMS",
+      "LEPER",
+      "WINE"
+    ],
+    "targetScore": 550,
+    "gridSize": 11
+  },
+  {
+    "level": 8,
+    "theme": "Rivers of Scripture",
+    "scripture": "Genesis 2:10-14",
+    "clue": "And a river went out of Eden to water the garden...",
+    "words": [
+      "JORDAN",
+      "NILE",
+      "EUPHRATES",
+      "TIGRIS",
+      "GIHON",
+      "PISHON",
+      "CHERITH",
+      "BROOK"
+    ],
+    "targetScore": 650,
+    "gridSize": 12
+  },
+  {
+    "level": 9,
+    "theme": "Valiant Women of Faith",
+    "scripture": "Proverbs 31:30",
+    "clue": "A woman that feareth the Lord, she shall be praised.",
+    "words": [
+      "SARAH",
+      "RUTH",
+      "ESTHER",
+      "DEBORAH",
+      "MARY",
+      "HANNAH",
+      "PRISCILLA",
+      "ABIGAIL"
+    ],
+    "targetScore": 650,
+    "gridSize": 12
+  },
+  {
+    "level": 10,
+    "theme": "The Promised Land",
+    "scripture": "Deuteronomy 8:7-10",
+    "clue": "For the Lord thy God bringeth thee into a good land, a land of brooks of water, of fountains and depths...",
+    "words": [
+      "JERUSALEM",
+      "BETHLEHEM",
+      "NAZARETH",
+      "JERICHO",
+      "GALILEE",
+      "HEBRON",
+      "JOPPA",
+      "SHILOH"
+    ],
+    "targetScore": 750,
+    "gridSize": 12
+  }
+]

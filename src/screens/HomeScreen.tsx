@@ -86,6 +86,7 @@ export const GAME_SEARCH_KEYWORDS: Record<string, string[]> = {
   'four-signs': ['four signs', 'four', 'signs', 'clue', 'pictogram', 'icon', 'symbols', 'puzzle', 'riddle', 'guess'],
   'scribes-tiles': ['scribe', 'scribes', 'tiles', 'letters', 'anagram', 'word', 'spelling', 'unscramble', 'crossword', 'parchment'],
   'bible-or-not': ['bible or not', 'bible', 'scripture', 'flashcard', 'swipe', 'myth', 'proverb', 'saying', 'in the bible', 'not in the bible', 'cards', 'quote'],
+  'search-the-scriptures': ['search', 'scriptures', 'word search', 'grid', 'letters', 'puzzle', 'find', 'hidden', 'word', 'john 5:39', 'theme'],
   'blueprint-from-the-mountain': ['blueprint', 'mountain', 'tabernacle', 'architecture', 'dimensions', 'exodus', 'ark'],
   'one-accord': ['accord', 'unity', 'harmony', 'acts', 'scripture', 'co-op', 'team'],
   'six-degrees-of-abraham': ['abraham', 'genealogy', 'degrees', 'covenant', 'generations', 'lineage', 'family tree'],
@@ -233,34 +234,24 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-28 pt-2 sm:pt-6 flex flex-col gap-6 sm:gap-8">
-      {/* 🟢 Live Tribe Game Session Banner (Zero-Friction 1-Click Join) */}
+    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 pb-28 pt-3 sm:pt-6 flex flex-col gap-5 sm:gap-6">
+      {/* Live Tribe Game Session Banner */}
       {liveActiveSession && (
         <Card
           variant="elevated"
           padding="md"
-          className="border-2 border-emerald-500 bg-gradient-to-r from-emerald-500/15 via-emerald-500/5 to-transparent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-md animate-pulse"
+          className="border-2 border-emerald-500 bg-emerald-500/10 flex items-center justify-between gap-3 shadow-md"
         >
-          <div className="flex items-center gap-3">
-            <span className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm">
-              <Icon name="games" size={20} />
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0">
+              <Icon name="games" size={18} />
             </span>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
-                  {liveActiveSession.tribe.name} • Active Session
-                </span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200 flex items-center gap-1">
-                  <Icon name={liveActiveSession.session.connectionMode === 'onsite' ? 'host' : 'link'} size={11} />
-                  <span>{liveActiveSession.session.connectionMode === 'onsite' ? 'Onsite Hotspot' : 'Online Cloud'}</span>
-                </span>
-              </div>
-              <span className="text-sm font-black text-[var(--on-container)]">
+            <div className="flex flex-col min-w-0">
+              <span className="text-sm font-black text-[var(--on-container)] truncate">
                 {liveActiveSession.session.gameName}
               </span>
-              <span className="text-[11px] text-[var(--on-container-variant)]">
-                Hosted by {liveActiveSession.session.hostName}
+              <span className="text-xs text-[var(--on-container-variant)] truncate">
+                {liveActiveSession.tribe.name} • Hosted by {liveActiveSession.session.hostName}
               </span>
             </div>
           </div>
@@ -279,224 +270,85 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 onQuickJoin();
               }
             }}
-            className="font-black text-xs bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm shrink-0"
+            className="font-black text-xs bg-emerald-600 hover:bg-emerald-500 text-white shrink-0"
           >
-            Join Fellowship Game
+            Join
           </Button>
         </Card>
       )}
 
-      {/* 🌟 Playful Gamified Faith Journey Path Banner */}
+      {/* Hero Action Row: Host & Join */}
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+        <button
+          type="button"
+          onClick={() => {
+            triggerHaptic('medium');
+            if (!isAuthenticated) {
+              setShowAuthModal(true);
+            } else {
+              setShowGamePicker(true);
+            }
+          }}
+          className="p-4 sm:p-5 rounded-2xl bg-[var(--primary-action)] text-white hover:brightness-105 active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 shadow-sm font-black text-sm sm:text-base cursor-pointer"
+        >
+          <Icon name="host" size={20} />
+          <span>Host Game</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            triggerHaptic('light');
+            onQuickJoin();
+          }}
+          className="p-4 sm:p-5 rounded-2xl bg-[var(--surface-container-high)] text-[var(--on-container)] hover:bg-[var(--surface-container-highest)] border border-[var(--border-tint)] active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 shadow-xs font-black text-sm sm:text-base cursor-pointer"
+        >
+          <Icon name="join" size={20} />
+          <span>Join with Code</span>
+        </button>
+      </div>
+
+      {/* Sleek Daily Journey Banner */}
       {onOpenJourneyPath && (
         <div
           onClick={onOpenJourneyPath}
-          className="w-full p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-blue-500/10 via-amber-500/10 to-emerald-500/10 border-2 border-[var(--c-blue)]/30 hover:border-[var(--c-blue)] shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col sm:flex-row items-center justify-between gap-4 select-none animate-fadeIn"
+          className="w-full px-4 py-3 sm:py-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all cursor-pointer flex items-center justify-between gap-3 select-none"
         >
-          <div className="flex items-center gap-4">
-            <GamifiedMascot character="david" pose="cheer" size={80} showGroundShadow={false} />
-            <div className="flex flex-col text-left">
-              <span className="text-xs font-black uppercase tracking-wider text-[var(--c-blue)]">
-                Daily Scripture Journey • Dāvīd's Faith Path
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0">
+              <Icon name="bolt" size={16} />
+            </span>
+            <div className="flex flex-col min-w-0">
+              <span className="text-[11px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                Daily Scripture Journey
               </span>
-              <h3 className="text-lg sm:text-xl font-black text-[var(--c-text)] leading-snug">
-                Step onto the Faith Path
-              </h3>
-              <p className="text-xs font-bold text-[var(--c-text-2)]">
-                Join Dāvīd, Debōrāh, and Mōshē: complete quests, earn gems, and build your holy streak!
-              </p>
+              <span className="text-xs sm:text-sm font-bold text-[var(--on-container)] truncate">
+                Continue Day's Faith Milestone
+              </span>
             </div>
           </div>
+
           <Button
             type="button"
-            variant="primary"
-            size="md"
+            variant="tonal"
+            size="sm"
             pill
             onClick={(e) => {
               e.stopPropagation();
               onOpenJourneyPath?.();
             }}
-            className="shrink-0 w-full sm:w-auto font-black px-6"
-            rightIcon={<Icon name="bolt" size={16} />}
+            className="shrink-0 font-black text-xs"
           >
-            START JOURNEY
+            Continue
           </Button>
         </div>
       )}
 
-      {/* Top Section: Responsive Grid on Desktop (Stats Card + Quick Play Hub) */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 items-stretch">
-        {/* Stats card on Home: "Game night stats" */}
-        <Card
-          variant="surface"
-          padding="lg"
-          className="md:col-span-7 lg:col-span-8 flex flex-col justify-between gap-5 shadow-sm"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="w-8 h-8 rounded-full bg-[var(--primary-action)]/10 text-[var(--primary-action)] flex items-center justify-center">
-                <Icon name="scoreboard" size={18} />
-              </span>
-              <h2 className="text-base sm:text-lg font-extrabold tracking-tight text-[var(--on-container)]">
-                {user ? `${user.displayName}'s Activity` : 'Fellowship Activity'}
-              </h2>
-            </div>
-            <span
-              className={`text-xs font-mono font-bold px-2.5 py-1 rounded-full border flex items-center gap-1 ${
-                stats.activeCount > 0
-                  ? 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300/30'
-                  : 'text-[var(--on-container-variant)] bg-[var(--surface-container)] border-[var(--border-tint)]'
-              }`}
-            >
-              <Icon name="bolt" size={14} /> {stats.activeCount > 0 ? `${stats.activeCount} in Fellowship` : 'Ready'}
-            </span>
-          </div>
-
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <div className="text-4xl sm:text-5xl font-black font-mono tracking-tight text-[var(--on-container)]">
-                {stats.gamesPlayedThisMonth}
-              </div>
-              <div className="text-xs sm:text-sm font-bold text-[var(--on-container-variant)]">
-                Games Played This Month
-              </div>
-            </div>
-            <div className="flex items-center gap-3 sm:gap-5 text-right">
-              <div>
-                <div className="text-sm sm:text-base font-black font-mono">
-                  {stats.winsCount} {stats.winsCount === 1 ? 'Win' : 'Wins'}
-                </div>
-                <div className="text-[11px] sm:text-xs text-[var(--on-container-variant)]">
-                  {stats.victoryRate}% Victory Rate
-                </div>
-              </div>
-              <div className="w-px h-8 sm:h-10 bg-[var(--border-tint)]" />
-              <div>
-                <div className="text-sm sm:text-base font-black text-[var(--primary-action)]">
-                  {stats.favoritePick}
-                </div>
-                <div className="text-[11px] sm:text-xs text-[var(--on-container-variant)]">
-                  Favorite Pick
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Rounded Bar Chart of the Week */}
-          <div className="pt-3 border-t border-[var(--border-tint)] flex items-end justify-between gap-2 sm:gap-4 h-20 sm:h-24">
-            {stats.weeklyActivity.map((bar, i) => (
-              <div
-                key={i}
-                className="flex-1 flex flex-col items-center gap-2 h-full justify-end"
-                title={`${bar.count} ${bar.count === 1 ? 'game' : 'games'} on this day`}
-              >
-                <motion.div
-                  initial={{ height: 0 }}
-                  animate={{ height: `${bar.height}%` }}
-                  transition={{ duration: 0.5, delay: i * 0.05 }}
-                  className={`w-full max-w-[20px] sm:max-w-[28px] rounded-full transition-all ${
-                    bar.count > 0
-                      ? 'bg-[var(--primary-action)] shadow-sm'
-                      : 'bg-[var(--on-container)]/15 hover:bg-[var(--on-container)]/25'
-                  }`}
-                />
-                <span className="text-[10px] sm:text-xs font-bold text-[var(--on-container-variant)]">
-                  {bar.day}
-                </span>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Quick Play CTAs & Recently Gathered Hub on Desktop */}
-        <div className="md:col-span-5 lg:col-span-4 flex flex-col justify-between gap-4">
-          <Card variant="tonal" padding="md" className="flex-1 flex flex-col justify-center gap-3.5">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
-                Gather Your Tribe
-              </span>
-            </div>
-
-            <Button
-              variant="primary"
-              size="lg"
-              pill
-              className="w-full shadow-md text-sm sm:text-base font-bold py-3 flex items-center justify-center gap-2"
-              onClick={() => {
-                triggerHaptic('medium');
-                if (!isAuthenticated) {
-                  setShowAuthModal(true);
-                } else {
-                  setShowGamePicker(true);
-                }
-              }}
-            >
-              <Icon name="host" size={18} />
-              <span>Host a Game</span>
-            </Button>
-
-            <Button
-              variant="tonal"
-              size="lg"
-              pill
-              className="w-full text-sm sm:text-base font-bold py-3 flex items-center justify-center gap-2"
-              onClick={onQuickJoin}
-            >
-              <Icon name="join" size={18} />
-              <span>Join with Code</span>
-            </Button>
-          </Card>
-
-          {/* Recently Played / Gathered */}
-          <Card variant="surface" padding="md" className="flex flex-col gap-2.5">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-bold tracking-tight text-[var(--on-container)]">
-                Recently Gathered
-              </h2>
-              <span className="text-[11px] font-mono text-[var(--on-container-variant)]">
-                {stats.recentlyGathered.length} {stats.recentlyGathered.length === 1 ? 'Disciple' : 'Disciples'}
-              </span>
-            </div>
-            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-              {stats.recentlyGathered.length > 0 ? (
-                stats.recentlyGathered.map((disciple, i) => (
-                  <div
-                    key={disciple.id || i}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--surface-container)] text-xs font-semibold shrink-0 border border-[var(--border-tint)] shadow-sm"
-                  >
-                    <Avatar name={disciple.name} size="sm" />
-                    <span>{disciple.name}</span>
-                  </div>
-                ))
-              ) : (
-                <div className="text-xs text-[var(--on-container-variant)] py-1 italic">
-                  Host or join a game to gather your disciples!
-                </div>
-              )}
-            </div>
-          </Card>
-        </div>
-      </div>
-
-      {/* Section Header + Segmented Filter Tabs */}
-      <div className="flex flex-col gap-3.5 pt-2">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--on-container)]">
-                Game Library
-              </h2>
-              <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-[var(--surface-container)] text-[var(--on-container-variant)] border border-[var(--border-tint)]">
-                {filteredLaunchGames.length + filteredPlannedGames.length} {filteredLaunchGames.length + filteredPlannedGames.length === 1 ? 'game' : 'games'}
-              </span>
-            </div>
-            <p className="text-xs text-[var(--on-container-variant)] mt-0.5">
-              Choose a fellowship game to host or practice solo
-            </p>
-          </div>
-
-          {/* Segmented Filter Pills + Shuffle */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+      {/* Game Catalog Controls */}
+      <div className="flex flex-col gap-3 pt-1">
+        {/* Category Filters */}
+        <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex items-center gap-1.5">
             {(['All', 'Party', 'Team', 'Solo'] as const).map((tab) => (
               <Chip
                 key={tab}
@@ -505,189 +357,96 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   triggerHaptic('light');
                   setFilter(tab);
                 }}
-                size="md"
+                size="sm"
               >
                 {tab}
               </Chip>
             ))}
-            <Chip
-              selected={false}
-              onClick={handleShuffle}
-              leftIcon={<Icon name="shuffle" size={16} variant="line" />}
-              size="md"
-              className="ml-auto sm:ml-0"
-            >
-              Surprise Me
-            </Chip>
           </div>
+
+          <Chip
+            selected={false}
+            onClick={handleShuffle}
+            leftIcon={<Icon name="shuffle" size={14} variant="line" />}
+            size="sm"
+            className="shrink-0 ml-auto"
+          >
+            Random
+          </Chip>
         </div>
 
-        {/* Auto-Populate Search Bar & Suggestions Container */}
-        <div ref={searchContainerRef} className="relative flex flex-col gap-2 z-20">
-          <div className="relative flex items-center">
-            {/* Search Input Box */}
-            <div className="relative w-full flex items-center">
-              <div className="absolute left-3.5 pointer-events-none text-[var(--on-container-variant)] flex items-center justify-center">
-                <Icon name="search" size={18} />
-              </div>
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setIsSearchFocused(true)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Escape') {
-                    setSearchQuery('');
-                    setIsSearchFocused(false);
-                    searchInputRef.current?.blur();
-                  } else if (e.key === 'Enter' && autocompleteSuggestions.length > 0) {
-                    const topMatch = autocompleteSuggestions[0];
-                    if ('status' in topMatch && topMatch.status === 'planned') {
-                      setSearchQuery(topMatch.name);
-                    } else {
-                      onSelectGame(topMatch.id);
-                    }
-                    setIsSearchFocused(false);
-                  }
-                }}
-                placeholder="Search games by title, quotes, bluff, speed, trivia..."
-                aria-label="Search games"
-                autoComplete="off"
-                spellCheck="false"
-                className="w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-2xl bg-[var(--surface-card)] text-[var(--on-container)] placeholder:text-[var(--on-container-variant)]/60 text-sm font-medium border-2 border-[var(--border-tint)] focus:border-[var(--primary-action)] focus:outline-hidden focus:shadow-md transition-all"
-              />
-              {/* Clear button */}
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic('light');
-                    setSearchQuery('');
-                    searchInputRef.current?.focus();
-                  }}
-                  className="absolute right-3 w-6 h-6 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[var(--on-container-variant)] flex items-center justify-center transition-colors cursor-pointer"
-                  aria-label="Clear search"
-                >
-                  <Icon name="close" size={13} />
-                </button>
-              )}
-            </div>
+        {/* Minimal Search Bar */}
+        <div ref={searchContainerRef} className="relative flex items-center z-20">
+          <div className="absolute left-3.5 pointer-events-none text-[var(--on-container-variant)] flex items-center justify-center">
+            <Icon name="search" size={16} />
           </div>
+          <input
+            ref={searchInputRef}
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => setIsSearchFocused(true)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                setSearchQuery('');
+                setIsSearchFocused(false);
+                searchInputRef.current?.blur();
+              } else if (e.key === 'Enter' && autocompleteSuggestions.length > 0) {
+                const topMatch = autocompleteSuggestions[0];
+                onSelectGame(topMatch.id);
+                setIsSearchFocused(false);
+              }
+            }}
+            placeholder="Search games..."
+            aria-label="Search games"
+            autoComplete="off"
+            spellCheck="false"
+            className="w-full pl-9 pr-9 py-2 rounded-xl bg-[var(--surface-card)] text-[var(--on-container)] placeholder:text-[var(--on-container-variant)]/50 text-xs sm:text-sm font-medium border border-[var(--border-tint)] focus:border-[var(--primary-action)] focus:outline-hidden transition-all"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                setSearchQuery('');
+                searchInputRef.current?.focus();
+              }}
+              className="absolute right-2.5 w-5 h-5 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[var(--on-container-variant)] flex items-center justify-center transition-colors cursor-pointer"
+              aria-label="Clear search"
+            >
+              <Icon name="close" size={11} />
+            </button>
+          )}
 
-          {/* Live Autocomplete Dropdown */}
+          {/* Autocomplete Dropdown */}
           {isSearchFocused && autocompleteSuggestions.length > 0 && (
-            <div className="absolute top-[calc(100%-8px)] left-0 right-0 mt-2 bg-[var(--surface-card)] border-2 border-[var(--border-tint)] rounded-2xl shadow-2xl p-2 z-50 flex flex-col gap-1 backdrop-blur-md animate-fadeIn">
-              <div className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[var(--on-container-variant)] flex items-center justify-between border-b border-[var(--border-tint)] pb-1.5">
-                <span>Matching Games ({autocompleteSuggestions.length})</span>
-                <span className="text-[10px] lowercase opacity-70">press enter or tap to select</span>
-              </div>
+            <div className="absolute top-full left-0 right-0 mt-1 bg-[var(--surface-card)] border border-[var(--border-tint)] rounded-xl shadow-xl p-1 z-50 flex flex-col gap-0.5 animate-fadeIn">
               {autocompleteSuggestions.map((item) => (
                 <div
                   key={item.id}
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => {
                     triggerHaptic('medium');
-                    if ('status' in item && item.status === 'planned') {
-                      setSearchQuery(item.name);
-                    } else {
-                      onSelectGame(item.id);
-                    }
+                    onSelectGame(item.id);
                     setIsSearchFocused(false);
                   }}
-                  className="p-2 sm:p-2.5 rounded-xl hover:bg-[var(--surface-container-high)] flex items-center justify-between gap-3 cursor-pointer transition-colors group"
+                  className="p-2 rounded-lg hover:bg-[var(--surface-container-high)] flex items-center justify-between gap-2 cursor-pointer transition-colors"
                 >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="shrink-0 group-hover:scale-105 transition-transform">
-                      <GameBadge game={item.id} size={36} variant="tonal" />
-                    </div>
-                    <div className="flex flex-col min-w-0">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="font-extrabold text-sm text-[var(--on-container)] group-hover:text-[var(--primary-action)] transition-colors truncate">
-                          {item.name}
-                        </span>
-                        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-[var(--surface-container)] text-[var(--on-container-variant)] border border-[var(--border-tint)]">
-                          {item.categoryTag}
-                        </span>
-                      </div>
-                      <span className="text-xs text-[var(--on-container-variant)] truncate">
-                        {item.tagline}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="shrink-0 flex items-center gap-1">
-                    <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-[var(--primary-action)]/10 text-[var(--primary-action)] group-hover:bg-[var(--primary-action)] group-hover:text-white transition-colors flex items-center gap-1">
-                      {'status' in item && item.status === 'planned' ? 'Planned' : 'Play'}
-                      <Icon name="arrow-right" size={12} />
-                    </span>
-                  </div>
+                  <span className="font-bold text-xs text-[var(--on-container)] truncate">
+                    {item.name}
+                  </span>
+                  <span className="text-[10px] text-[var(--on-container-variant)] shrink-0">
+                    {item.categoryTag}
+                  </span>
                 </div>
               ))}
-            </div>
-          )}
-
-          {/* Quick Auto-Populate Search Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--on-container-variant)] shrink-0 flex items-center gap-1 mr-0.5">
-              <Icon name="target" size={12} /> Quick Find:
-            </span>
-            {AUTO_POPULATE_PILLS.map((pill) => {
-              const isSelected = searchQuery.toLowerCase() === pill.query.toLowerCase();
-              return (
-                <button
-                  key={pill.label}
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic('light');
-                    if (isSelected) {
-                      setSearchQuery('');
-                    } else {
-                      setSearchQuery(pill.query);
-                      searchInputRef.current?.focus();
-                    }
-                  }}
-                  className={`px-3 py-1 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer border flex items-center gap-1.5 ${
-                    isSelected
-                      ? 'bg-[var(--primary-action)] text-white border-[var(--primary-action)] shadow-xs scale-105'
-                      : 'bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[var(--on-container)] border-[var(--border-tint)] hover:border-[var(--primary-action)]/50'
-                  }`}
-                >
-                  <Icon name={pill.icon} size={12} />
-                  <span>{pill.label}</span>
-                  {isSelected && <Icon name="close" size={10} />}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Active Search / Filter Status Banner */}
-          {(searchQuery || filter !== 'All') && (
-            <div className="flex items-center justify-between text-xs text-[var(--on-container-variant)] px-1">
-              <div className="flex items-center gap-1.5">
-                <span>
-                  Filtering by {searchQuery ? <strong>"{searchQuery}"</strong> : ''}{' '}
-                  {filter !== 'All' ? <span className="font-semibold">({filter} category)</span> : ''}
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic('light');
-                  setSearchQuery('');
-                  setFilter('All');
-                }}
-                className="text-[var(--primary-action)] hover:underline font-bold cursor-pointer flex items-center gap-1"
-              >
-                <Icon name="refresh" size={12} />
-                <span>Reset all</span>
-              </button>
             </div>
           )}
         </div>
       </div>
 
-      {/* Game Cards in a responsive 2-col on mobile, 3-col on desktop grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+      {/* Playable Game Cards Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
         {filteredLaunchGames.map((game) => (
           <GameCard
             key={game.id}
@@ -696,43 +455,24 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           />
         ))}
 
-        {filteredPlannedGames.map((game) => (
-          <PlannedGameCard key={game.id} game={game} />
-        ))}
-
-        {/* Empty state when no games match search query */}
-        {filteredLaunchGames.length === 0 && filteredPlannedGames.length === 0 && (
-          <Card
-            variant="surface"
-            padding="lg"
-            className="col-span-full py-12 px-4 flex flex-col items-center justify-center text-center gap-3.5 rounded-3xl border-2 border-dashed border-[var(--border-tint)] bg-[var(--surface-card)]"
-          >
-            <div className="w-14 h-14 rounded-full bg-[var(--surface-container-high)] text-[var(--primary-action)] flex items-center justify-center shadow-xs">
-              <Icon name="search" size={26} />
-            </div>
-            <div className="flex flex-col gap-1 max-w-sm">
-              <h3 className="text-base sm:text-lg font-black text-[var(--on-container)]">
-                No fellowship games found
-              </h3>
-              <p className="text-xs text-[var(--on-container-variant)] leading-relaxed">
-                We couldn't find any games matching <strong className="text-[var(--on-container)]">"{searchQuery}"</strong>. Try tapping one of the quick find pills above or reset your filters.
-              </p>
-            </div>
-            <div className="flex items-center gap-2 mt-2">
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => {
-                  triggerHaptic('medium');
-                  setSearchQuery('');
-                  setFilter('All');
-                }}
-                leftIcon={<Icon name="refresh" size={14} />}
-              >
-                Reset Search & Filters
-              </Button>
-            </div>
-          </Card>
+        {/* Empty state */}
+        {filteredLaunchGames.length === 0 && (
+          <div className="col-span-full py-12 flex flex-col items-center justify-center text-center gap-2 rounded-2xl border border-dashed border-[var(--border-tint)] bg-[var(--surface-card)]">
+            <span className="text-sm font-bold text-[var(--on-container)]">
+              No games found
+            </span>
+            <Button
+              variant="tonal"
+              size="sm"
+              onClick={() => {
+                triggerHaptic('light');
+                setSearchQuery('');
+                setFilter('All');
+              }}
+            >
+              Reset
+            </Button>
+          </div>
         )}
       </div>
 

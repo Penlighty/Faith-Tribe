@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Card } from './Card';
 import { Button } from './Button';
 import { Icon } from '../../design/icons';
 import { soundManager } from '../../engine/services/audio';
 import { fireConfettiBurst } from './StreakCelebration';
+import { recordSoloPracticeScore } from '../../theme/gamifiedTokens';
 
 export interface PracticeSummaryModalProps {
   isOpen: boolean;
@@ -28,11 +29,18 @@ export const PracticeSummaryModal: React.FC<PracticeSummaryModalProps> = ({
   onExit,
   onClose,
 }) => {
+  const hasAwardedRef = useRef<boolean>(false);
+
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      hasAwardedRef.current = false;
+      return;
+    }
     soundManager.playStreakMilestone(5);
-    if (score > 0) {
+    if (score > 0 && !hasAwardedRef.current) {
+      hasAwardedRef.current = true;
       fireConfettiBurst('light');
+      recordSoloPracticeScore('practice', score);
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {

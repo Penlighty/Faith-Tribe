@@ -24,30 +24,28 @@ export const GamifiedQuestCard: React.FC<{
 
   return (
     <div
-      className={`p-4 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-[var(--c-border)] shadow-sm flex flex-col gap-2.5 select-none ${className}`}
+      className={`p-3 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-[var(--c-border)] shadow-xs flex flex-col gap-1.5 select-none ${className}`}
     >
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-bold text-[var(--c-text)]">
-          {quest.title}
-        </span>
-        <span className="text-xs font-black uppercase text-[var(--c-orange)] font-mono">
-          {quest.current} / {quest.total}
+      <div className="flex items-center justify-between text-xs font-bold text-[var(--c-text)]">
+        <span className="truncate">{quest.title}</span>
+        <span className="font-mono text-[11px] font-black text-[var(--c-orange)] shrink-0 ml-2">
+          {quest.current}/{quest.total}
         </span>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5">
         {/* Progress Bar with Chest cap */}
-        <div className="progress-gamified flex-1">
+        <div className="progress-gamified flex-1 !h-2.5">
           <div
             className="progress-gamified-fill bg-[var(--c-orange)]"
             style={{ width: `${percent}%` }}
           />
         </div>
 
-        <div className="shrink-0 -my-2 cursor-pointer" onClick={isComplete ? onClaim : undefined}>
+        <div className="shrink-0 -my-1 cursor-pointer" onClick={isComplete ? onClaim : undefined}>
           <GamifiedChest
             rarity="common"
-            size={36}
+            size={30}
             className={isComplete ? 'animate-bounce' : 'opacity-80'}
           />
         </div>

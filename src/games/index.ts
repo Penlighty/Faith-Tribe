@@ -8,6 +8,7 @@ import { shelfRushPlugin } from './shelf-rush';
 import { fourSignsPlugin } from './four-signs';
 import { scribesTilesPlugin } from './scribes-tiles';
 import { bibleOrNotPlugin } from './bible-or-not';
+import { searchTheScripturesPlugin } from './search-the-scriptures';
 
 export function registerLaunchGames() {
   gameRegistry.register(fakeAProverbPlugin);
@@ -19,5 +20,6 @@ export function registerLaunchGames() {
   gameRegistry.register(fourSignsPlugin);
   gameRegistry.register(scribesTilesPlugin);
   gameRegistry.register(bibleOrNotPlugin);
+  gameRegistry.register(searchTheScripturesPlugin);
 }
 

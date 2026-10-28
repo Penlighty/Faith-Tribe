@@ -101,7 +101,13 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
     });
   };
 
-  const participatingPlayers = getParticipatingPlayers(safePlayers, game?.meta);
+  const hostRole = snapshot.config?.hostRole ?? (game.meta.hostCanPlay ? 'player' : 'overseer');
+  const participatingPlayers = getParticipatingPlayers(safePlayers, game?.meta, hostRole);
+
+  // Allow host to toggle between playing and room overseer view
+  const [hostViewMode, setHostViewMode] = useState<'player' | 'overseer'>(() => {
+    return hostRole === 'overseer' ? 'overseer' : 'player';
+  });
 
   const openScoreboardSheet = () => {
     triggerHaptic('selection');
@@ -144,7 +150,9 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
     });
   };
 
-  const ActiveComponent = isHost ? game.HostView : game.PlayerView;
+  const ActiveComponent = isHost
+    ? (hostViewMode === 'overseer' ? game.HostView : game.PlayerView)
+    : game.PlayerView;
 
   return (
     <div className="w-full min-h-screen flex flex-col justify-between select-none">
@@ -207,6 +215,7 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
           teams={safeTeams}
           dispatchIntent={dispatchIntent}
           openBottomSheet={openCustomBottomSheet}
+          onExit={() => setShowLeaveConfirm(true)}
         />
       </main>
 
@@ -219,6 +228,20 @@ export const InGameScreen: React.FC<InGameScreenProps> = ({ onExitGame }) => {
           <Icon name="help" size={14} />
           <span>Rules</span>
         </button>
+
+        {isHost && (
+          <button
+            onClick={() => {
+              triggerHaptic('selection');
+              setHostViewMode((prev) => (prev === 'overseer' ? 'player' : 'overseer'));
+            }}
+            className="h-9 px-3.5 rounded-full bg-[var(--surface-container-high)] text-xs font-bold text-[var(--primary-action)] hover:bg-[var(--surface-container)] flex items-center gap-1.5 transition-colors cursor-pointer border border-[var(--primary-action)]/40 shadow-sm"
+            title="Toggle between Player View and TV Overseer"
+          >
+            <Icon name={hostViewMode === 'overseer' ? 'gamepad' : 'host'} size={14} />
+            <span>{hostViewMode === 'overseer' ? 'Play on Device' : 'TV Overseer'}</span>
+          </button>
+        )}
 
         {isHost && (
           <button

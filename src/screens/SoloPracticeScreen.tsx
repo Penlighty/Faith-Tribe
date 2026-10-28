@@ -30,6 +30,8 @@ import { PassageItem } from '../games/tares-among-the-wheat/types';
 import { HotCoalCategory } from '../games/hot-coal/types';
 import { getPassageDifficulty } from '../games/tares-among-the-wheat/reducer';
 import { ShelfRushPlayerView } from '../games/shelf-rush/PlayerView';
+import { SearchTheScripturesPlayerView } from '../games/search-the-scriptures/PlayerView';
+import { recordSoloPracticeScore } from '../theme/gamifiedTokens';
 
 
 import { getFreshPool, getFreshBibleOrNotPool, markItemSeen, shuffle } from '../engine/services/randomizer';
@@ -81,10 +83,17 @@ export const SoloPracticeScreen: React.FC<SoloPracticeScreenProps> = ({ gameId, 
       {gameId === 'who-said' && <WhoSaidSoloPractice onBack={handleRequestExit} onDirectExit={onBack} endTrigger={intentionalEndTrigger} />}
       {gameId === 'testament-sort' && <TestamentSortSoloPractice onBack={handleRequestExit} onDirectExit={onBack} endTrigger={intentionalEndTrigger} />}
       {gameId === 'shelf-rush' && <ShelfRushSoloPractice onDirectExit={onBack} />}
+      {gameId === 'search-the-scriptures' && (
+        <SearchTheScripturesSoloPractice
+          onBack={handleRequestExit}
+          onDirectExit={onBack}
+          endTrigger={intentionalEndTrigger}
+        />
+      )}
       {gameId === 'tares-among-the-wheat' && <TaresSoloPractice onBack={handleRequestExit} onDirectExit={onBack} endTrigger={intentionalEndTrigger} />}
       {gameId === 'hot-coal' && <HotCoalSoloPractice onBack={handleRequestExit} onDirectExit={onBack} endTrigger={intentionalEndTrigger} />}
       {gameId === 'fake-a-proverb' && <FakeAProverbSoloPractice onBack={handleRequestExit} onDirectExit={onBack} endTrigger={intentionalEndTrigger} />}
-      {!['bible-or-not', 'four-signs', 'scribes-tiles', 'who-said', 'testament-sort', 'shelf-rush', 'tares-among-the-wheat', 'hot-coal', 'fake-a-proverb'].includes(gameId) && (
+      {!['bible-or-not', 'four-signs', 'scribes-tiles', 'who-said', 'testament-sort', 'shelf-rush', 'search-the-scriptures', 'tares-among-the-wheat', 'hot-coal', 'fake-a-proverb'].includes(gameId) && (
         <FakeAProverbSoloPractice onBack={handleRequestExit} onDirectExit={onBack} endTrigger={intentionalEndTrigger} />
       )}
 
@@ -1813,6 +1822,79 @@ const ShelfRushSoloPractice: React.FC<{ onDirectExit: () => void }> = ({ onDirec
   return (
     <div className="w-full">
       <ShelfRushPlayerView onExit={onDirectExit} />
+    </div>
+  );
+};
+
+// ==========================================
+// SEARCH THE SCRIPTURES SOLO PRACTICE
+// ==========================================
+const SearchTheScripturesSoloPractice: React.FC<{
+  onBack: () => void;
+  onDirectExit: () => void;
+  endTrigger?: number;
+}> = ({ onBack, onDirectExit, endTrigger }) => {
+  const [showSummary, setShowSummary] = useState(false);
+  const [score, setScore] = useState(0);
+
+  useEffect(() => {
+    if (endTrigger && endTrigger > 0) {
+      setShowSummary(true);
+    }
+  }, [endTrigger]);
+
+  const handleExit = () => {
+    if (score > 0) {
+      setShowSummary(true);
+    } else {
+      onDirectExit();
+    }
+  };
+
+  return (
+    <div className="w-full flex flex-col gap-3">
+      {/* Top Header Bar with only a back arrow */}
+      <div className="flex items-center justify-between pb-1">
+        <button
+          onClick={handleExit}
+          className="w-10 h-10 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[var(--on-container)] flex items-center justify-center transition-colors cursor-pointer border border-[var(--border-tint)]/60 shadow-sm"
+          aria-label="Back"
+          title="Back"
+        >
+          <Icon name="arrow-left" size={20} />
+        </button>
+
+        <span className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
+          Search the Scriptures
+        </span>
+
+        <div className="px-3.5 py-1.5 rounded-full text-xs font-mono font-bold bg-[var(--surface-container)] text-[var(--primary-action)] border border-[var(--border-tint)]/60 shadow-xs">
+          {score} pts
+        </div>
+      </div>
+
+      <SearchTheScripturesPlayerView
+        onScoreAwarded={(points) => {
+          setScore((s) => s + points);
+          recordSoloPracticeScore('search-the-scriptures', points);
+        }}
+        onExit={handleExit}
+      />
+
+      <PracticeSummaryModal
+        isOpen={showSummary}
+        title="Practice Complete"
+        subtitle="You searched the scriptures and uncovered sacred truth!"
+        icon="🔍"
+        score={score}
+        bestStreak={0}
+        onRestart={() => {
+          setShowSummary(false);
+          setScore(0);
+        }}
+        onExit={onDirectExit}
+        onClose={() => setShowSummary(false)}
+      />
     </div>
   );
 };

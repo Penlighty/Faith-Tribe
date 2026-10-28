@@ -7,6 +7,7 @@ import { GamifiedStatCards, GamifiedWeekStreak } from './GamifiedStatCards';
 import { soundManager } from '../../engine/services/audio';
 import { useTheme } from '../../theme/ThemeContext';
 import { fireConfettiBurst } from '../ui/StreakCelebration';
+import { BookOpen, Ban, Shuffle, RotateCcw, Delete } from 'lucide-react';
 
 // Content imports from our rich pools
 import proverbsData from '../../games/fake-a-proverb/content.json';
@@ -34,6 +35,33 @@ interface QuestionItem {
   questionType?: ChronicleQuestionType;
   fourSignsClues?: string[];
   wordLength?: number;
+}
+
+export interface ScribeTileItem {
+  id: string;
+  letter: string;
+}
+
+function generateScribesTilesRack(answer: string, seed: number): ScribeTileItem[] {
+  const cleanAnswer = answer.toUpperCase().replace(/[^A-Z]/g, '');
+  const answerLetters = cleanAnswer.split('');
+  
+  // Pick 2-3 plausible decoy letters that are not in the answer or complementary
+  const pool = ['A', 'E', 'I', 'O', 'U', 'R', 'S', 'T', 'L', 'N', 'D', 'M', 'P', 'B', 'H', 'Y'];
+  const decoyCount = cleanAnswer.length <= 5 ? 3 : cleanAnswer.length <= 7 ? 2 : 1;
+  const decoys: string[] = [];
+  for (let i = 0; i < decoyCount; i++) {
+    const char = pool[(seed * 7 + i * 11 + cleanAnswer.length) % pool.length];
+    decoys.push(char);
+  }
+
+  const all = [...answerLetters, ...decoys].map((letter, idx) => ({
+    id: `tile_${idx}_${letter}_${seed}`,
+    letter,
+  }));
+
+  // Shuffle letters
+  return all.sort(() => 0.5 - Math.random());
 }
 
 export const GamifiedLessonScreen: React.FC<GamifiedLessonScreenProps> = ({
@@ -159,8 +187,81 @@ export const GamifiedLessonScreen: React.FC<GamifiedLessonScreenProps> = ({
   const [isCompleted, setIsCompleted] = useState(false);
   const startTimeRef = useRef(Date.now());
 
+  // Interactive Scribe's Tiles Rack & Placed Slots State
+  const [scribesPlaced, setScribesPlaced] = useState<(ScribeTileItem | null)[]>([]);
+  const [scribesRack, setScribesRack] = useState<ScribeTileItem[]>([]);
+
   const currentQ = questions[currentIdx];
   const progressRatio = currentIdx / questions.length;
+
+  // Initialize or reset Scribe's Tiles state when question changes
+  useEffect(() => {
+    if (currentQ?.questionType === 'scribes-tiles') {
+      const clean = currentQ.answer.toUpperCase().replace(/[^A-Z]/g, '');
+      const rack = generateScribesTilesRack(clean, currentIdx);
+      setScribesRack(rack);
+      setScribesPlaced(new Array(clean.length).fill(null));
+      setSelectedOption(null);
+    } else {
+      setScribesPlaced([]);
+      setScribesRack([]);
+    }
+  }, [currentIdx, currentQ]);
+
+  const handlePlaceScribesTile = (tile: ScribeTileItem) => {
+    if (feedbackState !== 'idle') return;
+    const emptyIdx = scribesPlaced.findIndex((s) => s === null);
+    if (emptyIdx === -1) return;
+    triggerHaptic('selection');
+    const newPlaced = [...scribesPlaced];
+    newPlaced[emptyIdx] = tile;
+    setScribesPlaced(newPlaced);
+    setScribesRack((prev) => prev.filter((t) => t.id !== tile.id));
+
+    const formed = newPlaced.map((s) => s?.letter || '').join('');
+    if (newPlaced.every((s) => s !== null)) {
+      setSelectedOption(formed);
+    } else {
+      setSelectedOption(null);
+    }
+  };
+
+  const handleRemoveScribesTile = (slotIdx: number) => {
+    if (feedbackState !== 'idle') return;
+    const tile = scribesPlaced[slotIdx];
+    if (!tile) return;
+    triggerHaptic('light');
+    const newPlaced = [...scribesPlaced];
+    newPlaced[slotIdx] = null;
+    setScribesPlaced(newPlaced);
+    setScribesRack((prev) => [...prev, tile]);
+    setSelectedOption(null);
+  };
+
+  const handleScribesBackspace = () => {
+    if (feedbackState !== 'idle') return;
+    for (let i = scribesPlaced.length - 1; i >= 0; i--) {
+      if (scribesPlaced[i] !== null) {
+        handleRemoveScribesTile(i);
+        break;
+      }
+    }
+  };
+
+  const handleScribesClear = () => {
+    if (feedbackState !== 'idle') return;
+    triggerHaptic('medium');
+    const tilesToReturn = scribesPlaced.filter((s): s is ScribeTileItem => s !== null);
+    setScribesRack((prev) => [...prev, ...tilesToReturn]);
+    setScribesPlaced(new Array(scribesPlaced.length).fill(null));
+    setSelectedOption(null);
+  };
+
+  const handleScribesShuffle = () => {
+    if (feedbackState !== 'idle') return;
+    triggerHaptic('light');
+    setScribesRack((prev) => [...prev].sort(() => 0.5 - Math.random()));
+  };
 
   const handleSelectOption = (opt: string) => {
     if (feedbackState !== 'idle') return;
@@ -171,7 +272,12 @@ export const GamifiedLessonScreen: React.FC<GamifiedLessonScreenProps> = ({
   const handleCheckAnswer = () => {
     if (!selectedOption || feedbackState !== 'idle') return;
 
-    const isMatch = selectedOption.trim().toUpperCase() === currentQ.answer.trim().toUpperCase();
+    const targetAnswer =
+      currentQ.questionType === 'scribes-tiles'
+        ? currentQ.answer.replace(/[^A-Z]/g, '').trim().toUpperCase()
+        : currentQ.answer.trim().toUpperCase();
+
+    const isMatch = selectedOption.trim().toUpperCase() === targetAnswer;
     if (isMatch) {
       soundManager.playCorrect();
       triggerHaptic('medium');
@@ -245,9 +351,9 @@ export const GamifiedLessonScreen: React.FC<GamifiedLessonScreenProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-white dark:bg-zinc-950 flex flex-col justify-between p-4 sm:p-6 select-none overflow-hidden animate-fadeIn">
-      {/* Top Bar with Glossy Progress Bar & Close X */}
-      <div className="w-full max-w-xl mx-auto pt-2">
+    <div className="fixed inset-0 z-50 bg-white dark:bg-zinc-950 flex flex-col select-none animate-fadeIn">
+      {/* Top Bar – fixed height, never scrolls */}
+      <div className="w-full max-w-xl mx-auto px-4 pt-3 pb-1 shrink-0">
         <GamifiedProgressBar
           progress={progressRatio}
           onClose={onClose}
@@ -256,198 +362,190 @@ export const GamifiedLessonScreen: React.FC<GamifiedLessonScreenProps> = ({
         />
       </div>
 
-      {/* Main Task Area: One job per screen */}
-      <div className="flex-1 flex flex-col justify-center max-w-xl mx-auto w-full gap-5 my-auto">
-        {/* Story & Scripture Header for 365 Chronicle */}
-        {chronicleDay ? (
-          <div className="flex flex-col items-start gap-1 pb-1 border-b border-[var(--c-border)]">
-            <div className="flex items-center justify-between w-full">
-              <div className="flex items-center gap-2">
-                <span
-                  className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full text-white"
-                  style={{ backgroundColor: chronicleDay.actColor }}
-                >
-                  Day {chronicleDay.dayNumber} • {chronicleDay.actTitle}
-                </span>
-                <span className="text-xs font-bold text-zinc-500 font-mono">
-                  {chronicleDay.scriptureRef}
-                </span>
-              </div>
-              <span className="text-xs font-black px-2.5 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950/60 text-[var(--c-orange)] font-mono border border-orange-200 dark:border-orange-900/50">
-                Question {currentIdx + 1} of {questions.length}
+      {/* ── Scrollable body with options pushed down above the Check button ── */}
+      <div className="flex-1 overflow-y-auto overscroll-contain flex flex-col">
+        <div className="max-w-xl mx-auto px-4 py-3 flex-1 flex flex-col justify-between w-full">
+
+          {/* Top Section: Header, Prompt, Clues, Mascot Quote with breathing space */}
+          <div className="flex flex-col gap-3.5 sm:gap-4">
+            {/* Minimal meta line: scripture ref + question number */}
+            <div className="flex items-center justify-between text-zinc-400 text-xs font-bold pt-1">
+              <span className="font-mono text-zinc-500">
+                {chronicleDay ? chronicleDay.scriptureRef : currentQ.category}
               </span>
-            </div>
-            <h3 className="text-base font-black text-[var(--c-text)]">
-              {chronicleDay.storyTitle}
-            </h3>
-          </div>
-        ) : (
-          <div className="flex items-center justify-end w-full pb-1 border-b border-[var(--c-border)]">
-            <span className="text-xs font-black px-2.5 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950/60 text-[var(--c-orange)] font-mono border border-orange-200 dark:border-orange-900/50">
-              Question {currentIdx + 1} of {questions.length}
-            </span>
-          </div>
-        )}
-
-        {/* Game Mode Pill Badge */}
-        <div className="flex items-center gap-2 mb-1">
-          {currentQ.questionType === 'who-said' && (
-            <span className="px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-800 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-xs">
-              <span>🎙️</span>
-              <span>Who Said That?</span>
-            </span>
-          )}
-          {currentQ.questionType === 'bible-or-not' && (
-            <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-xs">
-              <span>📖</span>
-              <span>Bible or Not?</span>
-            </span>
-          )}
-          {currentQ.questionType === 'four-signs' && (
-            <span className="px-2.5 py-0.5 rounded-full bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-300 dark:border-sky-800 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-xs">
-              <span>🔍</span>
-              <span>Four Signs</span>
-            </span>
-          )}
-          {currentQ.questionType === 'scribes-tiles' && (
-            <span className="px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-xs">
-              <span>📜</span>
-              <span>Scribe's Tiles</span>
-            </span>
-          )}
-          {(!currentQ.questionType || currentQ.questionType === 'trivia') && (
-            <span className="px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-800 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-xs">
-              <span>💡</span>
-              <span>Scripture Understanding</span>
-            </span>
-          )}
-          <span className="text-[11px] font-bold text-zinc-400">
-            • {currentQ.category}
-          </span>
-        </div>
-
-        {/* Instruction Headline */}
-        <h2 className="text-xl sm:text-2xl font-black text-[var(--c-text)] tracking-tight text-left leading-snug">
-          {currentQ.prompt}
-        </h2>
-
-        {/* Four Signs Pictogram Grid (if applicable) */}
-        {currentQ.fourSignsClues && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 my-1">
-            {currentQ.fourSignsClues.map((clue, idx) => (
-              <FourSignClueCard key={idx} clue={clue} index={idx} revealed={true} size="sm" />
-            ))}
-          </div>
-        )}
-
-        {/* Scribe's Tiles Letter Boxes (if applicable) */}
-        {currentQ.questionType === 'scribes-tiles' && currentQ.wordLength && (
-          <div className="flex items-center gap-1.5 my-1">
-            <span className="text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 mr-1">
-              Length:
-            </span>
-            {Array.from({ length: currentQ.wordLength }).map((_, i) => (
-              <div
-                key={i}
-                className="w-7 h-8 rounded-lg border-2 border-dashed border-amber-400 dark:border-amber-600 bg-amber-50 dark:bg-amber-950/40 flex items-center justify-center font-mono font-black text-xs text-amber-700 dark:text-amber-300 shadow-xs"
-              >
-                _
-              </div>
-            ))}
-            <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 ml-1.5">
-              ({currentQ.wordLength} letters)
-            </span>
-          </div>
-        )}
-
-        {/* Biblical Character + Speech Bubble Row */}
-        <div className="flex items-start gap-3 sm:gap-4 my-1">
-          <div className="shrink-0">
-            <GamifiedMascot
-              character={currentQ.characterId}
-              pose={feedbackState === 'correct' ? 'cheer' : feedbackState === 'incorrect' ? 'sad' : selectedOption ? 'thinking' : 'idle'}
-              size={90}
-            />
-          </div>
-
-          <div className="relative bg-white dark:bg-zinc-900 border-2 border-[var(--c-border)] p-4 rounded-2xl shadow-sm max-w-md">
-            {/* Left-pointing bubble tail */}
-            <div className="absolute top-6 -left-2.5 w-0 h-0 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent border-r-[10px] border-r-white dark:border-r-zinc-900" />
-            
-            {/* Character Attribution Header */}
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <span className="text-xs font-black uppercase tracking-wider text-[var(--c-primary)]">
-                {BIBLICAL_CHARACTERS[currentQ.characterId].name}
-              </span>
-              <span className="text-[11px] font-bold text-[var(--c-text-2)]">
-                • {BIBLICAL_CHARACTERS[currentQ.characterId].title}
+              <span className="font-mono font-black text-[var(--c-orange)] text-[11px] bg-orange-100 dark:bg-orange-950/60 px-2 py-0.5 rounded-full border border-orange-200 dark:border-orange-900/50">
+                {currentIdx + 1} / {questions.length}
               </span>
             </div>
 
-            <p className="font-serif italic font-bold text-base sm:text-lg text-[var(--c-text)] leading-snug">
-              {currentQ.speechText}
-            </p>
+            {/* The Question Prompt - Main Focus: Bigger, Bolder & Highly Readable */}
+            <h2 className="text-2xl sm:text-3xl font-black text-[var(--c-text)] tracking-tight leading-tight sm:leading-snug py-1">
+              {currentQ.prompt}
+            </h2>
+
+            {/* Four Signs Pictogram Grid */}
+            {currentQ.fourSignsClues && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                {currentQ.fourSignsClues.map((clue, idx) => (
+                  <FourSignClueCard key={idx} clue={clue} index={idx} revealed={true} size="sm" />
+                ))}
+              </div>
+            )}
+
+            {/* Scribe's Tiles Answer Slots Tray (Interactive) */}
+            {currentQ.questionType === 'scribes-tiles' && (
+              <div className="flex flex-col items-center gap-2 pt-2">
+                <div className="flex flex-wrap items-center justify-center gap-2 p-3 sm:p-4 rounded-2xl bg-amber-500/10 dark:bg-amber-950/30 border-2 border-amber-500/30 w-full shadow-inner">
+                  {scribesPlaced.map((slot, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => slot && handleRemoveScribesTile(idx)}
+                      disabled={feedbackState !== 'idle' || !slot}
+                      aria-label={slot ? `Remove letter ${slot.letter}` : `Empty slot ${idx + 1}`}
+                      className={`w-10 h-14 sm:w-12 sm:h-16 min-w-[40px] min-h-[56px] rounded-xl flex items-center justify-center font-black text-xl sm:text-2xl transition-all cursor-pointer select-none ${
+                        slot
+                          ? 'bg-gradient-to-b from-amber-200 to-amber-400 dark:from-amber-600 dark:to-amber-800 text-amber-950 dark:text-white shadow-md border-b-[3px] border-amber-600 dark:border-amber-950 active:scale-95'
+                          : 'bg-white dark:bg-zinc-900 border-2 border-dashed border-amber-300 dark:border-amber-700 text-zinc-400 opacity-60'
+                      }`}
+                    >
+                      {slot ? slot.letter : <span className="opacity-0 select-none">_</span>}
+                    </button>
+                  ))}
+                </div>
+                <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+                  {feedbackState !== 'idle'
+                    ? 'Word evaluated'
+                    : 'Tap a placed letter to return it to your rack'}
+                </span>
+              </div>
+            )}
+
+            {/* Clue/Quote Bubble with Mascot – clean, breathing space */}
+            {currentQ.speechText && (
+              <div className="flex items-center gap-3 pt-1">
+                <div className="shrink-0">
+                  <GamifiedMascot
+                    character={currentQ.characterId}
+                    pose={feedbackState === 'correct' ? 'cheer' : feedbackState === 'incorrect' ? 'sad' : selectedOption ? 'thinking' : 'idle'}
+                    size={56}
+                  />
+                </div>
+
+                <div className="relative bg-white dark:bg-zinc-900 border-2 border-[var(--c-border)] px-3.5 py-2.5 rounded-2xl shadow-xs flex-1 min-w-0">
+                  <div className="absolute top-1/2 -left-2 -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[8px] border-r-white dark:border-r-zinc-900" />
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[var(--c-primary)] block mb-0.5">
+                    {BIBLICAL_CHARACTERS[currentQ.characterId].name}
+                  </span>
+                  <p className="font-serif italic font-bold text-sm sm:text-base text-[var(--c-text)] leading-snug">
+                    {currentQ.speechText}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
+
+          {/* Answer Area anchored cleanly just above the Check button */}
+          <div className="mt-auto pt-6 pb-2 w-full">
+            {currentQ.questionType === 'scribes-tiles' ? (
+              <div className="flex flex-col gap-3">
+                {/* Shuffle, Clear, Backspace */}
+                <div className="flex items-center justify-center gap-2.5">
+                  <button
+                    type="button"
+                    onClick={handleScribesShuffle}
+                    disabled={feedbackState !== 'idle'}
+                    className="px-3.5 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 text-xs font-bold flex items-center gap-1.5 border border-zinc-200 dark:border-zinc-700 shadow-xs active:scale-95 cursor-pointer disabled:opacity-40"
+                  >
+                    <Shuffle size={13} />
+                    <span>Shuffle</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleScribesClear}
+                    disabled={feedbackState !== 'idle' || !scribesPlaced.some((s) => s !== null)}
+                    className="px-3.5 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 text-xs font-bold flex items-center gap-1.5 border border-zinc-200 dark:border-zinc-700 shadow-xs active:scale-95 cursor-pointer disabled:opacity-40"
+                  >
+                    <RotateCcw size={13} />
+                    <span>Clear</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleScribesBackspace}
+                    disabled={feedbackState !== 'idle' || !scribesPlaced.some((s) => s !== null)}
+                    className="px-3.5 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 text-xs font-bold flex items-center gap-1.5 border border-zinc-200 dark:border-zinc-700 shadow-xs active:scale-95 cursor-pointer disabled:opacity-40"
+                  >
+                    <Delete size={13} />
+                    <span>Backspace</span>
+                  </button>
+                </div>
+
+                {/* Letter Tile Rack */}
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 text-center">
+                    Your Tile Rack
+                  </span>
+                  <div className="flex flex-wrap items-center justify-center gap-2 p-3 sm:p-4 rounded-2xl bg-gradient-to-b from-amber-50/50 to-amber-100/50 dark:from-zinc-900 dark:to-zinc-900 border border-amber-200/80 dark:border-amber-900/40 shadow-xs min-h-[64px]">
+                    {scribesRack.map((tile) => (
+                      <button
+                        key={tile.id}
+                        type="button"
+                        onClick={() => handlePlaceScribesTile(tile)}
+                        disabled={feedbackState !== 'idle' || !scribesPlaced.some((s) => s === null)}
+                        className="w-10 h-14 sm:w-12 sm:h-16 min-w-[40px] min-h-[56px] rounded-xl bg-gradient-to-b from-amber-100 to-amber-200 dark:from-amber-700 dark:to-amber-900 text-amber-950 dark:text-amber-100 font-black text-xl sm:text-2xl shadow-md border-b-[3px] border-amber-400 dark:border-amber-950 active:scale-95 hover:brightness-105 transition-all cursor-pointer flex items-center justify-center disabled:opacity-40 select-none"
+                      >
+                        {tile.letter}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : currentQ.questionType === 'bible-or-not' ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {currentQ.options.map((opt) => {
+                  const isSelected = selectedOption === opt;
+                  const isBible = opt.toLowerCase().includes('in the bible') && !opt.toLowerCase().includes('not');
+                  let tileClass = 'p-4 rounded-2xl font-black text-base transition-all border-2 cursor-pointer flex items-center justify-center gap-2 shadow-sm ';
+                  if (isSelected) {
+                    tileClass += isBible
+                      ? 'bg-emerald-500 text-white border-emerald-600 shadow-[0_4px_0_#047857] -translate-y-0.5'
+                      : 'bg-rose-500 text-white border-rose-600 shadow-[0_4px_0_#BE123C] -translate-y-0.5';
+                  } else {
+                    tileClass += 'bg-white dark:bg-zinc-900 border-[var(--c-border)] text-[var(--c-text)] shadow-[0_4px_0_var(--c-border)] hover:bg-[var(--c-surface-muted)] active:translate-y-[2px] active:shadow-none';
+                  }
+                  return (
+                    <button key={opt} type="button" onClick={() => handleSelectOption(opt)} disabled={feedbackState !== 'idle'} className={tileClass}>
+                      {isBible ? <BookOpen size={20} className="shrink-0" /> : <Ban size={20} className="shrink-0" />}
+                      <span>{opt}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {currentQ.options.map((opt) => {
+                  const isSelected = selectedOption === opt;
+                  let tileClass = 'p-3.5 rounded-2xl font-bold text-[15px] sm:text-base leading-snug transition-all border-2 cursor-pointer text-left ';
+                  if (isSelected) {
+                    tileClass += 'bg-[var(--c-blue-tint)] border-[var(--c-blue)] text-[var(--c-blue)] shadow-[0_4px_0_var(--c-blue-lip)] -translate-y-0.5';
+                  } else {
+                    tileClass += 'bg-white dark:bg-zinc-900 border-[var(--c-border)] text-[var(--c-text)] shadow-[0_4px_0_var(--c-border)] hover:bg-[var(--c-surface-muted)] active:translate-y-[2px] active:shadow-none';
+                  }
+                  return (
+                    <button key={opt} type="button" onClick={() => handleSelectOption(opt)} disabled={feedbackState !== 'idle'} className={tileClass}>
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
         </div>
-
-        {/* Answer Choice Tiles */}
-        {currentQ.questionType === 'bible-or-not' ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mt-2">
-            {currentQ.options.map((opt) => {
-              const isSelected = selectedOption === opt;
-              const isBible = opt.toLowerCase().includes('in the bible') && !opt.toLowerCase().includes('not');
-              let tileClass = 'p-5 rounded-2xl font-black text-lg transition-all border-2 cursor-pointer flex items-center justify-center gap-2.5 shadow-sm ';
-              if (isSelected) {
-                tileClass += isBible
-                  ? 'bg-emerald-500 text-white border-emerald-600 shadow-[0_5px_0_#047857] translate-y-[-2px]'
-                  : 'bg-rose-500 text-white border-rose-600 shadow-[0_5px_0_#BE123C] translate-y-[-2px]';
-              } else {
-                tileClass += 'bg-white dark:bg-zinc-900 border-[var(--c-border)] text-[var(--c-text)] shadow-[0_4px_0_var(--c-border)] hover:bg-[var(--c-surface-muted)] active:translate-y-[2px] active:shadow-none';
-              }
-
-              return (
-                <button
-                  key={opt}
-                  type="button"
-                  onClick={() => handleSelectOption(opt)}
-                  disabled={feedbackState !== 'idle'}
-                  className={tileClass}
-                >
-                  <span className="text-2xl">{isBible ? '📖' : '🚫'}</span>
-                  <span>{opt}</span>
-                </button>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
-            {currentQ.options.map((opt) => {
-              const isSelected = selectedOption === opt;
-              let tileClass = 'p-4 rounded-2xl font-bold text-base transition-all border-2 cursor-pointer text-left ';
-              if (isSelected) {
-                tileClass += 'bg-[var(--c-blue-tint)] border-[var(--c-blue)] text-[var(--c-blue)] shadow-[0_4px_0_var(--c-blue-lip)] translate-y-[-2px]';
-              } else {
-                tileClass += 'bg-white dark:bg-zinc-900 border-[var(--c-border)] text-[var(--c-text)] shadow-[0_4px_0_var(--c-border)] hover:bg-[var(--c-surface-muted)] active:translate-y-[2px] active:shadow-none';
-              }
-
-              return (
-                <button
-                  key={opt}
-                  type="button"
-                  onClick={() => handleSelectOption(opt)}
-                  disabled={feedbackState !== 'idle'}
-                  className={tileClass}
-                >
-                  {opt}
-                </button>
-              );
-            })}
-          </div>
-        )}
       </div>
 
-      {/* Pinned Bottom CTA (Replaced by feedback sheet upon check) */}
-      <div className="w-full max-w-xl mx-auto pb-4 pt-2">
+      {/* Pinned bottom CTA – never scrolls */}
+      <div className="w-full max-w-xl mx-auto px-4 pb-5 pt-2 shrink-0">
         <GamifiedButton
           variant="green"
           disabled={!selectedOption || feedbackState !== 'idle'}

@@ -47,6 +47,7 @@ export interface SessionConfig {
   hotspotInfo?: HotspotInfo;
   tribeId?: string;
   tribeName?: string;
+  hostRole?: 'player' | 'overseer'; // 'player': Host actively plays on device | 'overseer': Host oversees on big screen / TV
 }
 
 
@@ -108,8 +109,22 @@ export interface GameMeta {
   hostCanPlay?: boolean;
 }
 
-export function getParticipatingPlayers(players: Player[], gameMeta?: GameMeta | null): Player[] {
+export function getParticipatingPlayers(
+  players: Player[],
+  gameMeta?: GameMeta | null,
+  hostRole?: 'player' | 'overseer'
+): Player[] {
   const safePlayers = Array.isArray(players) ? players : [];
+  // Explicit overseer choice: host does not compete unless solo testing
+  if (hostRole === 'overseer') {
+    const nonHost = safePlayers.filter((p) => !p.isHost);
+    return nonHost.length > 0 ? nonHost : safePlayers;
+  }
+  // Explicit player choice: host plays alongside everyone
+  if (hostRole === 'player') {
+    return safePlayers;
+  }
+  // Fallback to game metadata default
   if (gameMeta?.hostCanPlay) return safePlayers;
   const nonHost = safePlayers.filter((p) => !p.isHost);
   return nonHost.length > 0 ? nonHost : safePlayers;
@@ -124,6 +139,7 @@ export interface GameViewProps<S extends BaseGameState = BaseGameState> {
   teams: Team[];
   dispatchIntent: (type: string, payload?: any) => void;
   openBottomSheet: (content: { title: string; component: React.ReactNode }) => void;
+  onExit?: () => void;
 }
 
 export interface GamePlugin<

@@ -1221,7 +1221,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return;
     }
 
-    const participating = getParticipatingPlayers(players, game.meta);
+    const participating = getParticipatingPlayers(players, game.meta, config.hostRole);
     const initialGameState = game.setup(config, participating, teams, game.content);
     const firstPhase = game.phases[0];
     const durationSec = firstPhase.durationSeconds;

@@ -43,8 +43,9 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
 
   const selectedGameId = safeConfig.selectedGameId || 'fake-a-proverb';
   const game = gameRegistry.get(selectedGameId) || gameRegistry.get('fake-a-proverb');
-  const hostCanPlay = Boolean(game?.meta?.hostCanPlay);
-  const participatingPlayers = getParticipatingPlayers(safePlayers, game?.meta);
+  const hostRole = safeConfig.hostRole ?? (game?.meta?.hostCanPlay ? 'player' : 'overseer');
+  const hostIsParticipating = hostRole === 'player';
+  const participatingPlayers = getParticipatingPlayers(safePlayers, game?.meta, hostRole);
   const minPlayers = game?.meta?.minPlayers || 4;
   const canStart = participatingPlayers.length >= 1; // Allows testing with 1+
 
@@ -324,6 +325,64 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
             </Card>
           )}
 
+          {/* Host Participation Option (Host only): Play along or Oversee */}
+          {isHost && (
+            <Card variant="tonal" padding="md" className="flex flex-col gap-2.5 border border-[var(--border-tint)]">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)] flex items-center gap-1.5">
+                  <Icon name="user" size={14} /> Host Participation
+                </span>
+                <span className="text-[11px] font-mono font-bold text-[var(--primary-action)]">
+                  {hostIsParticipating ? 'Playing as Disciple' : 'Overseer / TV Screen'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('selection');
+                    updateConfig({ hostRole: 'player' });
+                  }}
+                  className={`p-2.5 rounded-xl border text-left transition-all flex flex-col gap-1 cursor-pointer ${
+                    hostIsParticipating
+                      ? 'bg-[var(--primary-action)] text-[var(--primary-action-text)] border-[var(--primary-action)] shadow-sm'
+                      : 'bg-[var(--surface-container)] text-[var(--on-container)] border-[var(--border-tint)] hover:border-[var(--primary-action)]/50'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <Icon name="gamepad" size={14} />
+                    <span className="text-xs font-bold">Participate & Play</span>
+                  </div>
+                  <span className={`text-[10px] leading-tight ${hostIsParticipating ? 'opacity-90' : 'text-[var(--on-container-variant)]'}`}>
+                    Play alongside disciples & earn points
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('selection');
+                    updateConfig({ hostRole: 'overseer' });
+                  }}
+                  className={`p-2.5 rounded-xl border text-left transition-all flex flex-col gap-1 cursor-pointer ${
+                    !hostIsParticipating
+                      ? 'bg-[var(--primary-action)] text-[var(--primary-action-text)] border-[var(--primary-action)] shadow-sm'
+                      : 'bg-[var(--surface-container)] text-[var(--on-container)] border-[var(--border-tint)] hover:border-[var(--primary-action)]/50'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <Icon name="host" size={14} />
+                    <span className="text-xs font-bold">Oversee Only</span>
+                  </div>
+                  <span className={`text-[10px] leading-tight ${!hostIsParticipating ? 'opacity-90' : 'text-[var(--on-container-variant)]'}`}>
+                    Room facilitator / TV screen spectator
+                  </span>
+                </button>
+              </div>
+            </Card>
+          )}
+
           {/* Play Mode & Teams Controls (Host only) */}
           {isHost && (
             <Card variant="tonal" padding="md" className="flex flex-col gap-3">
@@ -387,7 +446,7 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
                 <span className="text-sm font-bold uppercase tracking-wider text-[var(--on-container)] flex items-center gap-1.5">
                   <Icon name="team" size={16} className="text-[var(--primary-action)]" />{' '}
-                  {hostCanPlay
+                  {hostIsParticipating
                     ? `Disciples Gathered (${safePlayers.length})`
                     : `Disciples Competing (${participatingPlayers.length})`}
                 </span>
@@ -398,7 +457,7 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
                   <span>{isOnsite ? 'Local P2P Active' : 'Cloud Active'}</span>
                 </span>
                 <span className="text-xs font-mono font-bold text-[var(--on-container-variant)] px-2.5 py-1 rounded-full bg-[var(--surface-card)]">
-                  Min {minPlayers} {hostCanPlay ? 'Players' : 'Disciples'}
+                  Min {minPlayers} {hostIsParticipating ? 'Players' : 'Disciples'}
                 </span>
               </div>
             </div>
@@ -425,16 +484,16 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({ onLeave }) => {
                           {p.isHost && (
                             <span
                               className={`px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider ${
-                                hostCanPlay
+                                hostIsParticipating
                                   ? 'bg-[var(--primary-action)] text-[var(--primary-action-text)]'
                                   : 'bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30'
                               }`}
                             >
-                              {hostCanPlay ? 'Host • Player' : 'Host • Facilitator'}
+                              {hostIsParticipating ? 'Host • Playing' : 'Host • Overseer'}
                             </span>
                           )}
                         </div>
-                        {p.isHost && !hostCanPlay && (
+                        {p.isHost && !hostIsParticipating && (
                           <span className="text-[10px] text-[var(--on-container-variant)] font-medium italic">
                             Room Facilitator • TV Screen
                           </span>
