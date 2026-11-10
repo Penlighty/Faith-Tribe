@@ -26,7 +26,7 @@ export const PALETTE_PRESETS: Record<string, { light: TonalPalette; dark: TonalP
   lavender: {
     light: {
       seed: '#E9E5F4',
-      bgTint: '#F6F4FB',
+      bgTint: '#F8F9FA',
       surfaceContainer: '#ECE8F5',
       surfaceContainerHigh: '#E1DBF0',
       surfaceCard: '#FFFFFF',
@@ -61,7 +61,7 @@ export const PALETTE_PRESETS: Record<string, { light: TonalPalette; dark: TonalP
   butter: {
     light: {
       seed: '#EDE58C',
-      bgTint: '#FBF9EA',
+      bgTint: '#F8F9FA',
       surfaceContainer: '#F5F0B8',
       surfaceContainerHigh: '#EFE79F',
       surfaceCard: '#FFFFFF',
@@ -96,7 +96,7 @@ export const PALETTE_PRESETS: Record<string, { light: TonalPalette; dark: TonalP
   mint: {
     light: {
       seed: '#CFEFD2',
-      bgTint: '#F2FAF3',
+      bgTint: '#F8F9FA',
       surfaceContainer: '#DCF5DF',
       surfaceContainerHigh: '#C9ECCF',
       surfaceCard: '#FFFFFF',
@@ -131,7 +131,7 @@ export const PALETTE_PRESETS: Record<string, { light: TonalPalette; dark: TonalP
   peach: {
     light: {
       seed: '#FCE3C8',
-      bgTint: '#FCF7F2',
+      bgTint: '#F8F9FA',
       surfaceContainer: '#F8E9DA',
       surfaceContainerHigh: '#F3DCB7',
       surfaceCard: '#FFFFFF',
@@ -166,7 +166,7 @@ export const PALETTE_PRESETS: Record<string, { light: TonalPalette; dark: TonalP
   blush: {
     light: {
       seed: '#F9D6DB',
-      bgTint: '#FDF5F6',
+      bgTint: '#F8F9FA',
       surfaceContainer: '#F9D6DB',
       surfaceContainerHigh: '#F4CFD5',
       surfaceCard: '#FFFFFF',
@@ -202,7 +202,7 @@ export const PALETTE_PRESETS: Record<string, { light: TonalPalette; dark: TonalP
 
     light: {
       seed: '#E8D2E8',
-      bgTint: '#FAF7FA',
+      bgTint: '#F8F9FA',
       surfaceContainer: '#E8D2E8',
       surfaceContainerHigh: '#DEBEDE',
       surfaceCard: '#FFFFFF',
@@ -237,7 +237,7 @@ export const PALETTE_PRESETS: Record<string, { light: TonalPalette; dark: TonalP
   cyan: {
     light: {
       seed: '#CFFAFE',
-      bgTint: '#F0FDFA',
+      bgTint: '#F8F9FA',
       surfaceContainer: '#CFFAFE',
       surfaceContainerHigh: '#BAE6FD',
       surfaceCard: '#FFFFFF',

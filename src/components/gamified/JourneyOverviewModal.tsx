@@ -171,11 +171,10 @@ export const JourneyOverviewModal: React.FC<JourneyOverviewModalProps> = ({
               triggerHaptic('selection');
               setActiveFilter('all');
             }}
-            className={`px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
-              activeFilter === 'all'
+            className={`px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${activeFilter === 'all'
                 ? 'bg-[var(--c-blue)] text-white shadow-xs'
                 : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200'
-            }`}
+              }`}
           >
             All 365 Days
           </button>
@@ -185,11 +184,10 @@ export const JourneyOverviewModal: React.FC<JourneyOverviewModalProps> = ({
               triggerHaptic('selection');
               setActiveFilter('completed');
             }}
-            className={`px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
-              activeFilter === 'completed'
+            className={`px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${activeFilter === 'completed'
                 ? 'bg-emerald-500 text-white shadow-xs'
                 : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200'
-            }`}
+              }`}
           >
             Completed ({completedCount})
           </button>
@@ -199,11 +197,10 @@ export const JourneyOverviewModal: React.FC<JourneyOverviewModalProps> = ({
               triggerHaptic('selection');
               setActiveFilter('missed');
             }}
-            className={`px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
-              activeFilter === 'missed'
+            className={`px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${activeFilter === 'missed'
                 ? 'bg-amber-500 text-white shadow-xs'
                 : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200'
-            }`}
+              }`}
           >
             Catch Up ({missedCount})
           </button>
@@ -213,11 +210,10 @@ export const JourneyOverviewModal: React.FC<JourneyOverviewModalProps> = ({
               triggerHaptic('selection');
               setActiveFilter('upcoming');
             }}
-            className={`px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
-              activeFilter === 'upcoming'
+            className={`px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${activeFilter === 'upcoming'
                 ? 'bg-zinc-600 text-white shadow-xs'
                 : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200'
-            }`}
+              }`}
           >
             Upcoming (Locked)
           </button>
@@ -309,15 +305,14 @@ export const JourneyOverviewModal: React.FC<JourneyOverviewModalProps> = ({
                               triggerHaptic('heavy');
                             }
                           }}
-                          className={`p-3 rounded-2xl border-2 transition-all flex flex-col justify-between select-none ${
-                            status === 'completed'
+                          className={`p-3 rounded-2xl border-2 transition-all flex flex-col justify-between select-none ${status === 'completed'
                               ? 'bg-emerald-500/10 border-emerald-500/40 hover:border-emerald-500 cursor-pointer'
                               : status === 'today'
-                              ? 'bg-amber-400/15 border-amber-400 shadow-md ring-2 ring-amber-400/30 hover:scale-[1.01] cursor-pointer'
-                              : status === 'missed'
-                              ? 'bg-amber-50 dark:bg-amber-950/20 border-amber-300 dark:border-amber-800/60 hover:border-amber-500 cursor-pointer'
-                              : 'bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 opacity-60 cursor-not-allowed'
-                          }`}
+                                ? 'bg-amber-400/15 border-amber-400 shadow-md ring-2 ring-amber-400/30 hover:scale-[1.01] cursor-pointer'
+                                : status === 'missed'
+                                  ? 'bg-amber-50 dark:bg-amber-950/20 border-amber-300 dark:border-amber-800/60 hover:border-amber-500 cursor-pointer'
+                                  : 'bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 opacity-60 cursor-not-allowed'
+                            }`}
                         >
                           <div>
                             {/* Day Badge & Status Row */}
@@ -375,7 +370,13 @@ export const JourneyOverviewModal: React.FC<JourneyOverviewModalProps> = ({
                             {isPlayable ? (
                               <button
                                 type="button"
-                                className="px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider bg-white dark:bg-zinc-800 border border-[var(--c-border)] shadow-xs hover:bg-zinc-100 dark:hover:bg-zinc-700 text-[var(--c-text)] flex items-center gap-1 cursor-pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  triggerHaptic('medium');
+                                  onSelectDay(day.dayNumber);
+                                  onClose();
+                                }}
+                                className="px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider bg-white dark:bg-zinc-800 border border-[var(--c-border)] shadow-xs hover:bg-zinc-100 dark:hover:bg-zinc-700 text-[var(--c-text)] flex items-center gap-1 cursor-pointer active:scale-95 transition-all"
                               >
                                 <span>{status === 'completed' ? 'Replay' : 'Play'}</span>
                                 <ArrowRight size={11} />

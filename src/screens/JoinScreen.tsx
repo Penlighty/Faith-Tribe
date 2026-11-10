@@ -100,12 +100,12 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({
       } else {
         setError(
           mode === 'onsite'
-            ? 'Could not connect via Onsite Hotspot. Verify your Wi-Fi is connected to the host network and try again.'
-            : 'Could not join room. Please check the 4-letter code and try again.'
+            ? 'Could not connect. Check host Wi-Fi and code.'
+            : 'Could not join room. Check the code and retry.'
         );
       }
     } catch (err: any) {
-      setError(err?.message || 'Error connecting to session. Please try again.');
+      setError(err?.message || 'Error connecting to room.');
     } finally {
       setLoading(false);
     }
@@ -144,7 +144,7 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({
   const wifiChecking = wifiStep === 'wifi_checking';
 
   return (
-    <div className="w-full max-w-xl mx-auto px-4 sm:px-6 pb-28 pt-2 sm:pt-6 flex flex-col gap-6">
+    <div className="w-full max-w-md mx-auto px-4 sm:px-6 pb-28 pt-2 sm:pt-4 flex flex-col gap-5">
       {/* Top Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -172,41 +172,24 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({
           }}
           className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${
             isOnsiteMode
-              ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200 border-emerald-500/40'
-              : 'bg-blue-50 text-blue-800 dark:bg-blue-950 dark:text-blue-200 border-blue-500/40'
+              ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-500/30'
+              : 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border-blue-500/30'
           }`}
         >
           <Icon name={isOnsiteMode ? 'host' : 'link'} size={12} />
-          <span>{isOnsiteMode ? 'Onsite Hotspot' : 'Online Cloud'}</span>
-          <span className="text-[10px] opacity-70 underline ml-1">Switch</span>
+          <span>{isOnsiteMode ? 'Onsite' : 'Online'}</span>
         </button>
       </div>
 
-      <Card variant="hero" padding="lg" className="flex flex-col items-center gap-3 text-center shadow-md">
+      {/* Hero Card */}
+      <Card variant="hero" padding="lg" className="flex flex-col items-center gap-2.5 text-center shadow-sm">
         <Avatar name={name || 'Disciple'} size="xl" />
         <h1 className="text-2xl font-black">Enter the Room</h1>
-        <p className="text-xs font-semibold opacity-85 max-w-sm">
+        <p className="text-xs text-[var(--on-container-variant)] max-w-xs">
           {isOnsiteMode
-            ? 'First connect to the host\'s Wi-Fi hotspot, then enter the 4-letter room code below.'
-            : 'Type the 4-letter room code shown on the host screen or scan the QR code with your camera.'}
+            ? 'Connect to host Wi-Fi and enter the 4-letter code.'
+            : 'Enter the 4-letter code or scan QR.'}
         </p>
-
-        {/* Step badges for onsite mode */}
-        {isOnsiteMode && (
-          <div className="flex items-center gap-2 mt-1">
-            <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black transition-all ${wifiConnected ? 'bg-emerald-500 text-white' : 'bg-[var(--surface-container)] text-[var(--on-container-variant)]'}`}>
-              {wifiConnected ? '✓' : '1'} Connect Wi-Fi
-            </span>
-            <Icon name="arrow-right" size={10} className="opacity-40" />
-            <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black transition-all ${code.length === 4 ? 'bg-[var(--primary-action)] text-[var(--primary-action-text)]' : 'bg-[var(--surface-container)] text-[var(--on-container-variant)]'}`}>
-              2 Enter Code
-            </span>
-            <Icon name="arrow-right" size={10} className="opacity-40" />
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-[var(--surface-container)] text-[var(--on-container-variant)]">
-              3 Join!
-            </span>
-          </div>
-        )}
 
         {/* Camera QR Scanner Launch Button */}
         <Button
@@ -218,145 +201,84 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({
             triggerHaptic('light');
             setShowScanner(true);
           }}
-          className="font-bold mt-1 shadow-xs"
+          className="font-bold mt-1"
         >
-          {isOnsiteMode ? 'Scan Host Wi-Fi or Game QR' : 'Scan Host Screen QR Code'}
+          Scan QR Code
         </Button>
       </Card>
 
-      {/* ─── Onsite Hotspot Guided Wi-Fi Flow ─── */}
+      {/* ─── Onsite Hotspot Wi-Fi Info ─── */}
       {isOnsiteMode && (
-        <Card
-          variant="elevated"
-          padding="md"
-          className="bg-emerald-50/80 dark:bg-emerald-950/40 border-2 border-emerald-500/40 rounded-2xl flex flex-col gap-3"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
-              <Icon name="bolt" size={14} /> Step 1 &mdash; Connect to Host Wi-Fi
-            </span>
-            <button
-              type="button"
-              onClick={handleTriggerWifi}
-              className="text-xs font-extrabold text-emerald-700 dark:text-emerald-300 underline hover:opacity-80 flex items-center gap-1 cursor-pointer"
-            >
-              <Icon name="settings" size={14} /> Open Wi-Fi Settings
-            </button>
-          </div>
-
-          <p className="text-xs text-emerald-900/90 dark:text-emerald-100/90 leading-relaxed">
-            Make sure your phone&apos;s Wi-Fi is <strong>turned ON</strong> and connected to the
-            host&apos;s Personal Hotspot or the room&apos;s network:
-          </p>
-
-          <div className="p-2.5 rounded-xl bg-[var(--surface-card)] border border-emerald-500/30 flex items-center justify-between">
-            <div className="flex flex-col">
-              <span className="text-[10px] font-bold uppercase text-[var(--on-container-variant)]">
-                Required Wi-Fi Network
-              </span>
-              <span className="text-sm font-black text-[var(--on-container)]">
-                {ssid || 'Host Phone Hotspot / Church Wi-Fi'}
-              </span>
-            </div>
-            {wifiConnected ? (
-              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500 text-white flex items-center gap-1">
-                ✓ Connected
-              </span>
-            ) : (
-              <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
-                Local P2P
-              </span>
-            )}
-          </div>
-
-          {/* Wi-Fi status messages */}
-          {wifiStep === 'idle' && (
-            <button
-              type="button"
-              onClick={checkWifiConnectivity}
-              className="text-xs font-bold text-emerald-700 dark:text-emerald-300 underline cursor-pointer self-start"
-            >
-              Already connected? Check connectivity →
-            </button>
-          )}
-
-          {wifiChecking && (
-            <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 dark:text-emerald-300">
-              <span className="w-3 h-3 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin" />
-              Checking your Wi-Fi connection…
-            </div>
-          )}
-
-          {wifiConnected && (
-            <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 dark:text-emerald-200 bg-emerald-100 dark:bg-emerald-900/40 rounded-xl p-2.5">
-              <Icon name="check" size={16} />
-              <span>Connected! Proceed to Step 2 — enter the 4-letter room code below and tap Join.</span>
-            </div>
-          )}
-
-          {wifiFailed && (
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 text-xs font-bold text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/40 rounded-xl p-2.5">
-                <Icon name="close" size={16} />
-                <span>
-                  Your device doesn&apos;t appear to be connected to Wi-Fi yet
-                  {wifiCheckCount > 1 ? ` (checked ${wifiCheckCount} times)` : ''}.
+        <div className="p-3.5 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-tint)] flex flex-col gap-2 shadow-xs">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                  wifiConnected
+                    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
+                    : 'bg-[var(--surface-container)] text-[var(--on-container-variant)]'
+                }`}
+              >
+                <Icon name={wifiConnected ? 'check' : 'host'} size={16} />
+              </div>
+              <div className="min-w-0 flex flex-col">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
+                  Host Wi-Fi
+                </span>
+                <span className="text-xs font-bold truncate text-[var(--on-container)]">
+                  {ssid || 'Host Hotspot'}
                 </span>
               </div>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={handleTriggerWifi}
-                  className="text-xs font-bold text-emerald-700 dark:text-emerald-300 underline cursor-pointer"
-                >
-                  Open Wi-Fi Settings
-                </button>
-                <span className="text-xs text-[var(--on-container-variant)]">·</span>
-                <button
-                  type="button"
-                  onClick={checkWifiConnectivity}
-                  className="text-xs font-bold text-[var(--primary-action)] underline cursor-pointer"
-                >
-                  Check again
-                </button>
-              </div>
             </div>
-          )}
 
-          {wifiStep === 'wifi_prompt' && !wifiChecking && !wifiConnected && !wifiFailed && (
-            <div className="flex items-center gap-2">
-              <Button
-                variant="tonal"
-                size="sm"
-                pill
+            <div className="flex items-center gap-1.5 shrink-0">
+              {wifiConnected ? (
+                <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/60 px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <Icon name="check" size={12} /> Connected
+                </span>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleTriggerWifi}
+                    className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[var(--on-container)] border border-[var(--border-tint)] cursor-pointer"
+                  >
+                    Wi-Fi Settings
+                  </button>
+                  <button
+                    type="button"
+                    onClick={checkWifiConnectivity}
+                    disabled={wifiChecking}
+                    className="text-xs font-bold px-3 py-1 rounded-full bg-[var(--primary-action)] text-[var(--primary-action-text)] hover:opacity-90 cursor-pointer disabled:opacity-50"
+                  >
+                    {wifiChecking ? 'Checking…' : 'Check'}
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+
+          {wifiFailed && (
+            <div className="flex items-center justify-between pt-2 border-t border-[var(--border-tint)]/60 text-xs text-red-600 dark:text-red-400">
+              <span>Wi-Fi not detected. Connect to host network.</span>
+              <button
+                type="button"
                 onClick={checkWifiConnectivity}
-                className="font-bold text-emerald-800 dark:text-emerald-200 border border-emerald-500/40 flex-1"
+                className="font-bold underline cursor-pointer ml-2"
               >
-                ✓ I&apos;m Connected — Check
-              </Button>
+                Retry
+              </button>
             </div>
           )}
-        </Card>
+        </div>
       )}
 
       <form onSubmit={handleJoin} className="flex flex-col gap-4">
-        {/* Step 2 label for onsite */}
-        {isOnsiteMode && (
-          <div className="flex items-center gap-2 px-1">
-            <span className="text-xs font-black uppercase tracking-wider text-[var(--primary-action)]">
-              Step 2 &mdash;
-            </span>
-            <span className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
-              Enter Room Code
-            </span>
-          </div>
-        )}
-
         {/* 4-Letter Code Input */}
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center justify-between px-1">
             <label htmlFor="room-code-input" className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
-              4-Letter Room Code
+              Room Code
             </label>
             <span className="text-[10px] font-bold text-[var(--on-container-variant)] flex items-center gap-1">
               <Icon name={isOnsiteMode ? 'host' : 'link'} size={12} />
@@ -369,8 +291,8 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({
             maxLength={4}
             value={code}
             onChange={(e) => setCode(e.target.value.toUpperCase())}
-            placeholder="e.g. ZION"
-            className="w-full h-16 rounded-3xl bg-[var(--surface-card)] text-[var(--on-container)] border-2 border-[var(--border-tint)] focus:border-[var(--primary-action)] text-center font-mono text-3xl font-black tracking-widest uppercase outline-none shadow-sm"
+            placeholder="ZION"
+            className="w-full h-16 rounded-3xl bg-[var(--surface-card)] text-[var(--on-container)] border-2 border-[var(--border-tint)] focus:border-[var(--primary-action)] text-center font-mono text-3xl font-black tracking-widest uppercase outline-none shadow-xs"
             required
           />
         </div>
@@ -378,7 +300,7 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({
         {/* Display Name Input */}
         <div className="flex flex-col gap-1.5">
           <label htmlFor="display-name-input" className="text-xs font-bold uppercase tracking-wider text-[var(--on-container-variant)] px-1">
-            Your Display Name
+            Your Name
           </label>
           <input
             id="display-name-input"
@@ -386,22 +308,22 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({
             maxLength={18}
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Priscilla"
-            className="w-full h-14 rounded-2xl bg-[var(--surface-card)] text-[var(--on-container)] border-2 border-[var(--border-tint)] focus:border-[var(--primary-action)] px-4 font-bold text-base outline-none shadow-sm"
+            placeholder="Priscilla"
+            className="w-full h-14 rounded-2xl bg-[var(--surface-card)] text-[var(--on-container)] border-2 border-[var(--border-tint)] focus:border-[var(--primary-action)] px-4 font-bold text-base outline-none shadow-xs"
             required
           />
         </div>
 
         {error && (
-          <div className="p-3.5 rounded-2xl bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-200 text-xs font-bold text-center leading-relaxed border border-red-300/40">
-            <p>{error}</p>
+          <div className="p-3 rounded-2xl bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-300 text-xs font-bold text-center border border-red-200 dark:border-red-900/50 flex flex-col gap-1 items-center">
+            <span>{error}</span>
             {isOnsiteMode && (
               <button
                 type="button"
                 onClick={handleTriggerWifi}
-                className="mt-1.5 underline text-red-700 dark:text-red-300 cursor-pointer"
+                className="underline hover:opacity-80 cursor-pointer text-xs"
               >
-                Open Wi-Fi settings to verify connection
+                Open Wi-Fi Settings
               </button>
             )}
           </div>
@@ -416,7 +338,7 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({
           leftIcon={<Icon name="join" size={20} />}
           className="w-full mt-2 font-black shadow-md flex items-center justify-center gap-2"
         >
-          {loading ? 'Entering Room…' : `Join Fellowship (${isOnsiteMode ? 'Onsite' : 'Online'})`}
+          {loading ? 'Joining…' : 'Join Room'}
         </Button>
       </form>
 

@@ -159,7 +159,7 @@ export const SelectGameModal: React.FC<SelectGameModalProps> = ({
                           {g.name}
                         </span>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--surface-card)] text-[var(--on-container-variant)] border border-[var(--border-tint)]">
-                          {g.categoryTag}
+                          {g.minPlayers === 1 ? 'Devotional' : 'Fellowship'}
                         </span>
                         {isSelected && (
                           <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
@@ -167,9 +167,6 @@ export const SelectGameModal: React.FC<SelectGameModalProps> = ({
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-[var(--on-container-variant)] line-clamp-1 mt-0.5">
-                        {g.tagline}
-                      </p>
                       <div className="flex items-center gap-3 text-[11px] text-[var(--on-container-variant)]/80 mt-1 font-mono">
                         <span className="flex items-center gap-1">
                           <Icon name="team" size={12} />

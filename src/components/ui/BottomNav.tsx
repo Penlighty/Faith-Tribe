@@ -17,7 +17,6 @@ const TABS: { id: NavTabId; label: string; icon: IconName }[] = [
   { id: 'play', label: 'Play', icon: 'play' },
   { id: 'games', label: 'Games', icon: 'games' },
   { id: 'tribe', label: 'Tribe', icon: 'team' },
-  { id: 'settings', label: 'Settings', icon: 'settings' },
 ];
 
 export const BottomNav: React.FC<BottomNavProps> = ({
@@ -48,11 +47,10 @@ export const BottomNav: React.FC<BottomNavProps> = ({
                 triggerHaptic('selection');
                 onTabChange(tab.id);
               }}
-              className={`relative flex-1 py-2 px-3 rounded-full flex flex-col items-center justify-center gap-0.5 text-xs transition-colors outline-none cursor-pointer ${
-                isActive
+              className={`relative flex-1 py-2 px-3 rounded-full flex flex-col items-center justify-center gap-0.5 text-xs transition-colors outline-none cursor-pointer ${isActive
                   ? 'text-[var(--primary-action)] font-bold'
                   : 'text-[var(--on-container-variant)] font-medium hover:text-[var(--on-container)]'
-              }`}
+                }`}
             >
               {isActive && (
                 <motion.div

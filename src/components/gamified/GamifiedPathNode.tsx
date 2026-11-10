@@ -3,7 +3,7 @@ import { Star, Scroll, BookOpen, Trophy } from 'lucide-react';
 import { GamifiedChest } from './GamifiedMascot';
 import { useTheme } from '../../theme/ThemeContext';
 
-export type PathNodeState = 'complete' | 'current' | 'locked';
+export type PathNodeState = 'complete' | 'current' | 'locked' | 'missed';
 export type PathNodeGlyph = 'star' | 'book' | 'scroll' | 'trophy' | 'chest';
 
 export interface PathNodeData {
@@ -66,6 +66,7 @@ export const GamifiedPathNode: React.FC<GamifiedPathNodeProps> = ({
   const puckClass = {
     current: 'path-node-current',
     complete: 'path-node-complete',
+    missed: 'path-node-missed',
     locked: 'path-node-locked',
   }[state];
 

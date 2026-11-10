@@ -266,6 +266,17 @@
   box-shadow: 0 0 0 transparent;
 }
 
+.path-node-missed {
+  background: var(--c-yellow);
+  box-shadow: 0 8px 0 var(--c-orange-deep);
+  cursor: pointer;
+}
+
+.path-node-missed:active {
+  transform: translateY(8px);
+  box-shadow: 0 0 0 transparent;
+}
+
 .path-node-locked {
   background: var(--c-border);
   box-shadow: 0 8px 0 #B8B8B8;

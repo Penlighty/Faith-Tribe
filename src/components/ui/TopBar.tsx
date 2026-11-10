@@ -29,7 +29,6 @@ const NAV_ITEMS: { id: NavTabId; label: string; icon: IconName }[] = [
   { id: 'play', label: 'Join', icon: 'play' },
   { id: 'games', label: 'Games', icon: 'games' },
   { id: 'tribe', label: 'Fellowship', icon: 'team' },
-  { id: 'settings', label: 'Settings', icon: 'settings' },
 ];
 
 export const TopBar: React.FC<TopBarProps> = ({
@@ -93,11 +92,10 @@ export const TopBar: React.FC<TopBarProps> = ({
                   triggerHaptic('selection');
                   onTabChange(item.id);
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                  isActive
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${isActive
                     ? 'bg-[var(--surface-card)] text-[var(--primary-action)] shadow-sm'
                     : 'text-[var(--on-container-variant)] hover:text-[var(--on-container)] hover:bg-[var(--surface-container-high)]/60'
-                }`}
+                  }`}
               >
                 <Icon name={item.icon} variant={isActive ? 'tonal' : 'line'} size={15} />
                 <span>{item.label}</span>
@@ -111,29 +109,54 @@ export const TopBar: React.FC<TopBarProps> = ({
       <div className="flex items-center gap-2 shrink-0 relative">
         {rightActions}
 
-        {/* Desktop Quick Toggles */}
-        <div className="hidden sm:flex items-center gap-1.5">
-          <button
-            onClick={handleToggleSound}
-            className="w-8 h-8 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] flex items-center justify-center text-[var(--on-container)] transition-colors cursor-pointer border border-[var(--border-tint)]/60"
-            title={soundEnabled ? 'Mute Sound' : 'Enable Sound'}
-            aria-label={soundEnabled ? 'Mute Sound' : 'Enable Sound'}
-          >
-            <Icon
-              name={soundEnabled ? 'sound-on' : 'sound-off'}
-              variant={soundEnabled ? 'tonal' : 'line'}
-              size={16}
-            />
-          </button>
+        {/* Quick Utilities / Toggles */}
+        <div className="flex items-center gap-1.5">
+          <div className="hidden sm:flex items-center gap-1.5">
+            <button
+              onClick={handleToggleSound}
+              className="w-8 h-8 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] flex items-center justify-center text-[var(--on-container)] transition-colors cursor-pointer border border-[var(--border-tint)]/60"
+              title={soundEnabled ? 'Mute Sound' : 'Enable Sound'}
+              aria-label={soundEnabled ? 'Mute Sound' : 'Enable Sound'}
+            >
+              <Icon
+                name={soundEnabled ? 'sound-on' : 'sound-off'}
+                variant={soundEnabled ? 'tonal' : 'line'}
+                size={16}
+              />
+            </button>
 
-          <button
-            onClick={handleToggleTheme}
-            className="w-8 h-8 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] flex items-center justify-center text-[var(--on-container)] transition-colors cursor-pointer border border-[var(--border-tint)]/60"
-            title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-          >
-            {isDark ? <Sun size={15} className="text-amber-400" /> : <Moon size={15} />}
-          </button>
+            <button
+              onClick={handleToggleTheme}
+              className="w-8 h-8 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] flex items-center justify-center text-[var(--on-container)] transition-colors cursor-pointer border border-[var(--border-tint)]/60"
+              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {isDark ? <Sun size={15} className="text-amber-400" /> : <Moon size={15} />}
+            </button>
+          </div>
+
+          {/* Settings in Header */}
+          {onTabChange && (
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                onTabChange('settings');
+              }}
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer border border-[var(--border-tint)]/60 ${activeTab === 'settings'
+                  ? 'bg-[var(--primary-action)] text-white shadow-xs'
+                  : 'bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-[var(--on-container)]'
+                }`}
+              title="Settings"
+              aria-label="Settings"
+            >
+              <Icon
+                name="settings"
+                variant={activeTab === 'settings' ? 'tonal' : 'line'}
+                size={16}
+              />
+            </button>
+          )}
         </div>
 
         {/* Authenticated User Pill vs Guest Sign-In Button */}
@@ -172,16 +195,28 @@ export const TopBar: React.FC<TopBarProps> = ({
                 </div>
 
                 {onTabChange && (
-                  <button
-                    onClick={() => {
-                      setShowUserMenu(false);
-                      onTabChange('tribe');
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold hover:bg-[var(--surface-container)] text-[var(--on-container)] flex items-center gap-2 cursor-pointer"
-                  >
-                    <Icon name="team" size={14} />
-                    <span>My Fellowships</span>
-                  </button>
+                  <>
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        onTabChange('tribe');
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold hover:bg-[var(--surface-container)] text-[var(--on-container)] flex items-center gap-2 cursor-pointer"
+                    >
+                      <Icon name="team" size={14} />
+                      <span>My Fellowships</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        onTabChange('settings');
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-xl text-xs font-bold hover:bg-[var(--surface-container)] text-[var(--on-container)] flex items-center gap-2 cursor-pointer"
+                    >
+                      <Icon name="settings" size={14} />
+                      <span>Settings</span>
+                    </button>
+                  </>
                 )}
 
                 <button

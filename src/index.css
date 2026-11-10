@@ -8,11 +8,11 @@
 @tailwind utilities;
 
 :root {
-  /* Dynamic M3 Expressive context tint defaults (Lavender) */
+  /* Dynamic M3 Expressive context tint defaults (Plain Neutral) */
   --seed-color: #E9E5F4;
-  --bg-tint: #F7F5FA;
-  --surface-container: #ECE8F5;
-  --surface-container-high: #E2DDF0;
+  --bg-tint: #F8F9FA;
+  --surface-container: #F1F3F5;
+  --surface-container-high: #E9ECEF;
   --surface-card: #FFFFFF;
   --primary-action: #2F5D3A;
   --primary-action-text: #FFFFFF;
@@ -55,6 +55,7 @@ body {
   0% {
     stroke-dashoffset: 0;
   }
+
   100% {
     stroke-dashoffset: 40;
   }
@@ -69,13 +70,16 @@ body {
   width: 4px;
   height: 4px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.12);
   border-radius: 9999px;
 }
+
 .dark ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
 }
@@ -85,8 +89,8 @@ body {
   from {
     transform: scaleX(1);
   }
+
   to {
     transform: scaleX(0);
   }
 }
-

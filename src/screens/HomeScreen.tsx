@@ -7,7 +7,7 @@ import { Avatar } from '../components/ui/Avatar';
 import { gameRegistry } from '../engine/registry';
 import { GameMeta, ConnectionMode, HotspotInfo, PlayMode } from '../engine/types';
 import { useTheme } from '../theme/ThemeContext';
-import { Icon, GameBadge, GameShape, toVisualGameId, GAME_VISUALS, type GameId, type IconName } from '../design/icons';
+import { Icon, GameBadge, toVisualGameId, GAME_VISUALS, type GameId, type IconName } from '../design/icons';
 import { SelectGameModal } from '../components/session/SelectGameModal';
 import { HostSessionModal } from '../components/session/HostSessionModal';
 import { AuthModal } from '../components/auth/AuthModal';
@@ -130,7 +130,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onHostSession,
   onDirectJoinSession,
 }) => {
-  const [filter, setFilter] = useState<'All' | 'Party' | 'Team' | 'Solo'>('All');
+  const [filter, setFilter] = useState<'All' | 'Devotional' | 'Fellowship'>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -181,8 +181,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const currentUserId = user?.uid || (typeof window !== 'undefined' ? sessionStorage.getItem('faith_tribe_player_id') || undefined : undefined);
   const currentUserName = user?.displayName || user?.username || (typeof window !== 'undefined'
     ? localStorage.getItem('faith_tribe_player_name') ||
-      localStorage.getItem('agape_player_name') ||
-      undefined
+    localStorage.getItem('agape_player_name') ||
+    undefined
     : undefined);
 
   // User-isolated fellowship stats
@@ -207,15 +207,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const filteredLaunchGames = useMemo(() => {
     return launchGames.filter((g) => {
+      const isSoloAndGroup = g.minPlayers === 1;
       const matchesCategory =
-        filter === 'All' ? true : filter === 'Solo' ? g.supportsSoloPractice : g.categoryTag === filter;
+        filter === 'All' ? true : filter === 'Devotional' ? isSoloAndGroup : !isSoloAndGroup;
       return matchesCategory && matchesGameSearch(g, searchQuery);
     });
   }, [launchGames, filter, searchQuery]);
 
   const filteredPlannedGames = useMemo(() => {
     return PLANNED_GAMES.filter((g) => {
-      const matchesCategory = filter === 'All' ? true : g.categoryTag === filter;
+      const isSoloAndGroup = g.minPlayers === 1;
+      const matchesCategory =
+        filter === 'All' ? true : filter === 'Devotional' ? isSoloAndGroup : !isSoloAndGroup;
       return matchesCategory && matchesGameSearch(g, searchQuery);
     });
   }, [filter, searchQuery]);
@@ -312,35 +315,26 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {onOpenJourneyPath && (
         <div
           onClick={onOpenJourneyPath}
-          className="w-full px-4 py-3 sm:py-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 hover:border-amber-500/60 transition-all cursor-pointer flex items-center justify-between gap-3 select-none"
+          className="group w-full p-3 sm:p-3.5 rounded-2xl bg-[var(--surface-card)] border border-[var(--border-tint)] hover:border-[var(--primary-action)]/50 hover:shadow-xs transition-all cursor-pointer flex items-center justify-between gap-3 select-none"
         >
           <div className="flex items-center gap-3 min-w-0">
-            <span className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0">
-              <Icon name="bolt" size={16} />
+            <span className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 transition-transform group-hover:scale-105">
+              <Icon name="star" variant="tonal" size={18} />
             </span>
             <div className="flex flex-col min-w-0">
-              <span className="text-[11px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-400">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--on-container-variant)]">
                 Daily Scripture Journey
               </span>
-              <span className="text-xs sm:text-sm font-bold text-[var(--on-container)] truncate">
-                Continue Day's Faith Milestone
+              <span className="text-xs sm:text-sm font-extrabold text-[var(--on-container)] truncate">
+                Continue Today's Faith Milestone
               </span>
             </div>
           </div>
 
-          <Button
-            type="button"
-            variant="tonal"
-            size="sm"
-            pill
-            onClick={(e) => {
-              e.stopPropagation();
-              onOpenJourneyPath?.();
-            }}
-            className="shrink-0 font-black text-xs"
-          >
-            Continue
-          </Button>
+          <span className="shrink-0 px-3.5 py-1.5 rounded-full bg-[var(--primary-action)] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs group-hover:brightness-105 transition-all">
+            <span>Continue</span>
+            <Icon name="arrow-right" size={13} className="group-hover:translate-x-0.5 transition-transform" />
+          </span>
         </div>
       )}
 
@@ -349,7 +343,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {/* Category Filters */}
         <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1 scrollbar-none">
           <div className="flex items-center gap-1.5">
-            {(['All', 'Party', 'Team', 'Solo'] as const).map((tab) => (
+            {(['All', 'Devotional', 'Fellowship'] as const).map((tab) => (
               <Chip
                 key={tab}
                 selected={filter === tab}
@@ -527,6 +521,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
 const GameCard: React.FC<{ game: GameMeta; onClick: () => void }> = ({ game, onClick }) => {
   const visual = GAME_VISUALS[toVisualGameId(game.id)];
+  const isSoloAndGroup = game.minPlayers === 1;
 
   return (
     <Card
@@ -538,43 +533,32 @@ const GameCard: React.FC<{ game: GameMeta; onClick: () => void }> = ({ game, onC
         backgroundColor: visual.container,
         color: visual.ink,
       }}
-      className="flex flex-col justify-between rounded-[28px] border border-black/5 dark:border-white/10 hover:-translate-y-1 hover:shadow-expressive transition-all duration-200 cursor-pointer overflow-hidden relative"
+      className="group flex flex-col justify-between rounded-[24px] border border-black/5 dark:border-white/10 hover:-translate-y-1 hover:shadow-md transition-all duration-200 cursor-pointer overflow-hidden relative"
     >
-      {/* Background shape silhouette watermark */}
-      <div className="absolute -top-4 -right-4 pointer-events-none opacity-15 text-current">
-        <GameShape game={game.id} size={110} />
-      </div>
-
       {/* Visual illustration / badge area */}
-      <div className="p-4 pb-2 flex flex-col gap-2 relative z-10">
+      <div className="p-4 pb-1 flex flex-col gap-2 relative z-10">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/10 dark:bg-white/15">
-            {game.categoryTag}
+          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/8 dark:bg-white/15">
+            {isSoloAndGroup ? 'Devotional' : 'Fellowship'}
           </span>
-          <span className="text-xs font-mono font-bold flex items-center gap-1 opacity-80">
-            <Icon name="timer" size={14} /> {game.estimatedMinutes}m
+          <span className="text-xs font-mono font-bold flex items-center gap-1 opacity-75">
+            <Icon name="timer" size={13} /> {game.estimatedMinutes}m
           </span>
         </div>
 
-        <div className="h-20 flex items-center justify-center">
-          <GameBadge game={game.id} size={64} variant="tonal" />
+        <div className="h-18 flex items-center justify-center py-1">
+          <GameBadge game={game.id} size={58} variant="tonal" />
         </div>
       </div>
 
       {/* Card Details Area */}
-      <div className="p-4 pt-0 flex flex-col gap-1 relative z-10">
+      <div className="p-4 pt-1 flex flex-col gap-1.5 relative z-10">
         <h3 className="font-extrabold text-base leading-tight tracking-tight">
           {game.name}
         </h3>
-        <p className="text-xs opacity-75 line-clamp-2 leading-relaxed">
-          {game.tagline}
-        </p>
 
-        <div className="mt-2 pt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[11px] font-bold opacity-80">
-          <span className="flex items-center gap-1.5">
-            <Icon name="team" size={14} /> {game.minPlayers}-{game.maxPlayers} players
-          </span>
-          <Icon name="arrow-right" size={16} />
+        <div className="flex items-center justify-end text-[11px] font-bold opacity-75">
+          <Icon name="arrow-right" size={15} className="opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
         </div>
       </div>
     </Card>
@@ -582,8 +566,9 @@ const GameCard: React.FC<{ game: GameMeta; onClick: () => void }> = ({ game, onC
 };
 
 const PlannedGameCard: React.FC<{ game: PlannedGameMeta }> = ({ game }) => {
-  const visual = GAME_VISUALS[game.id];
+  const visual = GAME_VISUALS[toVisualGameId(game.id)] || GAME_VISUALS[game.id];
   const { triggerHaptic } = useTheme();
+  const canPlaySolo = game.minPlayers === 1;
 
   return (
     <Card
@@ -594,41 +579,37 @@ const PlannedGameCard: React.FC<{ game: PlannedGameMeta }> = ({ game }) => {
         backgroundColor: visual.container,
         color: visual.ink,
       }}
-      className="flex flex-col justify-between rounded-[28px] border border-black/5 dark:border-white/10 opacity-80 transition-all duration-200 overflow-hidden relative cursor-default"
+      className="flex flex-col justify-between rounded-[24px] border border-black/5 dark:border-white/10 opacity-75 transition-all duration-200 overflow-hidden relative cursor-default"
     >
-      {/* Background shape silhouette watermark */}
-      <div className="absolute -top-4 -right-4 pointer-events-none opacity-15 text-current">
-        <GameShape game={game.id} size={110} />
-      </div>
-
       {/* Visual illustration / badge area */}
-      <div className="p-4 pb-2 flex flex-col gap-2 relative z-10">
+      <div className="p-4 pb-1 flex flex-col gap-2 relative z-10">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/10 dark:bg-white/15">
+          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/8 dark:bg-white/15">
             {game.categoryTag}
           </span>
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-black/15 text-current">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-black/10 dark:bg-white/15 text-current">
             Coming soon
           </span>
         </div>
 
-        <div className="h-20 flex items-center justify-center">
-          <GameBadge game={game.id} size={64} variant="tonal" />
+        <div className="h-18 flex items-center justify-center py-1">
+          <GameBadge game={game.id} size={58} variant="tonal" />
         </div>
       </div>
 
       {/* Card Details Area */}
-      <div className="p-4 pt-0 flex flex-col gap-1 relative z-10">
+      <div className="p-4 pt-1 flex flex-col gap-1.5 relative z-10">
         <h3 className="font-extrabold text-base leading-tight tracking-tight">
           {game.name}
         </h3>
-        <p className="text-xs opacity-75 line-clamp-2 leading-relaxed">
-          {game.tagline}
-        </p>
 
-        <div className="mt-2 pt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[11px] font-bold opacity-80">
-          <span className="flex items-center gap-1.5">
-            <Icon name="team" size={14} /> {game.minPlayers}-{game.maxPlayers} players
+        <div className="flex items-center justify-between text-[11px] font-bold opacity-75">
+          <span
+            title={canPlaySolo ? "1+ players (Solo or Group)" : "Multiplayer only (2+ players)"}
+            aria-label={canPlaySolo ? "1 or more players" : "Multiplayer only"}
+            className="flex items-center"
+          >
+            <Icon name={canPlaySolo ? "person" : "team"} size={16} />
           </span>
           <span className="text-[10px] font-bold uppercase tracking-wider opacity-60">Planned</span>
         </div>

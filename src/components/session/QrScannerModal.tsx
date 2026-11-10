@@ -178,11 +178,10 @@ export const QrScannerModal: React.FC<QrScannerModalProps> = ({
 
         <div className="flex flex-col gap-1">
           <h2 className="text-xl font-black text-[var(--on-container)]">
-            Scan Host Screen QR
+            Scan QR Code
           </h2>
           <p className="text-xs text-[var(--on-container-variant)]">
-            Scan the <strong>Game QR</strong> to enter the room code automatically, or scan the{' '}
-            <strong>Wi-Fi QR</strong> to connect to the host&apos;s hotspot.
+            Point camera at the host&apos;s QR code.
           </p>
         </div>
 
@@ -202,9 +201,6 @@ export const QrScannerModal: React.FC<QrScannerModalProps> = ({
           ) : (
             <div className="flex flex-col items-center gap-3 p-4 text-white/80">
               <Icon name="eye" size={36} />
-              <span className="text-xs font-bold text-center">
-                Camera is currently idle.
-              </span>
               <Button
                 variant="primary"
                 size="sm"
@@ -228,7 +224,7 @@ export const QrScannerModal: React.FC<QrScannerModalProps> = ({
         <div className="w-full flex flex-col gap-2">
           <label className="w-full py-2.5 px-4 rounded-full bg-[var(--surface-container)] hover:bg-[var(--surface-container-high)] text-xs font-bold text-[var(--on-container)] border border-[var(--border-tint)] flex items-center justify-center gap-2 cursor-pointer transition-colors">
             <Icon name="search" size={16} />
-            <span>Upload or Snap Photo of QR</span>
+            <span>Upload QR Image</span>
             <input
               type="file"
               accept="image/*"
@@ -249,7 +245,7 @@ export const QrScannerModal: React.FC<QrScannerModalProps> = ({
             }}
             className="w-full font-bold"
           >
-            Type Code Manually
+            Enter Code Manually
           </Button>
         </div>
       </Card>

@@ -37,10 +37,10 @@ export const Chip: React.FC<ChipProps> = ({
     md: 'h-10 px-4 text-sm gap-2',
   }[size];
 
-  // M3 Expressive segmented filter pill: selected is a dark filled pill or prominent tonal pill
+  // M3 Expressive segmented filter pill: selected is a clean brand pill; unselected is a clean minimal card-surface pill
   const styleClasses = selected
-    ? 'bg-[#1D1B20] text-white dark:bg-white dark:text-[#1D1B20] font-bold shadow-sm'
-    : 'bg-[var(--chip-bg,var(--surface-container))] text-[var(--on-container)] font-semibold hover:bg-[var(--surface-container-high)] border border-[var(--border-tint)]';
+    ? 'bg-[var(--primary-action)] text-white font-bold shadow-xs'
+    : 'bg-[var(--surface-card)] text-[var(--on-container-variant)] hover:text-[var(--on-container)] hover:bg-[var(--surface-container)] border border-[var(--border-tint)] font-semibold';
 
   return (
     <motion.button

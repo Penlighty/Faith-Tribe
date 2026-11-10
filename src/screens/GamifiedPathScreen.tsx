@@ -27,6 +27,7 @@ export const GamifiedPathScreen: React.FC<GamifiedPathScreenProps> = () => {
   const [stats, setStats] = useState<GamifiedStats>(getStoredGamifiedStats);
   const [showOverviewModal, setShowOverviewModal] = useState(false);
   const [showChestModal, setShowChestModal] = useState(false);
+  const [pendingChestDayNumber, setPendingChestDayNumber] = useState<number | null>(null);
   const [activeLessonDayNumber, setActiveLessonDayNumber] = useState<number | null>(null);
 
   const todayDayOfYear = useMemo(() => getDayOfYear(), []);
@@ -69,6 +70,7 @@ export const GamifiedPathScreen: React.FC<GamifiedPathScreenProps> = () => {
     }
 
     if (day.glyph === 'chest' && !stats.completedDays.includes(day.dayNumber)) {
+      setPendingChestDayNumber(day.dayNumber);
       setShowChestModal(true);
       return;
     }
@@ -106,7 +108,11 @@ export const GamifiedPathScreen: React.FC<GamifiedPathScreenProps> = () => {
       ...prev,
       gems: prev.gems + reward.gems,
       xp: prev.xp + reward.xp,
+      completedDays: pendingChestDayNumber
+        ? Array.from(new Set([...prev.completedDays, pendingChestDayNumber]))
+        : prev.completedDays,
     }));
+    setPendingChestDayNumber(null);
     setShowChestModal(false);
   };
 
@@ -249,7 +255,10 @@ export const GamifiedPathScreen: React.FC<GamifiedPathScreenProps> = () => {
                 ? 'complete'
                 : isCurrent
                 ? 'current'
+                : isMissed
+                ? 'missed'
                 : 'locked';
+              const isPlayable = status !== 'locked';
 
               const nodeData: PathNodeData = {
                 id: `day-${day.dayNumber}`,
@@ -267,7 +276,12 @@ export const GamifiedPathScreen: React.FC<GamifiedPathScreenProps> = () => {
                   className="relative flex flex-col items-center shrink-0 w-28 z-10 select-none"
                 >
                   {/* Status Badge with fixed height and guaranteed spacing above the puck */}
-                  <div className="h-7 flex items-center justify-center mb-3">
+                  <div
+                    className={`h-7 flex items-center justify-center mb-3 ${
+                      isPlayable ? 'cursor-pointer hover:opacity-90 active:scale-95 transition-all' : ''
+                    }`}
+                    onClick={isPlayable ? () => handleDayNodeClick(day) : undefined}
+                  >
                     {isCurrent ? (
                       <div className="flex items-center gap-1 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-md animate-pulse">
                         <Star size={10} fill="currentColor" stroke="none" />
@@ -301,7 +315,12 @@ export const GamifiedPathScreen: React.FC<GamifiedPathScreenProps> = () => {
                   />
 
                   {/* Date & Scripture Below Node */}
-                  <div className="mt-3 text-center flex flex-col items-center max-w-[110px]">
+                  <div
+                    className={`mt-3 text-center flex flex-col items-center max-w-[110px] ${
+                      isPlayable ? 'cursor-pointer hover:opacity-80 active:scale-95 transition-all' : ''
+                    }`}
+                    onClick={isPlayable ? () => handleDayNodeClick(day) : undefined}
+                  >
                     <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wide">
                       {formatDayDate(day.dayNumber)}
                     </span>
